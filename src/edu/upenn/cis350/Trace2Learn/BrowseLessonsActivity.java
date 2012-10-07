@@ -81,6 +81,7 @@ public class BrowseLessonsActivity extends ListActivity {
 			Lesson le = ((Lesson)li);
 			Intent i = new Intent(this, BrowseWordsActivity.class);
     		i.putExtra("ID", le.getId());
+    		i.putExtra("TOTAL", items.size());
     		startActivity(i);
 		}
 
