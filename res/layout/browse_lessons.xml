@@ -7,7 +7,7 @@
      <TextView android:id="@+id/instructions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Click and hold on a lesson for more options"
+            android:text="Click and hold on a collection for more options"
             />
     
     <ListView
