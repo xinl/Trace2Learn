@@ -11,10 +11,13 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class TagActivity extends Activity {
 
@@ -58,8 +61,6 @@ public class TagActivity extends Activity {
         Log.e("ID",Long.toString(id));
         Log.e("TYPE",type.toString());
         
-        String privateTag;
-        
         switch(type)
         {
         case CHARACTER:
@@ -90,8 +91,16 @@ public class TagActivity extends Activity {
         ArrayAdapter ad = new ArrayAdapter(this,android.R.layout.simple_list_item_multiple_choice,items);
         lv.setAdapter(ad);*/
         lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        
-        }
+
+        lv.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> adapter, View view, int position,
+					long id) {
+				String str = (String) adapter.getItemAtPosition(position);
+				System.out.println(str);
+			}});
+	}
 	
 	/**
 	 * When you want to add a tag to a character/word,
