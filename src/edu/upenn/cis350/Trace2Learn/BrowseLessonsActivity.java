@@ -73,17 +73,18 @@ public class BrowseLessonsActivity extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {  
 	  super.onListItemClick(l, v, position, id);  
 
-	  clickOnItem(items.get(position));
+	  clickOnItem(position);
 	} 
 
 	//when character is clicked, it starts the display mode for that char
-		public void clickOnItem(LessonItem li){
-			Lesson le = ((Lesson)li);
-			Intent i = new Intent(this, BrowseWordsActivity.class);
-    		i.putExtra("ID", le.getId());
-    		i.putExtra("TOTAL", items.size());
-    		startActivity(i);
-		}
+	public void clickOnItem(int position){
+		Lesson le = ((Lesson)items.get(position));
+		Intent i = new Intent(this, BrowseWordsActivity.class);
+		i.putExtra("ID", le.getId());
+		i.putExtra("lessonIndex", position + 1);
+		i.putExtra("lessonTotal", items.size());
+		startActivity(i);
+	}
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,

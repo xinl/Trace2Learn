@@ -72,12 +72,13 @@ public class BrowseWordsActivity extends ListActivity {
 	        }
         }
         else{
-        	int totalLessons = this.getIntent().getIntExtra("TOTAL", -1);
+        	int lessonIndex = this.getIntent().getIntExtra("lessonIndex", -1);
+        	int lessonTotal = this.getIntent().getIntExtra("lessonTotal", -1);
         	Lesson les = dba.getLessonById(id);
             String name = les.getLessonName();
             
             TextView title = (TextView)findViewById(R.id.instructions);
-    		title.setText("Browsing " + name + " (" + id + " of " + totalLessons + ")");
+    		title.setText("Browsing " + name + " (" + lessonIndex + " of " + lessonTotal + ")");
     		
     		items = new ArrayList<LessonItem>();
     		List<Long> ids = dba.getWordsFromLessonId(id);
