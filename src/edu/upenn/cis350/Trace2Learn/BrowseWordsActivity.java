@@ -117,7 +117,7 @@ public class BrowseWordsActivity extends ListActivity {
 	    ContextMenuInfo menuInfo) {
 	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
 	    menu.setHeaderTitle("Options");
-	    String[] menuItems = {"Add to Lesson","Add Tag","Delete"};
+	    String[] menuItems = {"Add to Collection","Edit Tags","Delete"};
 	    for (int i = 0; i<menuItems.length; i++) {
 	      menu.add(Menu.NONE, i, i, menuItems[i]);
 	    }

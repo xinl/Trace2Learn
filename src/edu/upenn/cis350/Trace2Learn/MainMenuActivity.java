@@ -20,7 +20,7 @@ public class MainMenuActivity extends ListActivity {
 			"Search Characters",
 			"Browse All Characters",
 			"Browse All Words",
-			"Browse All Lessons"
+			"Browse All Collections"
 		};
 
 	@Override

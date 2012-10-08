@@ -120,6 +120,7 @@ public class PhrasePracticeActivity extends Activity {
 		_animator.setDisplayedChild(position);
 		_tracePanes.get(position).clearPane();
 		updateTags();
+		setDisplayPane();
 	}
 	
 	private void setWord(LessonWord word) {
@@ -142,7 +143,7 @@ public class PhrasePracticeActivity extends Activity {
 			this._characters.add(ch);
 			this._bitmaps.add(bmp);
 			SquareLayout disp = new SquareLayout(_animator.getContext());
-			CharacterDisplayPane dispPane = new CharacterDisplayPane(disp.getContext());
+			CharacterPlaybackPane dispPane = new CharacterPlaybackPane(disp.getContext(), false, 2);
 			dispPane.setCharacter(ch);
 			disp.addView(dispPane);
 			
@@ -166,9 +167,9 @@ public class PhrasePracticeActivity extends Activity {
 	 */
 	private synchronized void setDisplayPane()
 	{
+		int curInd = _animator.getDisplayedChild();
 		if (_currentMode != Mode.DISPLAY) 
 		{
-			int curInd = _animator.getDisplayedChild();
 			_animator.removeAllViews();
 			for(SquareLayout disp : this._displayLayouts)
 			{
@@ -178,6 +179,10 @@ public class PhrasePracticeActivity extends Activity {
 			//setCharacter(this._characters.get(curInd));
 			_currentMode = Mode.DISPLAY;
 		}
+		SquareLayout sl = (SquareLayout)_animator.getChildAt(curInd);
+		CharacterPlaybackPane playbackPane;
+		playbackPane = (CharacterPlaybackPane)sl.getChildAt(0);
+		playbackPane.setAnimated(true);
 	}
 
 	/**
