@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 
 /**
  * @author Ryan
@@ -29,6 +30,8 @@ public class CharacterTracePane extends CharacterCreationPane {
 	
 	private long _lastTick;
 	private int _curStroke;
+	
+	private OnTraceCompleteListener _onTraceCompleteListener = null;
 	
 	Thread _refreshTimer;
 	
@@ -109,7 +112,17 @@ public class CharacterTracePane extends CharacterCreationPane {
 		{
 			int numStrokes = _template.getNumStrokes();
 			if(stroke < 0) stroke = 0;
-			if(stroke >= numStrokes) stroke = numStrokes;
+			if(stroke >= numStrokes) {
+				stroke = numStrokes;
+				if (_onTraceCompleteListener != null) {
+					try {
+						Thread.sleep(800); // wait a little so user can appreciate their work
+					} catch (InterruptedException e) {
+						// do nothing
+					}
+					_onTraceCompleteListener.onTraceComplete(getRootView());
+				}
+			}
 			float strokeLen = 1F/numStrokes;
 			_templateTime = stroke*strokeLen;
 			_timeLimit = (stroke+1)*strokeLen;
@@ -152,6 +165,18 @@ public class CharacterTracePane extends CharacterCreationPane {
 		if(_template != null) _template.draw(canvas, _style, _templateTime);
 		// Consider using a bitmap buffer so only new strokes are drawn.
 		drawCharacter(canvas, _character);
+	}
+	
+	public interface OnTraceCompleteListener {
+		public abstract void onTraceComplete(View v);
+	}
+	
+	public void setOnTraceCompleteListener(OnTraceCompleteListener listener) {
+		this._onTraceCompleteListener = listener;
+	}
+	
+	public OnTraceCompleteListener getOnTraceCompleteListener() {
+		return this._onTraceCompleteListener;
 	}
 	
 }

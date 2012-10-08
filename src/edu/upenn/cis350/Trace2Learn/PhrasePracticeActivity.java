@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.upenn.cis350.Trace2Learn.CharacterCreationActivity.Mode;
+import edu.upenn.cis350.Trace2Learn.CharacterTracePane.OnTraceCompleteListener;
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
 import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
 import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
@@ -31,10 +32,14 @@ public class PhrasePracticeActivity extends Activity {
 
 	private Mode _currentMode = Mode.INVALID;
 
-	private long id_to_pass = -1;
-
+	private ArrayList<Long> _wordIDs;
 	private ArrayList<LessonCharacter> _characters;
 	private ArrayList<Bitmap> _bitmaps;
+	
+	private int _currentCharacterIndex = -1;
+	private int _currentWordIndex = -1;
+	private long _currentCollectionID = -1;
+	private long _currentWordID = -1;
 	
 	private ArrayList<SquareLayout> _displayLayouts;
 	private ArrayList<SquareLayout> _traceLayouts;
@@ -47,6 +52,12 @@ public class PhrasePracticeActivity extends Activity {
 	private Gallery _gallery;
 	
 	private ViewAnimator _animator;
+	
+	private OnTraceCompleteListener _onTraceCompleteListener = new OnTraceCompleteListener() {
+		public void onTraceComplete(View v) {
+			selectNextCharacter();
+		}
+	};
 	
 	private enum Mode {
 		CREATION, DISPLAY, ANIMATE, SAVE, INVALID, TRACE;
@@ -61,6 +72,7 @@ public class PhrasePracticeActivity extends Activity {
 
 		_animator = (ViewAnimator)this.findViewById(R.id.view_slot);
 		
+		_wordIDs = new ArrayList<Long>();
 		_characters = new ArrayList<LessonCharacter>();
 		_bitmaps = new ArrayList<Bitmap>();
 		
@@ -88,8 +100,19 @@ public class PhrasePracticeActivity extends Activity {
 
 		_dbHelper = new DbAdapter(this);
 		_dbHelper.open();
+		
+		_currentCollectionID = this.getIntent().getLongExtra("collectionId", -1);
+		_currentWordID = this.getIntent().getLongExtra("wordId", -1); //TODO: add error check
+		
+		if (_currentCollectionID != -1) {
+			_wordIDs = (ArrayList<Long>) _dbHelper.getWordsFromLessonId(_currentCollectionID);
+			_currentWordIndex = _wordIDs.indexOf(_currentWordID);
+		} else {
+			_wordIDs.add(_currentWordID);
+			_currentWordIndex = 0;
+		}
 
-		initializeMode();
+		setSelectedWord(_currentWordIndex);
 
 	}
 
@@ -97,35 +120,24 @@ public class PhrasePracticeActivity extends Activity {
 	 * Initialize the display mode, if the activity was started with intent to
 	 * display a character, that character should be displayed
 	 */
-	private void initializeMode() 
+	private void setSelectedWord(int position) 
 	{
-		Bundle bun = getIntent().getExtras();
-		if (bun != null && bun.containsKey("wordId")) 
-		{
-			setWord(_dbHelper.getWordById(bun.getLong("wordId")));
-			setDisplayPane();
-			id_to_pass = bun.getLong("wordId");
-			updateTags();
-		}
-		else
-		{
-			// Yes this is bad form
-			// Dont have time to figure out better error handling
-			// Should reach here anyway basically just an assert
-			throw new NullPointerException("Did not recieve wordId");
-		}
+		_currentWordIndex = position;
+		long wordId = _wordIDs.get(position);
+		_currentWordID = wordId;
+		LessonWord word = _dbHelper.getWordById(wordId);
+		setCharacterList(word.getCharacterIds());
+		setSelectedCharacter(0);
+		setDisplayPane();
+		updateTags();
 	}
 
 	private void setSelectedCharacter(int position) {
+		_currentCharacterIndex = position;
 		_animator.setDisplayedChild(position);
 		_tracePanes.get(position).clearPane();
 		updateTags();
 		setDisplayPane();
-	}
-	
-	private void setWord(LessonWord word) {
-		setCharacterList(word.getCharacterIds());
-		setSelectedCharacter(0);
 	}
 
 	private void setCharacterList(List<Long> ids)
@@ -152,6 +164,7 @@ public class PhrasePracticeActivity extends Activity {
 			
 			SquareLayout trace = new SquareLayout(_animator.getContext());
 			CharacterTracePane tracePane = new CharacterTracePane(disp.getContext());
+			tracePane.setOnTraceCompleteListener(_onTraceCompleteListener);
 			tracePane.setTemplate(ch);
 			trace.addView(tracePane);
 			
@@ -176,7 +189,6 @@ public class PhrasePracticeActivity extends Activity {
 				_animator.addView(disp);
 			}
 			_animator.setDisplayedChild(curInd);
-			//setCharacter(this._characters.get(curInd));
 			_currentMode = Mode.DISPLAY;
 		}
 		SquareLayout sl = (SquareLayout)_animator.getChildAt(curInd);
@@ -199,7 +211,6 @@ public class PhrasePracticeActivity extends Activity {
 				_animator.addView(trace);
 			}
 			_animator.setDisplayedChild(curInd);
-			//setCharacter(this._characters.get(curInd));
 			_currentMode = Mode.TRACE;
 		}
 	}
@@ -209,12 +220,6 @@ public class PhrasePracticeActivity extends Activity {
 		super.setContentView(view);
 	}
 
-//	private void setCharacter(LessonCharacter character)
-//	{
-//		_playbackPane.setCharacter(character);
-//		_tracePane.setTemplate(character);
-//	}
-
 	private void updateTags()
 	{
 		if (_characters.size() > 0)
@@ -222,7 +227,6 @@ public class PhrasePracticeActivity extends Activity {
 			int ind = _animator.getDisplayedChild();
 			List<String> tags = _dbHelper.getCharacterTags(_characters.get(ind).getId());
 			this._tagText.setText(tagsToString(tags));
-//			setCharacter(_dbHelper.getCharacterById(id_to_pass));
 		}
 	}
 
@@ -268,5 +272,23 @@ public class PhrasePracticeActivity extends Activity {
 
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();
+	}
+	
+	public void selectNextCharacter() {
+		if (_currentCharacterIndex >= _characters.size() - 1) {
+			// we've reached last char, should move on to next word
+			if (_currentWordIndex >= _wordIDs.size() - 1) {
+				// we've reached last word in collection, do nothing
+				return;
+			} else {
+				Log.i("MOVEON", "Move on to next word.");
+				setSelectedWord(_currentWordIndex + 1);
+			}
+		} else {
+			Log.i("MOVEON", "Move on to next character.");
+			setSelectedCharacter(_currentCharacterIndex + 1);
+			_gallery.setSelection(_currentCharacterIndex, true);
+		}
+		
 	}
 }
