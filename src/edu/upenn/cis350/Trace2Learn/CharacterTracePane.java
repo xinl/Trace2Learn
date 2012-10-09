@@ -116,7 +116,7 @@ public class CharacterTracePane extends CharacterCreationPane {
 				stroke = numStrokes;
 				if (_onTraceCompleteListener != null) {
 					try {
-						Thread.sleep(800); // wait a little so user can appreciate their work
+						Thread.sleep(500); // wait a little so user can appreciate their work
 					} catch (InterruptedException e) {
 						// do nothing
 					}
