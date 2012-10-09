@@ -1,6 +1,7 @@
 package edu.upenn.cis350.Trace2Learn.Database;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import edu.upenn.cis350.Trace2Learn.Database.LessonItem.ItemType;
@@ -663,22 +664,41 @@ public class DbAdapter {
     }
     
     /**
-     * Return a Cursor positioned at the character that matches the given tag
+     * Return a list of char ids that are associated with the input tag
      * 
      * @param tag text of tag to match
-     * @return Cursor positioned to matching character, if found
+     * @return List of char ids, or null if cursor not created.
      * @throws SQLException if character could not be found/retrieved
      */
-    public Cursor getChars(String tag) throws SQLException {
-
-        Cursor mCursor =
-
-            mDb.query(true, CHARTAG_TABLE, new String[] {CHARTAG_ROWID}, CHARTAG_TAG + "='" + tag+"'", null,
+    public List<Long> getChars(String tag) throws SQLException {
+    
+        Cursor mCursor = null;
+        tag = tag.toUpperCase();
+        //return only exact matches if the tag is two or less characters
+        if (tag.length() < 3) {
+            mCursor = mDb.query(true, CHARTAG_TABLE, new String[] {CHARTAG_ROWID}, 
+            		"upper(" + CHARTAG_TAG + ") = '" + tag + "'", null,
                     null, null, CHARTAG_ROWID + " ASC", null);
-        if (mCursor != null) {
-            mCursor.moveToFirst();
+        } else {
+        	mCursor = mDb.query(true, CHARTAG_TABLE, new String[] {CHARTAG_ROWID}, 
+            		"upper(" + CHARTAG_TAG + ") LIKE '%" + tag + "%'", null,
+                    null, null, CHARTAG_ROWID + " ASC", null);
         }
-        return mCursor;
+        if (mCursor == null) return null;
+        
+        mCursor.moveToFirst();
+        List<Long> ids = new LinkedList<Long>();
+		do{
+			if(mCursor.getCount()==0){
+				break;
+			}
+			ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID)));
+			//builder.append(c.getString(c.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID))+"\n");			
+		}
+		while(mCursor.moveToNext());
+        mCursor.close();
+        
+        return ids;
 
     }
    
