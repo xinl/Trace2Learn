@@ -19,7 +19,6 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 	protected Thread _refreshTimer;
 	protected Handler _handler;
 	
-	protected boolean _timerOff = true;
 	private float _elapsedTime;
 	
 	public CharacterPlaybackPane(Context context, boolean animated, float animationLength)
@@ -64,8 +63,7 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 				
 				public void run()
 				{
-					_timerOff = false;
-					while(_animated)
+					while(_animated && _elapsedTime < _animationLength)
 					{
 						_handler.post(_update);
 						try {
@@ -74,7 +72,7 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 							break;
 						}
 					}
-					_timerOff = true;
+					_refreshTimer = null;
 				}
 			};
 			_refreshTimer.start();
