@@ -7,6 +7,9 @@ import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
 import edu.upenn.cis350.Trace2Learn.Database.LessonItem.ItemType;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -94,12 +97,48 @@ public class TagActivity extends Activity {
 
         lv.setOnItemClickListener(new OnItemClickListener(){
 
+        	@Override
+        	public void onItemClick(AdapterView<?> adapter, View view, int position,
+        			long this_id) {
+        		String privateTag = mDbHelper.getPrivateTag(id, type);
+        		String thisPrivateTag = "Private: " + privateTag;
+        		String tag = (String) adapter.getItemAtPosition(position);
+        		if(!tag.equals(thisPrivateTag)) {
+        			AlertDialog dialog = (AlertDialog) onCreateDialog(tag);
+        			dialog.show();
+        		}
+        	}});
+	}
+	
+	protected Dialog onCreateDialog(String _tag) {
+		final String tag = _tag;
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Do you want to delete this tag?");
+		builder.setCancelable(false);
+		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {		
 			@Override
-			public void onItemClick(AdapterView<?> adapter, View view, int position,
-					long id) {
-				String str = (String) adapter.getItemAtPosition(position);
-				System.out.println(str);
-			}});
+			public void onClick(DialogInterface dialog, int which) {
+				switch(type)
+		        {
+		        case CHARACTER:
+		        	mDbHelper.deleteTag(id, "'"+tag+"'");
+		        	break;
+		        case WORD:
+		        	mDbHelper.deleteWordTag(id, "'"+tag+"'");
+		        	break;
+		        }
+				currentTags.remove(tag);
+				arrAdapter.notifyDataSetChanged();
+			}
+		});
+		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {		
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();
+			}
+		});
+		return builder.create();
 	}
 	
 	/**
