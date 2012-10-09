@@ -76,17 +76,17 @@ public class BrowseWordsActivity extends ListActivity {
         	int lessonTotal = this.getIntent().getIntExtra("lessonTotal", -1);
         	Lesson les = dba.getLessonById(id);
             String name = les.getLessonName();
-            
-            TextView title = (TextView)findViewById(R.id.instructions);
-    		title.setText("Browsing " + name + " (" + lessonIndex + " of " + lessonTotal + ")");
     		
     		items = new ArrayList<LessonItem>();
     		List<Long> ids = dba.getWordsFromLessonId(id);
-    		 for(long id : ids){
-    	        	LessonItem word = dba.getWordById(id);
-    	        	word.setTagList(dba.getWordTags(id));
-    	        	items.add(word);
-    	        }
+			for (long id : ids){
+				LessonItem word = dba.getWordById(id);
+			    word.setTagList(dba.getWordTags(id));
+			    items.add(word);
+			}
+
+            TextView title = (TextView)findViewById(R.id.instructions);
+    		title.setText("Browsing " + name + " (1 of " + ids.size() + ")");
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         setListAdapter(new LessonItemListAdapter(this, items, vi));
