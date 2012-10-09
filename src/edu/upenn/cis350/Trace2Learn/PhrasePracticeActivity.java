@@ -3,7 +3,6 @@ package edu.upenn.cis350.Trace2Learn;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.upenn.cis350.Trace2Learn.CharacterCreationActivity.Mode;
 import edu.upenn.cis350.Trace2Learn.CharacterTracePane.OnTraceCompleteListener;
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
 import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
@@ -11,7 +10,6 @@ import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
 import edu.upenn.cis350.Trace2Learn.R.id;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +17,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Gallery;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewAnimator;
@@ -290,5 +287,11 @@ public class PhrasePracticeActivity extends Activity {
 			_gallery.setSelection(_currentCharacterIndex, true);
 		}
 		
+	}
+	
+	@Override
+	public void onDestroy() {
+		_dbHelper.close();
+		super.onDestroy();
 	}
 }

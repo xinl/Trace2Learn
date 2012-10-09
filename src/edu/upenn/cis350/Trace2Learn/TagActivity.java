@@ -3,7 +3,6 @@ package edu.upenn.cis350.Trace2Learn;
 import java.util.List;
 
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
 import edu.upenn.cis350.Trace2Learn.Database.LessonItem.ItemType;
 
 import android.app.Activity;
@@ -20,7 +19,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class TagActivity extends Activity {
 
@@ -199,5 +197,10 @@ public class TagActivity extends Activity {
 		editPrivateText.setText("");
 	}
 	
+	@Override
+	public void onDestroy() {
+		mDbHelper.close();
+		super.onDestroy();
+	}
 
 }

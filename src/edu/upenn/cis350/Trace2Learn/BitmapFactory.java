@@ -1,7 +1,5 @@
 package edu.upenn.cis350.Trace2Learn;
 
-import java.util.List;
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;

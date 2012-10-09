@@ -3,11 +3,9 @@ package edu.upenn.cis350.Trace2Learn;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
 import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
 import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -25,7 +23,6 @@ import android.widget.Toast;
 
 public class BrowseCharactersActivity extends ListActivity {
 	private DbAdapter dba;
-	private ListView list;
 	private ArrayList<LessonItem> items;
 	private LessonItemListAdapter adapter;
 	
@@ -72,7 +69,6 @@ public class BrowseCharactersActivity extends ListActivity {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
-	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
 	    menu.setHeaderTitle("Options");
 	    String[] menuItems = {"Edit Tags","Delete"};
 	    for (int i = 0; i<menuItems.length; i++) {
@@ -123,6 +119,12 @@ public class BrowseCharactersActivity extends ListActivity {
 
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();
+	}
+	
+	@Override
+	public void onDestroy() {
+		dba.close();
+		super.onDestroy();
 	}
 	
 }

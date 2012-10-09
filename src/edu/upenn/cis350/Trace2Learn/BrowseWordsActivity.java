@@ -5,14 +5,11 @@ import java.util.List;
 
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
 import edu.upenn.cis350.Trace2Learn.Database.Lesson;
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
 import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
 import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -28,7 +25,6 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Gallery;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -37,12 +33,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class BrowseWordsActivity extends ListActivity {
 	private DbAdapter dba; 
-	private ListView list, lessonList; //list of words to display in listview
-	private Gallery gallery; 
-	private ImageAdapter imgAdapter;
-	private Lesson newLesson; 
-	private ArrayList<Bitmap> currentWords;
-	private int numWords;
+	private ListView lessonList; //list of words to display in listview
 	private ArrayList<LessonItem> items;
 	private View layout;
 	private PopupWindow window;
@@ -52,8 +43,6 @@ public class BrowseWordsActivity extends ListActivity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        numWords = 0;
-        currentWords = new ArrayList<Bitmap>();
         setContentView(R.layout.create_lesson);
         dba = new DbAdapter(this);
         dba.open();
@@ -72,8 +61,6 @@ public class BrowseWordsActivity extends ListActivity {
 	        }
         }
         else{
-        	int lessonIndex = this.getIntent().getIntExtra("lessonIndex", -1);
-        	int lessonTotal = this.getIntent().getIntExtra("lessonTotal", -1);
         	Lesson les = dba.getLessonById(id);
             String name = les.getLessonName();
     		
@@ -120,7 +107,6 @@ public class BrowseWordsActivity extends ListActivity {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
-	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
 	    menu.setHeaderTitle("Options");
 	    String[] menuItems = {"Add to Collection","Edit Tags","Delete"};
 	    for (int i = 0; i<menuItems.length; i++) {
@@ -181,7 +167,6 @@ public class BrowseWordsActivity extends ListActivity {
 	private void initiatePopupWindow(){
 		try {
 			Display display = getWindowManager().getDefaultDisplay(); 
-			int width = display.getWidth();  // deprecated
 			int height = display.getHeight();  // deprecated
 	        //We need to get the instance of the LayoutInflater, use the context of this activity
 	        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -218,6 +203,12 @@ public class BrowseWordsActivity extends ListActivity {
 	
 	public void onSkipButtonClick(View view){
 		window.dismiss();
+	}
+	
+	@Override
+	public void onDestroy() {
+		dba.close();
+		super.onDestroy();
 	}
 	
 	public void onNewCollectionButtonClick(View view){
