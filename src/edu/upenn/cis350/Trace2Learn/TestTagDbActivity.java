@@ -38,6 +38,12 @@ public class TestTagDbActivity extends ListActivity {
         mDbHelper.open();
     }
 	
+	@Override
+	public void onDestroy() {
+		mDbHelper.close();
+		super.onDestroy();
+	}
+	
 	/*public void onSubmitButtonClick(View view){
 		EditText charEt = (EditText)findViewById(R.id.character);
 		String charText = charEt.getText().toString();
