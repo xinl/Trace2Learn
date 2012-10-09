@@ -38,6 +38,12 @@ public class TestTagDbActivity extends ListActivity {
         mDbHelper.open();
     }
 	
+	@Override
+	public void onDestroy() {
+		mDbHelper.close();
+		super.onDestroy();
+	}
+	
 	/*public void onSubmitButtonClick(View view){
 		EditText charEt = (EditText)findViewById(R.id.character);
 		String charText = charEt.getText().toString();
@@ -72,6 +78,7 @@ public class TestTagDbActivity extends ListActivity {
 		LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		setListAdapter(new LessonItemListAdapter(this, items, vi));
 	}
+	
 	private void setWordList(List<Long> ids)
 	{
 		items = new ArrayList<LessonItem>();
@@ -111,31 +118,18 @@ public class TestTagDbActivity extends ListActivity {
 		//TODO: implement 
 	}
 
-	
-	
-	
+	/**
+	 * Displays a list of chars associated with the tag entered by user.
+	 */
 	public void onCharSearchButtonClick(View view){
 		EditText charEt = (EditText)findViewById(R.id.search_char);
 		String charText = charEt.getText().toString();
 		
-		Cursor c = mDbHelper.getChars(charText);
-		List<Long> ids = new LinkedList<Long>();
-		do{
-			if(c.getCount()==0){
-				Log.d(ACTIVITY_SERVICE, "zeroRows");
-				//builder.append("No results");
-				break;
-			}
-			ids.add(c.getLong(c.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID)));
-			//builder.append(c.getString(c.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID))+"\n");			
+		List<Long> ids = mDbHelper.getChars(charText);
+		if (ids.size() == 0) {
+			Log.d(ACTIVITY_SERVICE, "zeroRows");
 		}
-		while(c.moveToNext());
-		/*String output = builder.toString();
 		
-		Log.d(ACTIVITY_SERVICE, output);
-		
-		TextView results = (TextView)findViewById(R.id.results);
-		results.setText(output);*/
 		setCharList(ids);
 		showingChars=true;
 	}

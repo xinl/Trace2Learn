@@ -95,7 +95,7 @@ public class CharacterTracePane extends CharacterCreationPane {
 		}
 	}
 	
-	protected void animate()
+	protected void animateTick()
 	{
 		if(_template != null)
 		{
@@ -158,7 +158,7 @@ public class CharacterTracePane extends CharacterCreationPane {
 	@Override
 	public void onDraw(Canvas canvas)
 	{	
-		animate();
+		animateTick();
 		Log.i("DRAW", "TIME: " + _strokeTime);
 		_style.setStrokeWidth(canvas.getHeight()*_heightToStroke);
 		canvas.drawColor(_backgroundColor);
