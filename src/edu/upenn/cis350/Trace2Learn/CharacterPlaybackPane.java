@@ -177,7 +177,7 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 		return _currentStroke;
 	}
 	
-	protected void animate()
+	protected void animateTick()
 	{
 		long ticks = System.currentTimeMillis() - _lastTick;
 		_elapsedTime += ticks/1000F;
@@ -187,7 +187,7 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 	@Override
 	public void onDraw(Canvas canvas)
 	{
-		animate();
+		animateTick();
 		
 		float time = _elapsedTime/_animationLength;
 		
