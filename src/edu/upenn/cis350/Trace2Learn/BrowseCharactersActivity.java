@@ -35,7 +35,7 @@ public class BrowseCharactersActivity extends ListActivity {
         dba.open();
         
         items = new ArrayList<LessonItem>();
-        List<Long> ids = dba.getAllCharIds();
+        List<Long> ids = dba.getAllCharIdsByOrder();
         for(long id : ids){
         	LessonItem character = dba.getCharacterById(id);
         	character.setTagList(dba.getCharacterTags(id));
@@ -70,7 +70,7 @@ public class BrowseCharactersActivity extends ListActivity {
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 	    menu.setHeaderTitle("Options");
-	    String[] menuItems = {"Edit Tags","Delete"};
+	    String[] menuItems = {"Edit Tags","Move Up","Move Down", "Delete"};//Qin
 	    for (int i = 0; i<menuItems.length; i++) {
 	      menu.add(Menu.NONE, i, i, menuItems[i]);
 	    }
@@ -92,9 +92,39 @@ public class BrowseCharactersActivity extends ListActivity {
 		  startActivity(i);
 		  return true;
 	  }
-	  
+	//Qin
+	  if(menuItemIndex==1){
+	      long id = lc.getId();
+	      long result = dba.moveupCharacter(id);//swap two rows' order
+	      Log.e("Result" , Long.toString(result));
+	      if(result<0){
+		  showToast("Character can't be moved up");
+		  return false;
+	      }
+	      else{
+		  showToast("Successfully moved up");
+		  startActivity(getIntent());
+		  finish();
+		  return true;
+	      }
+	  }
+	  if(menuItemIndex==2){
+	      long id = lc.getId();
+	      long result = dba.movedownCharacter(id);//swap two rows' order
+	      Log.e("Result" , Long.toString(result));
+	      if(result<0){
+		  showToast("Character can't be moved down");
+		  return false;
+	      }
+	      else{
+		  showToast("Successfully moved down");
+		  startActivity(getIntent());
+		  finish();
+		  return true;
+	      }
+	  }
 	  //delete
-	  else if(menuItemIndex==1){
+	  else if(menuItemIndex==3){
 		  long id = lc.getId();
 		  long result = dba.deleteCharacter(id);
 		  Log.e("Result",Long.toString(result));

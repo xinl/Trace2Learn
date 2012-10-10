@@ -36,8 +36,10 @@ public class DbAdapter {
      * Database creation sql statement
      */
     private static final String DATABASE_CREATE_CHAR =
-    		"CREATE TABLE Character (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-    		"name TEXT);";
+    		"CREATE TABLE Character (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+    		"charOrder INTEGER, " +
+    		"name TEXT);";//Qin
+    
     
     private static final String DATABASE_CREATE_CHARTAG =
             "CREATE TABLE CharacterTag (_id INTEGER, " +
@@ -213,7 +215,7 @@ public class DbAdapter {
     
     /**
      * Create a new lesson tag. If the lesson tag is
-     * successfully created return the new rowId for that tag, otherwise sreturn
+     * successfully created return the new rowId for that tag, otherwise return
      * a -1 to indicate failure.
      * 
      * @param id the row_id of the tag
@@ -327,6 +329,7 @@ public class DbAdapter {
     	//add to CHAR_TABLE
     	ContentValues initialCharValues = new ContentValues();
     	initializePrivateTag(c,initialCharValues);
+    	initialCharValues.put("charOrder", 0);//Qin
     	long id = mDb.insert(CHAR_TABLE, null, initialCharValues);
     	if(id == -1)
     	{
@@ -339,8 +342,17 @@ public class DbAdapter {
     	if (x != null) {
             x.moveToFirst();
         }
-    	c.setId(x.getInt(x.getColumnIndexOrThrow(CHAR_ROWID)));
-    	
+    	long rowid = x.getInt(x.getColumnIndexOrThrow(CHAR_ROWID));
+    	c.setId(rowid);
+    	//Qin
+    	ContentValues newCharValues = new ContentValues();
+    	newCharValues.put("charOrder", rowid);
+    	int result = mDb.update(CHAR_TABLE, newCharValues, "_id = "+rowid, null);
+    	if(result==0){
+    	    mDb.delete(CHAR_TABLE, CHAR_ROWID+"="+rowid, null);
+    	    mDb.endTransaction();
+    	    return false;
+    	}
     	//add each stroke to CHAR_DETAILS_TABLE
     	List<Stroke> l = c.getStrokes();
     	//stroke ordering
@@ -403,6 +415,70 @@ public class DbAdapter {
     	mDb.endTransaction();
     	return true;
     	
+    }
+    
+    //Qin
+    public long moveupCharacter(long id){
+	Cursor x =
+                mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID, "charOrder"}, CHAR_ROWID + "=" + id, null,
+                        null, null, null, null);
+	if(x==null || x.getCount()==0)
+	    return -2;
+	else{
+	    x.moveToFirst();
+	    long charOrder = x.getInt(x.getColumnIndexOrThrow("charOrder"));
+	    long charId = x.getInt(x.getColumnIndexOrThrow(CHAR_ROWID));
+	    Cursor y = mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID, "charOrder"}, "charOrder<"+charOrder +" AND charOrder>0", 
+		    null, null, null, "charOrder DESC", "1");
+	    if(y==null || y.getCount()==0)
+		return -1;//do not have smaller order
+	    else{
+		y.moveToFirst();
+		long charOrderUp = y.getInt(y.getColumnIndexOrThrow("charOrder"));
+		long charIdUp = y.getInt(y.getColumnIndexOrThrow(CHAR_ROWID));
+		
+		ContentValues swapValues = new ContentValues();
+		swapValues.put("charOrder", charOrderUp);
+		mDb.update(CHAR_TABLE, swapValues, "_id="+charId, null);
+		
+		ContentValues swapValuesUp = new ContentValues();
+		swapValuesUp.put("charOrder", charOrder);
+		mDb.update(CHAR_TABLE, swapValuesUp, "_id="+charIdUp, null);
+	    }
+	}
+	return id;
+    }
+    
+    //Qin
+    public long movedownCharacter(long id){
+	Cursor x =
+                mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID, "charOrder"}, CHAR_ROWID + "=" + id, null,
+                        null, null, null, null);
+	if(x==null || x.getCount()==0)
+	    return -2;
+	else{
+	    x.moveToFirst();
+	    long charOrder = x.getInt(x.getColumnIndexOrThrow("charOrder"));
+	    long charId = x.getInt(x.getColumnIndexOrThrow(CHAR_ROWID));
+	    Cursor y = mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID, "charOrder"}, "charOrder>"+charOrder, 
+		    null, null, null, "charOrder ASC", "1");
+	    if(y==null || y.getCount()==0)
+		return -1;//do not have smaller order
+	    else{
+		y.moveToFirst();
+		long charOrderDown = y.getInt(y.getColumnIndexOrThrow("charOrder"));
+		long charIdDown = y.getInt(y.getColumnIndexOrThrow(CHAR_ROWID));
+		
+		ContentValues swapValues = new ContentValues();
+		swapValues.put("charOrder", charOrderDown);
+		mDb.update(CHAR_TABLE, swapValues, "_id="+charId, null);
+		
+		ContentValues swapValuesUp = new ContentValues();
+		swapValuesUp.put("charOrder", charOrder);
+		mDb.update(CHAR_TABLE, swapValuesUp, "_id="+charIdDown, null);
+	    }
+	}
+	return id;
     }
     
     public long deleteCharacter(long id){
@@ -800,6 +876,24 @@ public class DbAdapter {
 	        while(mCursor.moveToNext());
 	        return ids;
     }
+    //Qin
+    public List<Long> getAllCharIdsByOrder(){
+	Cursor mCursor = 
+		mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID}, null, null,
+	                    null, null, "charOrder ASC", null);
+	List<Long> ids = new ArrayList<Long>();
+	if (mCursor != null){
+	    mCursor.moveToFirst();
+	}
+	do{
+	    if(mCursor.getCount()==0){
+		break;
+	}
+	ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow(CHAR_ROWID)));
+	}
+	while(mCursor.moveToNext());
+        return ids;
+    }
     
     /**
      * Return a Cursor positioned at all characters
@@ -825,7 +919,7 @@ public class DbAdapter {
      */
     public long updatePrivateTag(long id, String tag){
     	ContentValues initialValues = new ContentValues();
-        initialValues.put(CHAR_ROWID, id);
+        initialValues.put(CHAR_ROWID, id); 
         initialValues.put("name", tag);
         Log.e("Adding Private Tag",tag);
         return mDb.update(CHAR_TABLE, initialValues, CHAR_ROWID+"="+id,null);
@@ -1084,3 +1178,4 @@ public class DbAdapter {
     		v.put("name","");
     }
 }
+
