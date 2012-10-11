@@ -112,7 +112,7 @@ public class TagActivity extends Activity {
 		final String tag = _tag;
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Do you want to delete this tag?");
+		builder.setMessage(R.string.delete_confirm);
 		builder.setCancelable(false);
 		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {		
 			@Override
