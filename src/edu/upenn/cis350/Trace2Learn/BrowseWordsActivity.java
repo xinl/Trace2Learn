@@ -133,6 +133,7 @@ public class BrowseWordsActivity extends ListActivity {
 		  i.putExtra("ID", lw.getId());
 		  i.putExtra("TYPE", "WORD");
 		  startActivity(i);
+		  finish(); 
 		  return true;
 	  }
 	  
