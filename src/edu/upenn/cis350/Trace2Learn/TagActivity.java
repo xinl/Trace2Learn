@@ -9,7 +9,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -202,11 +201,6 @@ public class TagActivity extends Activity {
 	public void onDestroy() {
 		mDbHelper.close();
 		super.onDestroy();
-	}
-	
-	@Override
-	public void onBackPressed() {
-	    startActivity(new Intent(this, BrowseCharactersActivity.class));
 	}
 
 }
