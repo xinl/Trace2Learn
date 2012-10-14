@@ -168,6 +168,7 @@ public class BrowseWordsActivity extends ListActivity {
 	private void initiatePopupWindow(){
 		try {
 			Display display = getWindowManager().getDefaultDisplay(); 
+			int width = display.getWidth();
 			int height = display.getHeight();  // deprecated
 	        //We need to get the instance of the LayoutInflater, use the context of this activity
 	        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -180,9 +181,10 @@ public class BrowseWordsActivity extends ListActivity {
 	        lessonList = (ListView)layout.findViewById(R.id.collectionlist);
 	        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,allLessons); 
 	        lessonList.setAdapter(adapter);
-	        window = new PopupWindow(layout, layout.getMeasuredWidth(), (int)(height*.8), true);
+	        window = new PopupWindow(layout, (int)(width * 0.8), (int)(height * 0.8), true);
+	        
 	        // display the popup in the center
-	        window.showAtLocation(layout, Gravity.CENTER, 0, 0);
+	        window.showAtLocation(findViewById(android.R.id.content), Gravity.CENTER, 0, 0);
 	
 	        lessonList.setOnItemClickListener(new OnItemClickListener() {
 	            
