@@ -90,6 +90,7 @@ public class BrowseCharactersActivity extends ListActivity {
 		  i.putExtra("ID", lc.getId());
 		  i.putExtra("TYPE", "CHARACTER");
 		  startActivity(i);
+		  finish();
 		  return true;
 	  }
 	//Qin

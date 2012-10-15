@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -112,7 +113,7 @@ public class TagActivity extends Activity {
 		final String tag = _tag;
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Do you want to delete this tag?");
+		builder.setMessage(R.string.delete_confirm);
 		builder.setCancelable(false);
 		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {		
 			@Override
@@ -203,4 +204,22 @@ public class TagActivity extends Activity {
 		super.onDestroy();
 	}
 
+	/**
+	 * This function enables the calling activity to refresh so
+	 * it will display updated tags.
+	 */
+	@Override
+	public void onBackPressed() {
+		switch(type)
+		{
+		case CHARACTER:
+			startActivity(new Intent(this, BrowseCharactersActivity.class));
+			finish();
+			break;
+		case WORD:
+			startActivity(new Intent(this, BrowseWordsActivity.class));
+			finish();
+			break;
+		}
+	}
 }
