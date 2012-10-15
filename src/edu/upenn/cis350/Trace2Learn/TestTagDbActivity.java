@@ -119,9 +119,9 @@ public class TestTagDbActivity extends ListActivity {
 	 */
 	public void onCharSearchButtonClick(View view){
 		EditText charEt = (EditText)findViewById(R.id.search_char);
-		String charText = charEt.getText().toString();
+		String searchText = charEt.getText().toString().trim();
 		
-		List<Long> ids = mDbHelper.getChars(charText);
+		List<Long> ids = mDbHelper.getCharsByTag(searchText);
 		if (ids.size() == 0) {
 			Log.d(ACTIVITY_SERVICE, "zeroRows");
 		}

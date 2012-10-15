@@ -28,5 +28,9 @@
 	<string name="charplace">Placeholder</string>
 	<string name="practice">Practice</string>
 	<string name="animate">Playback</string>
+	<string name="filter">Filter</string>
+	<string name="filter_clear">Clear Filter</string>
+	<string name="filter_toast">Filter removed.</string>
+	<string name="filter_prompt">Enter tag to filter characters by:</string>
 	
 </resources>

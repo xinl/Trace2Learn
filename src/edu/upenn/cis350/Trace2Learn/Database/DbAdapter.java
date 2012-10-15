@@ -746,7 +746,7 @@ public class DbAdapter {
      * @return List of char ids, or null if cursor not created.
      * @throws SQLException if character could not be found/retrieved
      */
-    public List<Long> getChars(String tag) throws SQLException {
+    public List<Long> getCharsByTag(String tag) throws SQLException {
     
         Cursor mCursor = null;
         tag = tag.toUpperCase();

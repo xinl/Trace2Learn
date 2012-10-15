@@ -14,10 +14,12 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Gallery;
 import android.widget.ListView;
@@ -43,13 +45,16 @@ public class CreateWordActivity extends Activity {
 	private PopupWindow window;
 	private View layout;
 	private boolean saved;
+	private boolean filtered;
 	
 	//initializes the list of all characters in the database
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         saved = false;
+        filtered = false;
         numChars = 0;
+        newWord = new LessonWord();
         currentChars = new ArrayList<Bitmap>();
         setContentView(R.layout.create_word);
         dba = new DbAdapter(this);
@@ -62,22 +67,10 @@ public class CreateWordActivity extends Activity {
         gallery.setAdapter(imgAdapter);
         
         list = (ListView)findViewById(R.id.charslist);
-
-        newWord = new LessonWord();
-        ArrayList<LessonItem> items = new ArrayList<LessonItem>();
-        List<Long> ids = dba.getAllCharIds();
-        for(long id : ids){
-        	LessonItem character = dba.getCharacterById(id);
-        	character.setTagList(dba.getCharacterTags(id));
-        	items.add(character);
-        }
-        LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        list.setAdapter(new LessonItemListAdapter(this, items, vi));
-        //dba.close();
-        
+        setCharList(dba.getAllCharIdsByOrder());
         //when a char is clicked, it is added to the new word and added to the gallery
         list.setOnItemClickListener(new OnItemClickListener() {
-    
+            @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
             	numChars++;
                 long charId = ((LessonCharacter)list.getItemAtPosition(position)).getId();
@@ -92,8 +85,19 @@ public class CreateWordActivity extends Activity {
         });
         
     }
+
+	private void setCharList(List<Long> charIds) {
+		ArrayList<LessonItem> items = new ArrayList<LessonItem>();
+        for(long id : charIds){
+        	LessonItem character = dba.getCharacterById(id);
+        	character.setTagList(dba.getCharacterTags(id));
+        	items.add(character);
+        }
+        LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        list.setAdapter(new LessonItemListAdapter(this, items, vi));
+	}
 	
-	private void initiatePopupWindow(){
+	private void initiateCollectionPopupWindow(){
 		try {
 			Display display = getWindowManager().getDefaultDisplay(); 
 			int width = display.getWidth();
@@ -160,7 +164,7 @@ public class CreateWordActivity extends Activity {
 			saved = true;
 			TextView word = (TextView)findViewById(R.id.characters);
 			word.setText("Successfully added!");
-			initiatePopupWindow();
+			initiateCollectionPopupWindow();
 			return;
 		}
 		showToast("Word is empty");
@@ -177,6 +181,47 @@ public class CreateWordActivity extends Activity {
 		i.putExtra("ID", newWord.getId());
 		i.putExtra("TYPE", newWord.getItemType().toString());
 		startActivity(i);
+	}
+	
+	//filters the chars based on user input
+	public void onFilterCharsClick(View view) {
+		Button filterButton = (Button) findViewById(R.id.filter_button);
+		if (filtered) {
+			filtered = false;
+			setCharList(dba.getAllCharIdsByOrder());
+			filterButton.setText(getString(R.string.filter));
+			showToast(getString(R.string.filter_toast));
+		} else {
+			filtered = true;
+			initiateFilterPopup();
+			filterButton.setText(getString(R.string.filter_clear));
+		}
+	}
+	
+	private void initiateFilterPopup() {
+		Display display = getWindowManager().getDefaultDisplay(); 
+		int width = display.getWidth();
+		int height = display.getHeight();  // deprecated
+        //We need to get the instance of the LayoutInflater, use the context of this activity
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        //Inflate the view from a predefined XML layout
+        final View filter_layout = inflater.inflate(R.layout.filter_popup,(ViewGroup) findViewById(R.id.filter_layout));
+        filter_layout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        Button confirmButton = (Button) filter_layout.findViewById(R.id.filter_confirm_button);
+        final PopupWindow filterWindow = new PopupWindow(filter_layout, (int)(width * 0.8), (int)(height * 0.2), true);
+        // display the popup in the center
+        filterWindow.showAtLocation(findViewById(android.R.id.content), Gravity.CENTER, 0, 0);
+        confirmButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				String filter = ((TextView) filter_layout.findViewById(R.id.filter_text)).getText().toString().trim();
+				if (filter.length() > 0) {
+				    List<Long> charIds = dba.getCharsByTag(filter);
+				    setCharList(charIds);
+				}
+				filterWindow.dismiss();
+			}	
+        });
 	}
 	
 	//for testing purposes
