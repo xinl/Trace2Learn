@@ -53,7 +53,7 @@ public class BrowseWordsActivity extends ListActivity {
         //id=1;
         if(id==-1){
         
-	        List<Long> ids = dba.getAllWordIds();
+	        List<Long> ids = dba.getAllWordIdsByOrder();//Qin
 	        for(long id : ids){
 	        	LessonItem word = dba.getWordById(id);
 	        	word.setTagList(dba.getWordTags(id));
@@ -108,7 +108,7 @@ public class BrowseWordsActivity extends ListActivity {
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 	    menu.setHeaderTitle("Options");
-	    String[] menuItems = {"Add to Collection","Edit Tags","Delete"};
+	    String[] menuItems = {"Add to Collection","Edit Tags","Move Up", "Move Down", "Delete"};
 	    for (int i = 0; i<menuItems.length; i++) {
 	      menu.add(Menu.NONE, i, i, menuItems[i]);
 	    }
@@ -136,9 +136,40 @@ public class BrowseWordsActivity extends ListActivity {
 		  finish(); 
 		  return true;
 	  }
-	  
-	  //delete
+	  //Qin move up
 	  else if(menuItemIndex==2){
+	      long id = lw.getId();
+	      long result = dba.moveupWord(id);//swap two rows' order
+	      Log.e("Result" , Long.toString(result));
+	      if(result<0){
+		  showToast("Word can't be moved up");
+		  return false;
+	      }
+	      else{
+		  showToast("Successfully moved up");
+		  startActivity(getIntent());
+		  finish();
+		  return true;
+	      }
+	  }
+	  //Qin move down
+	  else if(menuItemIndex==3){
+	      long id = lw.getId();
+	      long result = dba.movedownWord(id);//swap two rows' order
+	      Log.e("Result" , Long.toString(result));
+	      if(result<0){
+		  showToast("Word can't be moved down");
+		  return false;
+	      }
+	      else{
+		  showToast("Successfully moved down");
+		  startActivity(getIntent());
+		  finish();
+		  return true;
+	      }
+	  }
+	  //delete
+	  else if(menuItemIndex==4){
 		  long id = lw.getId();
 		  long result = dba.deleteWord(id);
 		  Log.e("Result",Long.toString(result));
