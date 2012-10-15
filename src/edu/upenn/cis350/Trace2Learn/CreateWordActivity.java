@@ -44,7 +44,7 @@ public class CreateWordActivity extends Activity {
 	private View layout;
 	private boolean saved;
 	
-	//initializes the list if all characters in the database
+	//initializes the list of all characters in the database
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
