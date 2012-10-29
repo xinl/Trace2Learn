@@ -1,5 +1,8 @@
+package edu.upenn.cis350.Trace2Learn.test;
+
+import edu.upenn.cis350.Trace2Learn.CreateWordActivity;
 import edu.upenn.cis350.Trace2Learn.R;
-import android.app.Activity;
+import android.test.ActivityInstrumentationTestCase2;
 import android.widget.ListView;
 import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
 import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
@@ -11,7 +14,7 @@ public class CreateWordActivityTest extends ActivityInstrumentationTestCase2<Cre
 		super("edu.upenn.cis350.Trace2Learn",CreateWordActivity.class);
 	}
 	
-	private Activity activity;
+	private CreateWordActivity activity;
 	private ListView list;
 	
 	
@@ -24,13 +27,13 @@ public class CreateWordActivityTest extends ActivityInstrumentationTestCase2<Cre
 	public void testOneChar(){
 		activity.runOnUiThread(new Runnable() {
 			public void run(){
-				list.performItemClick(null, 0, getListAdapter().getItemId(0));
+				list.performItemClick(null, 0, list.getAdapter().getItemId(0));
 			}
 		});
 		
 		getInstrumentation().waitForIdleSync();
 		
-		LessonWord word = getWord();
+		LessonWord word = activity.getWord();
 		assertEquals(word.getCharacterId(0),((LessonCharacter)list.getItemAtPosition(0)).getId());
 	}
 }

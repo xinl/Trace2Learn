@@ -116,6 +116,7 @@ public class DbAdapter {
     
     
     private static final String DATABASE_NAME = "CharTags";
+    private static final String TEST_DATABASE_NAME = "TestDB";
     private static final String CHAR_TABLE = "Character";
     private static final String CHAR_DETAILS_TABLE = "CharacterDetails";
     private static final String CHARTAG_TABLE = "CharacterTag";
@@ -135,6 +136,10 @@ public class DbAdapter {
 
         DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        }
+        
+        DatabaseHelper(Context context, boolean isTest) {
+            super(context, TEST_DATABASE_NAME, null, DATABASE_VERSION);
         }
 
         @Override
@@ -193,12 +198,36 @@ public class DbAdapter {
         return this;
     }
     
+    private boolean isTest = false;
+    public DbAdapter openTest() throws SQLException {
+        mDbHelper = new DatabaseHelper(mCtx, true);
+        mDb = mDbHelper.getWritableDatabase();
+        isTest = true;
+        return this;
+    }
+    
+    public void closeTest() {
+    	if (isTest) {
+    		mDb.execSQL(DATABASE_DROP_CHAR);
+    		mDb.execSQL(DATABASE_DROP_CHARTAG);
+    		mDb.execSQL(DATABASE_DROP_CHAR_DETAILS);
+    		mDb.execSQL(DATABASE_DROP_WORDS);
+    		mDb.execSQL(DATABASE_DROP_WORDS_DETAILS);
+    		mDb.execSQL(DATABASE_DROP_WORDSTAG);
+    		mDb.execSQL(DATABASE_DROP_LESSONS);
+    		mDb.execSQL(DATABASE_DROP_LESSONS_DETAILS);
+    		mDb.execSQL(DATABASE_DROP_LESSONTAG);     
+    		mDbHelper.onCreate(mDb);
+    	}
+        mDbHelper.close();
+    }
+    
     public void close() {
         mDbHelper.close();
     }
     
     /**
-     * Create a new character tag. If the character tag is
+     * Create a new word tag. If the tag is
      * successfully created return the new rowId for that tag, otherwise return
      * a -1 to indicate failure.
      * 
@@ -232,7 +261,7 @@ public class DbAdapter {
     }
     
     /**
-     * Create a new word tag. If the tag is
+     * Create a new char tag. If the tag is
      * successfully created return the new rowId for that tag, otherwise return
      * a -1 to indicate failure.
      * 
@@ -603,7 +632,6 @@ public class DbAdapter {
             mDb.query(true, WORDS_DETAILS_TABLE, new String[] {WORDS_ROWID, "CharId", "WordOrder"}, WORDS_ROWID + "=" + id, null,
                     null, null, "WordOrder ASC", null);
         mCursor.moveToFirst();
-        Stroke s = new Stroke();
         do {
         	if(mCursor.getCount()==0){
         		break;
