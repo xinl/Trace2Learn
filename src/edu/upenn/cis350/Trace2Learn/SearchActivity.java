@@ -18,7 +18,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
-public class TestTagDbActivity extends ListActivity {
+public class SearchActivity extends ListActivity {
 
 	private DbAdapter mDbHelper;
 	private boolean showingChars;

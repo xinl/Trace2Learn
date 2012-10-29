@@ -64,7 +64,7 @@ public class MainMenuActivity extends ListActivity {
 					}*/
 					else if(clicked.equals(APPS[2]))
 					{
-						Intent i = new Intent(c, TestTagDbActivity.class);
+						Intent i = new Intent(c, SearchActivity.class);
 						startActivity(i);
 					
 					}
