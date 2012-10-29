@@ -52,4 +52,20 @@ public class DbAdapter_SearchTest extends AndroidTestCase {
 		assertEquals(expectedValues, db.getCharsByTag("ATABOY"));
 		assertEquals(expectedValues, db.getCharsByTag("AtAbOy"));
 	}
+	
+	public void test_getCharsByTag_matchMultipleTags() {
+		expectedValues.add(a.getId());
+		expectedValues.add(b.getId());
+		assertEquals(expectedValues, db.getCharsByTag("ata"));
+	}
+	
+	public void test_getCharsByTag_exactMatchShortTag() {
+		expectedValues.add(c.getId());
+		assertEquals(expectedValues, db.getCharsByTag("C"));
+		assertEquals(expectedValues, db.getCharsByTag("c"));
+	}
+	
+	public void test_getCharsByTag_noMatchShortTag() {
+		assertEquals(expectedValues, db.getCharsByTag("at"));
+	}
 }
