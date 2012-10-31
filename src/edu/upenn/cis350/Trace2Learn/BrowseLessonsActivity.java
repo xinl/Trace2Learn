@@ -64,6 +64,7 @@ public class BrowseLessonsActivity extends ListActivity {
 		i.putExtra("ID", le.getId());
 		i.putExtra("lessonIndex", position + 1);
 		i.putExtra("lessonTotal", items.size());
+		i.putExtra("FromLesson", true);
 		startActivity(i);
 	}
 

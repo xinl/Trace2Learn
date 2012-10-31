@@ -39,7 +39,8 @@ public class BrowseWordsActivity extends ListActivity {
 	private PopupWindow window;
 	private LessonWord lw;
 	private long id;
-
+	private boolean fromLesson; 
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +51,8 @@ public class BrowseWordsActivity extends ListActivity {
         //Set up the ListView
         items = new ArrayList<LessonItem>(); //items to show in ListView to choose from 
         id = this.getIntent().getLongExtra("ID", -1);
+        fromLesson = this.getIntent().getBooleanExtra("FromLesson", false);
+        
         //id=1;
         if(id==-1){
         
@@ -107,6 +110,7 @@ public class BrowseWordsActivity extends ListActivity {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
+		if(fromLesson) return;
 	    menu.setHeaderTitle("Options");
 	    String[] menuItems = {"Add to Collection","Edit Tags","Move Up", "Move Down", "Delete"};
 	    for (int i = 0; i<menuItems.length; i++) {
