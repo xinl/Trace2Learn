@@ -72,7 +72,7 @@ public class BrowseLessonsActivity extends ListActivity {
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 	    menu.setHeaderTitle("Options");
-	    String[] menuItems = {"Delete"};
+	    String[] menuItems = {"Edit Tags", "Delete"};
 	    for (int i = 0; i<menuItems.length; i++) {
 	      menu.add(Menu.NONE, i, i, menuItems[i]);
 	    }
@@ -87,7 +87,15 @@ public class BrowseLessonsActivity extends ListActivity {
 	  Log.e("ListIndex",Integer.toString(info.position));
 
 	  //delete lesson
-	  if(menuItemIndex==0){
+	  if(menuItemIndex == 0){
+		  Intent i = new Intent(this, TagActivity.class);
+		  i.putExtra("ID", le.getId());
+		  i.putExtra("TYPE", "LESSON");
+		  startActivity(i);
+		  finish(); 
+		  return true;
+		  
+	  } else if(menuItemIndex == 1){
 		  long id = le.getId();
 		  long result = dba.deleteLesson(id);
 		  Log.e("Result",Long.toString(result));

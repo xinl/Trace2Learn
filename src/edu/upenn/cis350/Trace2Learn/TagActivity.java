@@ -126,6 +126,9 @@ public class TagActivity extends Activity {
 		        case WORD:
 		        	mDbHelper.deleteWordTag(id, "'"+tag+"'");
 		        	break;
+		        case LESSON:
+		        	mDbHelper.deleteLessonTag(id, "'"+tag+"'");
+		        	break;
 		        }
 				currentTags.remove(tag);
 				arrAdapter.notifyDataSetChanged();
@@ -191,6 +194,10 @@ public class TagActivity extends Activity {
 		{		
 			mDbHelper.updatePrivateWordTag(id, input2);	
 		}
+		else if (type == ItemType.LESSON)
+		{		
+			mDbHelper.updatePrivateLessonTag(id, input2);	
+		}
 		if(currentTags.get(0).contains(PRIVATE_PREFIX))
 			currentTags.remove(0);
 		currentTags.add(0,PRIVATE_PREFIX+input2);
@@ -218,6 +225,10 @@ public class TagActivity extends Activity {
 			break;
 		case WORD:
 			startActivity(new Intent(this, BrowseWordsActivity.class));
+			finish();
+			break;
+		case LESSON:
+			startActivity(new Intent(this, BrowseLessonsActivity.class));
 			finish();
 			break;
 		}

@@ -298,6 +298,17 @@ public class DbAdapter {
     public boolean deleteWordTag(long rowId, String tag) {
         return mDb.delete(WORDTAG_TABLE, WORDTAG_ROWID + "=" + rowId + " AND " + WORDTAG_TAG+"="+tag, null) > 0;
     }
+    
+    /**
+     * Delete the lesson tag with the given rowId and tag
+     * 
+     * @param rowId id of tag to delete
+     * @param tag text of tag to delete
+     * @return true if deleted, false otherwise
+     */
+    public boolean deleteLessonTag(long rowId, String tag) {
+        return mDb.delete(LESSONTAG_TABLE, LESSONTAG_ROWID + "=" + rowId + " AND " + "tag="+tag, null) > 0;
+    }
    
     /**
      * Modify a character already in the database
@@ -1052,6 +1063,19 @@ public class DbAdapter {
         initialValues.put("name", tag);
 
         return mDb.update(WORDS_TABLE, initialValues, "_id="+id,null);
+    }
+    
+    /**
+     * Updates a private tag for a lesson. Returns row id on 
+     * 
+     * @param id row id for a word
+     * @param tag the text of the tag to add
+     * @return number of rows that were affected, 0 on no rows affected
+     */
+    public long updatePrivateLessonTag(long id, String tag){
+    	ContentValues initialValues = new ContentValues();
+        initialValues.put("name", tag);
+        return mDb.update(LESSONS_TABLE, initialValues, "_id="+id,null);
     }
     
     /**
