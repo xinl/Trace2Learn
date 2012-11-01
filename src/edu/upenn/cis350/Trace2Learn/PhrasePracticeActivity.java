@@ -248,11 +248,11 @@ public class PhrasePracticeActivity extends Activity {
 	private String tagsToString(List<String> tags)
 	{
 		StringBuffer buf = new StringBuffer();
-		for (String str : tags)
+		for (int i=0; i<tags.size()-1; i++)
 		{
-			buf.append(str + ", ");
+		    buf.append(tags.get(i) + ", ");
 		}
-
+		buf.append(tags.get(tags.size()-1));
 		return buf.toString();
 	}
 
