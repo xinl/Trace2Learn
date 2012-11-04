@@ -169,10 +169,11 @@ public class CharacterCreationActivity extends Activity {
 	private String tagsToString(List<String> tags)
 	{
 		StringBuffer buf = new StringBuffer();
-		for (int i = 0; i< tags.size()-1; i++){
-		    buf.append(tags.get(i) + ", ");
+		for (String str : tags)
+		{
+			buf.append(str + ", ");
 		}
-		buf.append(tags.get(tags.size()-1));
+
 		return buf.toString();
 	}
 
