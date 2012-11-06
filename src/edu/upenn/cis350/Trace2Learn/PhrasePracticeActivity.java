@@ -262,8 +262,11 @@ public class PhrasePracticeActivity extends Activity {
 		{
 			buf.append(str + ", ");
 		}
-
-		return buf.toString();
+		if (buf.length() >= 2) {
+			return buf.substring(0, buf.length() - 2);
+		} else {
+			return buf.toString();
+		}
 	}
 
 	public void onAnimateButtonClick(View view) 
