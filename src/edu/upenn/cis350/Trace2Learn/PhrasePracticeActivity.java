@@ -125,7 +125,12 @@ public class PhrasePracticeActivity extends Activity {
 		LessonWord word = _dbHelper.getWordById(wordId);
 		setCharacterList(word.getCharacterIds());
 		setSelectedCharacter(0);
-		setDisplayPane();
+		if (_currentMode == Mode.TRACE) {
+			setDisplayPane();
+			setCharacterTracePane();
+		} else {
+			setDisplayPane();
+		}
 		updateTags();
 	}
 
@@ -134,7 +139,12 @@ public class PhrasePracticeActivity extends Activity {
 		_animator.setDisplayedChild(position);
 		_tracePanes.get(position).clearPane();
 		updateTags();
-		setDisplayPane();
+		if (_currentMode == Mode.TRACE) {
+			setDisplayPane();
+			setCharacterTracePane();
+		} else {
+			setDisplayPane();
+		}
 	}
 
 	private void setCharacterList(List<Long> ids)
@@ -280,6 +290,7 @@ public class PhrasePracticeActivity extends Activity {
 			} else {
 				Log.i("MOVEON", "Move on to next word.");
 				setSelectedWord(_currentWordIndex + 1);
+				_gallery.setSelection(0, true);
 			}
 		} else {
 			Log.i("MOVEON", "Move on to next character.");
