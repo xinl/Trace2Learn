@@ -24,11 +24,12 @@ import android.widget.ViewAnimator;
 public class PhrasePracticeActivity extends Activity {
 		
 	private TextView _tagText;
+	private TextView _infoText;
 
 	private DbAdapter _dbHelper;
 
 	private Mode _currentMode = Mode.INVALID;
-
+	
 	private ArrayList<Long> _wordIDs;
 	private ArrayList<LessonCharacter> _characters;
 	private ArrayList<Bitmap> _bitmaps;
@@ -37,6 +38,8 @@ public class PhrasePracticeActivity extends Activity {
 	private int _currentWordIndex = -1;
 	private long _currentCollectionID = -1;
 	private long _currentWordID = -1;
+	
+	private String _currentCollectionName = "";
 	
 	private ArrayList<SquareLayout> _displayLayouts;
 	private ArrayList<SquareLayout> _traceLayouts;
@@ -94,6 +97,7 @@ public class PhrasePracticeActivity extends Activity {
 		});
 
 		_tagText = (TextView) this.findViewById(id.tag_list);
+		_infoText = (TextView) this.findViewById(id.info_text);
 
 		_dbHelper = new DbAdapter(this);
 		_dbHelper.open();
@@ -102,6 +106,7 @@ public class PhrasePracticeActivity extends Activity {
 		_currentWordID = this.getIntent().getLongExtra("wordId", -1); //TODO: add error check
 		
 		if (_currentCollectionID != -1) {
+			_currentCollectionName = this.getIntent().getStringExtra("collectionName");
 			_wordIDs = (ArrayList<Long>) _dbHelper.getWordsFromLessonId(_currentCollectionID);
 			_currentWordIndex = _wordIDs.indexOf(_currentWordID);
 		} else {
@@ -130,6 +135,9 @@ public class PhrasePracticeActivity extends Activity {
 			setCharacterTracePane();
 		} else {
 			setDisplayPane();
+		}
+		if (_currentCollectionID != -1) {
+			_infoText.setText(_currentCollectionName + " - " + (position + 1) + " of " + _wordIDs.size());
 		}
 		updateTags();
 	}
