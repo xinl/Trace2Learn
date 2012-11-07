@@ -39,7 +39,8 @@ public class BrowseWordsActivity extends ListActivity {
 	private PopupWindow window;
 	private LessonWord lw;
 	private long id;
-	private boolean fromLesson; 
+	private boolean fromCollection; 
+	private String collectionName = "";
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,7 +52,7 @@ public class BrowseWordsActivity extends ListActivity {
         //Set up the ListView
         items = new ArrayList<LessonItem>(); //items to show in ListView to choose from 
         id = this.getIntent().getLongExtra("ID", -1);
-        fromLesson = this.getIntent().getBooleanExtra("FromLesson", false);
+        fromCollection = this.getIntent().getBooleanExtra("fromCollection", false);
         
         //id=1;
         if(id==-1){
@@ -65,7 +66,7 @@ public class BrowseWordsActivity extends ListActivity {
         }
         else{
         	Lesson les = dba.getLessonById(id);
-            String name = les.getLessonName();
+            collectionName = les.getLessonName();
     		
     		items = new ArrayList<LessonItem>();
     		List<Long> ids = dba.getWordsFromLessonId(id);
@@ -76,7 +77,7 @@ public class BrowseWordsActivity extends ListActivity {
 			}
 
             TextView title = (TextView)findViewById(R.id.instructions);
-    		title.setText("Browsing " + name + " (1 of " + ids.size() + ")");
+    		title.setText("Browsing " + collectionName + " (" + ids.size() + " words)");
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         setListAdapter(new LessonItemListAdapter(this, items, vi));
@@ -100,6 +101,7 @@ public class BrowseWordsActivity extends ListActivity {
 		bun.putLong("wordId", li.getId());
 		if (id != -1) {
 			bun.putLong("collectionId", id);
+			bun.putString("collectionName", collectionName);
 		}
 
 		intent.setClass(this, PhrasePracticeActivity.class);
@@ -110,7 +112,7 @@ public class BrowseWordsActivity extends ListActivity {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
-		if(fromLesson) return;
+		if(fromCollection) return;
 	    menu.setHeaderTitle("Options");
 	    String[] menuItems = {"Add to Collection","Edit Tags","Move Up", "Move Down", "Delete"};
 	    for (int i = 0; i<menuItems.length; i++) {
