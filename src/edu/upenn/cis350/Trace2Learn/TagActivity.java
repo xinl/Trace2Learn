@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class TagActivity extends Activity {
 
@@ -173,7 +174,16 @@ public class TagActivity extends Activity {
 	        }
 			//update the listview --> update the entire view
 			//Refactor this, because refreshing the view is inefficient
-			currentTags.add(input2);
+			boolean noDuplicate = true;
+			for(String str: currentTags) {
+				if(str.equals(input2)){
+					noDuplicate = false;
+					Toast.makeText(this, "Duplicate tag. The Tag Not Added", 
+							Toast.LENGTH_LONG).show();
+					break;
+				}
+			}
+			if(noDuplicate) currentTags.add(input2);
 			//currentTags.clear();
 			//currentTags = mDbHelper.getTags(id);
 	        arrAdapter.notifyDataSetChanged();
