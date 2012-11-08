@@ -156,8 +156,9 @@ public class TagActivity extends Activity {
 		if (view == addTagButton)
 		{
 			Editable input = editText.getText();
-			String input2 = input.toString(); //This is the string of the tag you typed in
-			
+			String input2 = input.toString().trim(); //This is the string of the tag you typed in
+			if (!input2.equals("")){
+			//Qin
 			switch(type)
 	        {
 	        case CHARACTER:
@@ -172,6 +173,7 @@ public class TagActivity extends Activity {
 	        default:
 	    		Log.e("Tag", "Unsupported Type");
 	        }
+			
 			//update the listview --> update the entire view
 			//Refactor this, because refreshing the view is inefficient
 			boolean noDuplicate = true;
@@ -191,11 +193,14 @@ public class TagActivity extends Activity {
 			//Set edit text back to nothing
 			editText.setText("");
 		}
+		}
     }
 	
 	public void onAddPrivateTagButtonClick(View view){
 		Editable input = editPrivateText.getText();
-		String input2 = input.toString();
+		String input2 = input.toString().trim();
+		if (!input2.equals("")){
+		//Qin
 		if (type == ItemType.CHARACTER)
 		{
 			mDbHelper.updatePrivateTag(id, input2); //added it to db
@@ -213,6 +218,7 @@ public class TagActivity extends Activity {
 		currentTags.add(0,PRIVATE_PREFIX+input2);
 		arrAdapter.notifyDataSetChanged();
 		editPrivateText.setText("");
+		}
 	}
 	
 	@Override
