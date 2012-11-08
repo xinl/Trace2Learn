@@ -23,37 +23,37 @@ import android.widget.ViewAnimator;
 
 public class PhrasePracticeActivity extends Activity {
 		
-	private TextView _tagText;
-	private TextView _infoText;
+	private TextView tagTextView;
+	private TextView infoTextView;
 
-	private DbAdapter _dbHelper;
+	private DbAdapter dbAdapter;
 
-	private Mode _currentMode = Mode.INVALID;
+	private Mode currentMode = Mode.INVALID;
 	
-	private ArrayList<Long> _wordIDs;
-	private ArrayList<LessonCharacter> _characters;
-	private ArrayList<Bitmap> _bitmaps;
+	private ArrayList<Long> wordIDs;
+	private ArrayList<LessonCharacter> characters;
+	private ArrayList<Bitmap> bitmaps;
 	
-	private int _currentCharacterIndex = -1;
-	private int _currentWordIndex = -1;
-	private long _currentCollectionID = -1;
-	private long _currentWordID = -1;
+	private int currentCharacterIndex = -1;
+	private int currentWordIndex = -1;
+	private long currentCollectionID = -1;
+	private long currentWordID = -1;
 	
-	private String _currentCollectionName = "";
+	private String currentCollectionName = "";
 	
-	private ArrayList<SquareLayout> _displayLayouts;
-	private ArrayList<SquareLayout> _traceLayouts;
+	private ArrayList<SquareLayout> displayLayouts;
+	private ArrayList<SquareLayout> traceLayouts;
 	
-	private ArrayList<CharacterDisplayPane> _displayPanes;
-	private ArrayList<CharacterTracePane> _tracePanes;
+	private ArrayList<CharacterDisplayPane> displayPanes;
+	private ArrayList<CharacterTracePane> tracePanes;
 	
-	private ImageAdapter _imgAdapter;
+	private ImageAdapter imgAdapter;
 	
-	private Gallery _gallery;
+	private Gallery gallery;
 	
-	private ViewAnimator _animator;
+	private ViewAnimator animator;
 	
-	private OnTraceCompleteListener _onTraceCompleteListener = new OnTraceCompleteListener() {
+	private OnTraceCompleteListener onTraceCompleteListener = new OnTraceCompleteListener() {
 		public void onTraceComplete(View v) {
 			selectNextCharacter();
 		}
@@ -70,25 +70,25 @@ public class PhrasePracticeActivity extends Activity {
 
 		setContentView(R.layout.practice_phrase);
 
-		_animator = (ViewAnimator)this.findViewById(R.id.view_slot);
+		animator = (ViewAnimator)this.findViewById(R.id.view_slot);
 		
-		_wordIDs = new ArrayList<Long>();
-		_characters = new ArrayList<LessonCharacter>();
-		_bitmaps = new ArrayList<Bitmap>();
+		wordIDs = new ArrayList<Long>();
+		characters = new ArrayList<LessonCharacter>();
+		bitmaps = new ArrayList<Bitmap>();
 		
-		_displayLayouts = new ArrayList<SquareLayout>();
-		_traceLayouts = new ArrayList<SquareLayout>();
+		displayLayouts = new ArrayList<SquareLayout>();
+		traceLayouts = new ArrayList<SquareLayout>();
 		
-		_displayPanes = new ArrayList<CharacterDisplayPane>();
-		_tracePanes = new ArrayList<CharacterTracePane>();
+		displayPanes = new ArrayList<CharacterDisplayPane>();
+		tracePanes = new ArrayList<CharacterTracePane>();
 		
 		
-		_imgAdapter = new ImageAdapter(this,_bitmaps);
-        _gallery = (Gallery)findViewById(R.id.gallery);
-        _gallery.setSpacing(0);
+		imgAdapter = new ImageAdapter(this,bitmaps);
+        gallery = (Gallery)findViewById(R.id.gallery);
+        gallery.setSpacing(0);
         
-        _gallery.setAdapter(_imgAdapter);
-		_gallery.setOnItemClickListener(new OnItemClickListener()
+        gallery.setAdapter(imgAdapter);
+		gallery.setOnItemClickListener(new OnItemClickListener()
 		{
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				setSelectedCharacter(position);
@@ -96,25 +96,25 @@ public class PhrasePracticeActivity extends Activity {
 			
 		});
 
-		_tagText = (TextView) this.findViewById(id.tag_list);
-		_infoText = (TextView) this.findViewById(id.info_text);
+		tagTextView = (TextView) this.findViewById(id.tag_list);
+		infoTextView = (TextView) this.findViewById(id.info_text);
 
-		_dbHelper = new DbAdapter(this);
-		_dbHelper.open();
+		dbAdapter = new DbAdapter(this);
+		dbAdapter.open();
 		
-		_currentCollectionID = this.getIntent().getLongExtra("collectionId", -1);
-		_currentWordID = this.getIntent().getLongExtra("wordId", -1); //TODO: add error check
+		currentCollectionID = this.getIntent().getLongExtra("collectionId", -1);
+		currentWordID = this.getIntent().getLongExtra("wordId", -1); //TODO: add error check
 		
-		if (_currentCollectionID != -1) {
-			_currentCollectionName = this.getIntent().getStringExtra("collectionName");
-			_wordIDs = (ArrayList<Long>) _dbHelper.getWordsFromLessonId(_currentCollectionID);
-			_currentWordIndex = _wordIDs.indexOf(_currentWordID);
+		if (currentCollectionID != -1) {
+			currentCollectionName = this.getIntent().getStringExtra("collectionName");
+			wordIDs = (ArrayList<Long>) dbAdapter.getWordsFromLessonId(currentCollectionID);
+			currentWordIndex = wordIDs.indexOf(currentWordID);
 		} else {
-			_wordIDs.add(_currentWordID);
-			_currentWordIndex = 0;
+			wordIDs.add(currentWordID);
+			currentWordIndex = 0;
 		}
 
-		setSelectedWord(_currentWordIndex);
+		setSelectedWord(currentWordIndex);
 
 	}
 
@@ -124,30 +124,30 @@ public class PhrasePracticeActivity extends Activity {
 	 */
 	private void setSelectedWord(int position) 
 	{
-		_currentWordIndex = position;
-		long wordId = _wordIDs.get(position);
-		_currentWordID = wordId;
-		LessonWord word = _dbHelper.getWordById(wordId);
+		currentWordIndex = position;
+		long wordId = wordIDs.get(position);
+		currentWordID = wordId;
+		LessonWord word = dbAdapter.getWordById(wordId);
 		setCharacterList(word.getCharacterIds());
 		setSelectedCharacter(0);
-		if (_currentMode == Mode.TRACE) {
+		if (currentMode == Mode.TRACE) {
 			setDisplayPane();
 			setCharacterTracePane();
 		} else {
 			setDisplayPane();
 		}
-		if (_currentCollectionID != -1) {
-			_infoText.setText(_currentCollectionName + " - " + (position + 1) + " of " + _wordIDs.size());
+		if (currentCollectionID != -1) {
+			infoTextView.setText(currentCollectionName + " - " + (position + 1) + " of " + wordIDs.size());
 		}
 		updateTags();
 	}
 
 	private void setSelectedCharacter(int position) {
-		_currentCharacterIndex = position;
-		_animator.setDisplayedChild(position);
-		_tracePanes.get(position).clearPane();
+		currentCharacterIndex = position;
+		animator.setDisplayedChild(position);
+		tracePanes.get(position).clearPane();
 		updateTags();
-		if (_currentMode == Mode.TRACE) {
+		if (currentMode == Mode.TRACE) {
 			setDisplayPane();
 			setCharacterTracePane();
 		} else {
@@ -157,37 +157,37 @@ public class PhrasePracticeActivity extends Activity {
 
 	private void setCharacterList(List<Long> ids)
 	{
-		_characters.clear();
-		_bitmaps.clear();
-		_tracePanes.clear();
-		_displayPanes.clear();
-		_traceLayouts.clear();
-		_displayLayouts.clear();
+		characters.clear();
+		bitmaps.clear();
+		tracePanes.clear();
+		displayPanes.clear();
+		traceLayouts.clear();
+		displayLayouts.clear();
 		for(long id : ids)
 		{
-			LessonCharacter ch = _dbHelper.getCharacterById(id);
+			LessonCharacter ch = dbAdapter.getCharacterById(id);
 			Bitmap bmp = BitmapFactory.buildBitmap(ch, 64, 64);
-			this._characters.add(ch);
-			this._bitmaps.add(bmp);
-			SquareLayout disp = new SquareLayout(_animator.getContext());
+			this.characters.add(ch);
+			this.bitmaps.add(bmp);
+			SquareLayout disp = new SquareLayout(animator.getContext());
 			CharacterPlaybackPane dispPane = new CharacterPlaybackPane(disp.getContext(), false, 2);
 			dispPane.setCharacter(ch);
 			disp.addView(dispPane);
 			
-			this._displayLayouts.add(disp);
-			this._displayPanes.add(dispPane);
+			this.displayLayouts.add(disp);
+			this.displayPanes.add(dispPane);
 			
-			SquareLayout trace = new SquareLayout(_animator.getContext());
+			SquareLayout trace = new SquareLayout(animator.getContext());
 			CharacterTracePane tracePane = new CharacterTracePane(disp.getContext());
-			tracePane.setOnTraceCompleteListener(_onTraceCompleteListener);
+			tracePane.setOnTraceCompleteListener(onTraceCompleteListener);
 			tracePane.setTemplate(ch);
 			trace.addView(tracePane);
 			
-			this._traceLayouts.add(trace);
-			this._tracePanes.add(tracePane);
+			this.traceLayouts.add(trace);
+			this.tracePanes.add(tracePane);
 		}
-		_imgAdapter.update(_bitmaps);
-        _imgAdapter.notifyDataSetChanged();
+		imgAdapter.update(bitmaps);
+        imgAdapter.notifyDataSetChanged();
 	}
 	
 	/**
@@ -195,18 +195,18 @@ public class PhrasePracticeActivity extends Activity {
 	 */
 	private synchronized void setDisplayPane()
 	{
-		int curInd = _animator.getDisplayedChild();
-		if (_currentMode != Mode.DISPLAY) 
+		int curInd = animator.getDisplayedChild();
+		if (currentMode != Mode.DISPLAY) 
 		{
-			_animator.removeAllViews();
-			for(SquareLayout disp : this._displayLayouts)
+			animator.removeAllViews();
+			for(SquareLayout disp : this.displayLayouts)
 			{
-				_animator.addView(disp);
+				animator.addView(disp);
 			}
-			_animator.setDisplayedChild(curInd);
-			_currentMode = Mode.DISPLAY;
+			animator.setDisplayedChild(curInd);
+			currentMode = Mode.DISPLAY;
 		}
-		SquareLayout sl = (SquareLayout)_animator.getChildAt(curInd);
+		SquareLayout sl = (SquareLayout)animator.getChildAt(curInd);
 		CharacterPlaybackPane playbackPane;
 		playbackPane = (CharacterPlaybackPane)sl.getChildAt(0);
 		playbackPane.setAnimated(true);
@@ -217,16 +217,16 @@ public class PhrasePracticeActivity extends Activity {
 	 */
 	private synchronized void setCharacterTracePane()
 	{
-		if (_currentMode != Mode.TRACE) 
+		if (currentMode != Mode.TRACE) 
 		{
-			int curInd = _animator.getDisplayedChild();
-			_animator.removeAllViews();
-			for(SquareLayout trace : this._traceLayouts)
+			int curInd = animator.getDisplayedChild();
+			animator.removeAllViews();
+			for(SquareLayout trace : this.traceLayouts)
 			{
-				_animator.addView(trace);
+				animator.addView(trace);
 			}
-			_animator.setDisplayedChild(curInd);
-			_currentMode = Mode.TRACE;
+			animator.setDisplayedChild(curInd);
+			currentMode = Mode.TRACE;
 		}
 	}
 	
@@ -237,18 +237,18 @@ public class PhrasePracticeActivity extends Activity {
 
 	private void updateTags()
 	{
-		if (_characters.size() > 0)
+		if (characters.size() > 0)
 		{
-			int ind = _animator.getDisplayedChild();
-			List<String> tags = _dbHelper.getCharacterTags(_characters.get(ind).getId());
-			this._tagText.setText(tagsToString(tags));
+			int ind = animator.getDisplayedChild();
+			List<String> tags = dbAdapter.getCharacterTags(characters.get(ind).getId());
+			this.tagTextView.setText(tagsToString(tags));
 		}
 	}
 
 	public void onClearButtonClick(View view)
 	{
-		int child = _animator.getDisplayedChild();
-		this._tracePanes.get(child).clearPane();
+		int child = animator.getDisplayedChild();
+		this.tracePanes.get(child).clearPane();
 	}
 	
 	public void onTraceButtonClick(View view)
@@ -293,27 +293,27 @@ public class PhrasePracticeActivity extends Activity {
 	}
 	
 	public void selectNextCharacter() {
-		if (_currentCharacterIndex >= _characters.size() - 1) {
+		if (currentCharacterIndex >= characters.size() - 1) {
 			// we've reached last char, should move on to next word
-			if (_currentWordIndex >= _wordIDs.size() - 1) {
+			if (currentWordIndex >= wordIDs.size() - 1) {
 				// we've reached last word in collection, do nothing
 				return;
 			} else {
 				Log.i("MOVEON", "Move on to next word.");
-				setSelectedWord(_currentWordIndex + 1);
-				_gallery.setSelection(0, true);
+				setSelectedWord(currentWordIndex + 1);
+				gallery.setSelection(0, true);
 			}
 		} else {
 			Log.i("MOVEON", "Move on to next character.");
-			setSelectedCharacter(_currentCharacterIndex + 1);
-			_gallery.setSelection(_currentCharacterIndex, true);
+			setSelectedCharacter(currentCharacterIndex + 1);
+			gallery.setSelection(currentCharacterIndex, true);
 		}
 		
 	}
 	
 	@Override
 	public void onDestroy() {
-		_dbHelper.close();
+		dbAdapter.close();
 		super.onDestroy();
 	}
 }
