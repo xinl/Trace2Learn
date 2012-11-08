@@ -3,9 +3,6 @@ package edu.upenn.cis350.Trace2Learn;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -13,25 +10,22 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnClickListener;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
+import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
+import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
+import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
 
-public class BrowseCharactersActivity extends ListActivity {
+public class BrowseCharactersActivity extends ListActivity implements Filterable {
 	private DbAdapter dba;
 	private ArrayList<LessonItem> items;
-	private boolean filtered;
 	
 	//initialized list of all characters
 	@Override
@@ -44,10 +38,13 @@ public class BrowseCharactersActivity extends ListActivity {
         setCharList(dba.getAllCharIdsByOrder());
         registerForContextMenu(getListView());
         
-        filtered = false;
+        Button b = new FilterCharsButton(this, dba);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.button_panel);
+        layout.addView(b);
 	}
 	
-	private void setCharList(List<Long> charIds) {
+	@Override
+	public void setCharList(List<Long> charIds) {
 		items = new ArrayList<LessonItem>();
         for(long id : charIds){
         	LessonItem character = dba.getCharacterById(id);
@@ -154,47 +151,7 @@ public class BrowseCharactersActivity extends ListActivity {
 	  return false;
 	}
 	
-	    //filters the chars based on user input
-		public void onFilterCharsClick(View view) {
-			Button filterButton = (Button) findViewById(R.id.filter_button);
-			if (filtered) {
-				filtered = false;
-				setCharList(dba.getAllCharIdsByOrder());
-				filterButton.setText(getString(R.string.filter));
-				showToast(getString(R.string.filter_toast));
-			} else {
-				filtered = true;
-				initiateFilterPopup();
-				filterButton.setText(getString(R.string.filter_clear));
-			}
-		}
-		
-		private void initiateFilterPopup() {
-			Display display = getWindowManager().getDefaultDisplay(); 
-			int width = display.getWidth();
-			int height = display.getHeight();  // deprecated
-	        //We need to get the instance of the LayoutInflater, use the context of this activity
-	        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	        //Inflate the view from a predefined XML layout
-	        final View filter_layout = inflater.inflate(R.layout.filter_popup,(ViewGroup) findViewById(R.id.filter_layout));
-	        filter_layout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-	        Button confirmButton = (Button) filter_layout.findViewById(R.id.filter_confirm_button);
-	        final PopupWindow filterWindow = new PopupWindow(filter_layout, (int)(width * 0.8), (int)(height * 0.2), true);
-	        // display the popup in the center
-	        filterWindow.showAtLocation(findViewById(android.R.id.content), Gravity.CENTER, 0, 0);
-	        confirmButton.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					String filter = ((TextView) filter_layout.findViewById(R.id.filter_text)).getText().toString().trim();
-					if (filter.length() > 0) {
-					    List<Long> charIds = dba.getCharsByTag(filter);
-					    setCharList(charIds);
-					}
-					filterWindow.dismiss();
-				}	
-	        });
-		}
-	
+    @Override
 	public void showToast(String msg){
 		Context context = getApplicationContext();
 		CharSequence text = msg;

@@ -29,6 +29,7 @@
             />
     
     <LinearLayout
+            android:id="@+id/button_panel"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:orientation="horizontal">
@@ -46,13 +47,6 @@
 		        android:layout_height="wrap_content"
 		        android:onClick="onAddTagButtonClick"
 		        android:text="Add Tag" />
-
-		    <Button
-		        android:id="@+id/filter_button"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:onClick="onFilterCharsClick"
-		        android:text="@string/filter" />
 		    
 	</LinearLayout>
 

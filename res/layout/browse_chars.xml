@@ -15,19 +15,12 @@
         android:layout_height="wrap_content"
         android:layout_weight="1.0" >
     </ListView>
-
+    
     <LinearLayout
+            android:id="@+id/button_panel"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:orientation="horizontal">
-	        
-	        <Button
-		        android:id="@+id/filter_button"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:onClick="onFilterCharsClick"
-		        android:text="@string/filter" />
-		        
-    </LinearLayout>
+	        android:orientation="horizontal"
+	         />
 
 </LinearLayout>
