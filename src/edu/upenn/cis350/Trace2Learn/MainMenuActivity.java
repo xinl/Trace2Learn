@@ -17,7 +17,6 @@ public class MainMenuActivity extends ListActivity {
 		{ 
 			"Create Character", 
 			"Create Word",
-			"Search Characters",
 			"Browse All Characters",
 			"Browse All Words",
 			"Browse All Collections"
@@ -62,17 +61,11 @@ public class MainMenuActivity extends ListActivity {
 						startActivity(i);
 					
 					}*/
-					else if(clicked.equals(APPS[2]))
-					{
-						Intent i = new Intent(c, SearchActivity.class);
-						startActivity(i);
-					
-					}
-					else if(clicked.equals(APPS[3])){
+					else if(clicked.equals(APPS[2])){
 						Intent i = new Intent(c, BrowseCharactersActivity.class);
 						startActivity(i);
 					}
-					else if(clicked.equals(APPS[4])){
+					else if(clicked.equals(APPS[3])){
 						Intent i = new Intent(c, BrowseWordsActivity.class);
 						startActivity(i);
 					}
