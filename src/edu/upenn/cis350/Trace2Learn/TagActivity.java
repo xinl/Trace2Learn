@@ -156,9 +156,21 @@ public class TagActivity extends Activity {
 		if (view == addTagButton)
 		{
 			Editable input = editText.getText();
+			//Set edit text back to nothing
+			editText.setText("");
+			
 			String input2 = input.toString().trim(); //This is the string of the tag you typed in
-			if (!input2.equals("")){
-			//Qin
+			//Qin, Takuya, checking whether the input is duplicate or empty 
+			if (input2.equals("")) return;
+
+			for(String str: currentTags) {
+				if(str.equals(input2)){
+					Toast.makeText(this, "Duplicate tag. The Tag Not Added", 
+							Toast.LENGTH_LONG).show();
+					return;
+				}
+			}
+			
 			switch(type)
 	        {
 	        case CHARACTER:
@@ -176,24 +188,13 @@ public class TagActivity extends Activity {
 			
 			//update the listview --> update the entire view
 			//Refactor this, because refreshing the view is inefficient
-			boolean noDuplicate = true;
-			for(String str: currentTags) {
-				if(str.equals(input2)){
-					noDuplicate = false;
-					Toast.makeText(this, "Duplicate tag. The Tag Not Added", 
-							Toast.LENGTH_LONG).show();
-					break;
-				}
-			}
-			if(noDuplicate) currentTags.add(input2);
+			
+			currentTags.add(input2);
 			//currentTags.clear();
 			//currentTags = mDbHelper.getTags(id);
 	        arrAdapter.notifyDataSetChanged();
-
-			//Set edit text back to nothing
-			editText.setText("");
 		}
-		}
+		
     }
 	
 	public void onAddPrivateTagButtonClick(View view){
