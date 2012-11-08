@@ -16,9 +16,49 @@ import android.graphics.PointF;
 import android.util.Log;
 
 public class DbAdapter {
+	//below is the schema for the database
+	public static final String ATTR_TYPE_TABLE = "AttributeType";
+	public static final String ATTR_TYPE_ID = "id";
+	public static final String ATTR_TYPE_NAME = "name";
 	
-    public static final String CHAR_ROWID = "_id";
-    public static final String WORDS_ROWID = "_id";
+	public static final String ATTR_TABLE = "Attribute";
+	public static final String ATTR_ID = "id";
+	public static final String ATTR_TYPE = "type";
+	public static final String ATTR_NAME = "name";
+    
+	public static final String CHAR_TABLE = "Character";
+	public static final String CHAR_ID = "id";
+    public static final String CHAR_ORDER = "order";
+    public static final String CHAR_STROKES = "strokes";
+    
+    public static final String CHAR_ATTR_TABLE = "CharacterToAttribute";
+	public static final String CHAR_ATTR_CHARID = "characterId";
+	public static final String CHAR_ATTR_ATTRID = "attributeId";
+    
+    public static final String WORD_TABLE = "Word";
+    public static final String WORD_ID = "id";
+    public static final String WORD_ORDER = "order";
+    
+    public static final String WORD_ATTR_TABLE = "WordToAttribute";
+	public static final String WORD_ATTR_WORDID = "wordId";
+	public static final String WORD_ATTR_ATTRID = "attributeId";
+	
+	public static final String WORD_CHAR_TABLE = "WordToCharacter";
+	public static final String WORD_CHAR_WORDID = "wordId";
+	public static final String WORD_CHAR_CHARID = "characterId";
+	public static final String WORD_CHAR_ORDER = "order";
+	
+	public static final String COLL_TABLE = "Collection";
+    public static final String COLL_ID = "id";
+    public static final String COLL_ORDER = "order";
+    public static final String COLL_NAME = "name";
+    public static final String COLL_DESCRIPTION = "description";
+    
+    public static final String COLL_WORD_TABLE = "CollectionToWord";
+	public static final String COLL_WORD_WORDID = "wordId";
+	public static final String COLL_WORD_COLLID = "collectionId";
+	public static final String COLL_WORD_ORDER = "order";
+    
     public static final String LESSONS_ROWID = "_id";
     public static final String LESSONTAG_ROWID = "_id";
     
@@ -35,12 +75,83 @@ public class DbAdapter {
     /**
      * Database creation sql statement
      */
-    private static final String DATABASE_CREATE_CHAR =
-    		"CREATE TABLE Character (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-    		"charOrder INTEGER, " +
-    		"name TEXT);";//Qin
+    private static final String CREATE_ATTR_TYPE_TABLE =
+    		"CREATE TABLE " + ATTR_TYPE_TABLE + " (" + ATTR_TYPE_ID +
+    		" INTEGER PRIMARY KEY AUTOINCREMENT, " +
+    		ATTR_TYPE_NAME + " TEXT NOT NULL);";
     
+    private static final String CREATE_ATTR_TABLE =
+    		"CREATE TABLE " + ATTR_TABLE + " (" + ATTR_ID +
+    		" INTEGER PRIMARY KEY AUTOINCREMENT, " +
+    		ATTR_TYPE + " INTEGER, " +
+    		ATTR_TYPE_NAME + " TEXT NOT NULL, " +
+    		"FOREIGN KEY (" + ATTR_TYPE + ") REFERENCES " +
+    		ATTR_TYPE_TABLE + "(" + ATTR_TYPE_ID + "));";
     
+    private static final String CREATE_CHAR_TABLE =
+    		"CREATE TABLE " + CHAR_TABLE + " (" + CHAR_ID +
+    		" INTEGER PRIMARY KEY AUTOINCREMENT, " +
+    		CHAR_ORDER + " INTEGER NOT NULL, " +
+    		CHAR_STROKES + " BLOB);";
+    
+    private static final String CREATE_CHAR_ATTR_TABLE =
+    		"CREATE TABLE " + CHAR_ATTR_TABLE + " ( " +
+    		CHAR_ATTR_CHARID + " INTEGER NOT NULL, " +
+    		CHAR_ATTR_ATTRID + " INTEGER NOT NULL, " +
+    		"FOREIGN KEY (" + CHAR_ATTR_ATTRID + ") REFERENCES " +
+    		ATTR_TABLE + "(" + ATTR_ID + "), " +
+    		"FOREIGN KEY (" + CHAR_ATTR_CHARID + ") REFERENCES " +
+    		CHAR_TABLE + "(" + CHAR_ID + "), " +
+    		"PRIMARY KEY (" + CHAR_ATTR_CHARID + ", " +
+    		CHAR_ATTR_ATTRID + "));";
+
+    private static final String CREATE_WORD_TABLE = 
+    		"CREATE TABLE" + WORD_TABLE + " (" + WORD_ID +
+    		" INTEGER PRIMARY KEY AUTOINCREMENT, " +
+    		WORD_ORDER + " INTEGER NOT NULL);";
+    
+    private static final String CREATE_WORD_ATTR_TABLE =
+    		"CREATE TABLE " + WORD_ATTR_TABLE + " ( " +
+    		WORD_ATTR_WORDID + " INTEGER NOT NULL, " +
+    		WORD_ATTR_ATTRID + " INTEGER NOT NULL, " +
+    		"FOREIGN KEY (" + WORD_ATTR_ATTRID + ") REFERENCES " +
+    		ATTR_TABLE + "(" + ATTR_ID + "), " +
+    		"FOREIGN KEY (" + WORD_ATTR_WORDID + ") REFERENCES " +
+    		WORD_TABLE + "(" + WORD_ID + "), "+
+    		"PRIMARY KEY (" + WORD_ATTR_WORDID + ", " +
+    		WORD_ATTR_ATTRID + "));";
+    
+    private static final String CREATE_WORD_CHAR_TABLE =
+    		"CREATE TABLE " + WORD_CHAR_TABLE + " ( " +
+    		WORD_CHAR_WORDID + " INTEGER NOT NULL, " +
+    		WORD_CHAR_CHARID + " INTEGER NOT NULL, " +
+    		WORD_CHAR_ORDER + " INTEGER NOT NULL, " +
+    		"FOREIGN KEY (" + WORD_CHAR_CHARID + ") REFERENCES " +
+    		CHAR_TABLE + "(" + CHAR_ID + "), " +
+    		"FOREIGN KEY (" + WORD_CHAR_WORDID + ") REFERENCES " +
+    		WORD_TABLE + "(" + WORD_ID + "), "+
+    		"PRIMARY KEY (" + WORD_CHAR_WORDID + ", " +
+    		WORD_CHAR_CHARID + ", " + WORD_CHAR_ORDER + "));";
+    
+    private static final String CREATE_COLL_TABLE = 
+    		"CREATE TABLE" + COLL_TABLE + " (" + COLL_ID +
+    		" INTEGER PRIMARY KEY AUTOINCREMENT, " +
+    		COLL_ORDER + " INTEGER NOT NULL, " +
+    		COLL_NAME + " TEXT NOT NULL, " +
+    		COLL_DESCRIPTION + " TEXT);";
+    
+    private static final String CREATE_COLL_WORD_TABLE =
+    		"CREATE TABLE " + COLL_WORD_TABLE + " ( " +
+    		COLL_WORD_COLLID + " INTEGER NOT NULL, " +
+    		COLL_WORD_WORDID + " INTEGER NOT NULL, " +
+    		COLL_WORD_ORDER + " INTEGER NOT NULL, " +
+    		"FOREIGN KEY (" + COLL_WORD_COLLID + ") REFERENCES " +
+    		COLL_TABLE + "(" + COLL_ID + "), " +
+    		"FOREIGN KEY (" + COLL_WORD_WORDID + ") REFERENCES " +
+    		WORD_TABLE + "(" + WORD_ID + "), "+
+    		"PRIMARY KEY (" + COLL_WORD_COLLID + ", " +
+    		COLL_WORD_WORDID + ", " + COLL_WORD_ORDER + "));";
+/*  
     private static final String DATABASE_CREATE_CHARTAG =
             "CREATE TABLE CharacterTag (_id INTEGER, " +
             "tag TEXT NOT NULL, " +
@@ -55,11 +166,6 @@ public class DbAdapter {
             "OrderPoint INTEGER NOT NULL, " +
             "FOREIGN KEY(CharId) REFERENCES Character(_id));";
     
-    private static final String DATABASE_CREATE_WORDS = 
-    		"CREATE TABLE Words (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-    		"wordOrder INTEGER, "+
-    		"name TEXT);";//Qin
-    
     private static final String DATABASE_CREATE_WORDS_DETAILS =
             "CREATE TABLE WordsDetails (_id INTEGER," +
             "CharId INTEGER," +
@@ -72,7 +178,7 @@ public class DbAdapter {
             "CREATE TABLE WordsTag (_id INTEGER, " +
             "tag TEXT NOT NULL, " +
             "FOREIGN KEY(_id) REFERENCES Words(_id));";
-
+    
     private static final String DATABASE_CREATE_LESSONS=
             "CREATE TABLE Lessons (_id INTEGER PRIMARY KEY AUTOINCREMENT,"+
             "name TEXT);";
@@ -89,7 +195,7 @@ public class DbAdapter {
             "CREATE TABLE LessonTag (_id INTEGER, " +
             "tag TEXT NOT NULL, " +
             "FOREIGN KEY(_id) REFERENCES Lessons(_id));";
-    
+*/
     //DB Drop Statements
     
     private static final String DATABASE_DROP_CHAR = 
@@ -117,7 +223,6 @@ public class DbAdapter {
     
     private static final String DATABASE_NAME = "CharTags";
     private static final String TEST_DATABASE_NAME = "TestDB";
-    private static final String CHAR_TABLE = "Character";
     private static final String CHAR_DETAILS_TABLE = "CharacterDetails";
     private static final String CHARTAG_TABLE = "CharacterTag";
     private static final String WORDTAG_TABLE = "WordsTag";
@@ -144,16 +249,15 @@ public class DbAdapter {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-
-            db.execSQL(DATABASE_CREATE_CHAR);
-            db.execSQL(DATABASE_CREATE_CHARTAG);
-            db.execSQL(DATABASE_CREATE_CHAR_DETAILS);
-            db.execSQL(DATABASE_CREATE_WORDS);
-            db.execSQL(DATABASE_CREATE_WORDS_DETAILS);
-            db.execSQL(DATABASE_CREATE_WORDSTAG);
-            db.execSQL(DATABASE_CREATE_LESSONS);
-            db.execSQL(DATABASE_CREATE_LESSONS_DETAILS);
-            db.execSQL(DATABASE_CREATE_LESSONTAG);
+            db.execSQL(CREATE_CHAR_TABLE);
+            db.execSQL(CREATE_WORD_TABLE);
+            db.execSQL(CREATE_ATTR_TYPE_TABLE);
+            db.execSQL(CREATE_ATTR_TABLE);
+            db.execSQL(CREATE_CHAR_ATTR_TABLE);
+            db.execSQL(CREATE_WORD_ATTR_TABLE);
+            db.execSQL(CREATE_WORD_CHAR_TABLE);
+            db.execSQL(CREATE_COLL_TABLE);
+            db.execSQL(CREATE_COLL_WORD_TABLE);
         }
 
         @Override
@@ -379,18 +483,18 @@ public class DbAdapter {
     		mDb.endTransaction();
     		return false;
     	}
-    	Cursor x = mDb.query(CHAR_TABLE, new String[]{CHAR_ROWID}, null, null, null, null, CHAR_ROWID+" DESC", "1");
+    	Cursor x = mDb.query(CHAR_TABLE, new String[]{CHAR_ID}, null, null, null, null, CHAR_ID+" DESC", "1");
     	if (x != null) {
             x.moveToFirst();
         }
-    	long rowid = x.getInt(x.getColumnIndexOrThrow(CHAR_ROWID));
+    	long rowid = x.getInt(x.getColumnIndexOrThrow(CHAR_ID));
     	c.setId(rowid);
     	//Qin
     	ContentValues newCharValues = new ContentValues();
     	newCharValues.put("charOrder", rowid);
     	int result = mDb.update(CHAR_TABLE, newCharValues, "_id = "+rowid, null);
     	if(result==0){
-    	    mDb.delete(CHAR_TABLE, CHAR_ROWID+"="+rowid, null);
+    	    mDb.delete(CHAR_TABLE, CHAR_ID+"="+rowid, null);
     	    mDb.endTransaction();
     	    return false;
     	}
@@ -444,7 +548,7 @@ public class DbAdapter {
     	newWordValues.put("wordOrder", word_id);
     	int result2 = mDb.update(WORDS_TABLE, newWordValues, "_id = "+word_id, null);
     	if(result2==0){
-    	    mDb.delete(WORDS_TABLE, WORDS_ROWID+"="+word_id, null);
+    	    mDb.delete(WORDS_TABLE, WORD_ID+"="+word_id, null);
     	    mDb.endTransaction();
     	    return false;
     	}
@@ -472,22 +576,22 @@ public class DbAdapter {
     //Qin
     public long moveupCharacter(long id){
 	Cursor x =
-                mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID, "charOrder"}, CHAR_ROWID + "=" + id, null,
+                mDb.query(true, CHAR_TABLE, new String[] {CHAR_ID, "charOrder"}, CHAR_ID + "=" + id, null,
                         null, null, null, null);
 	if(x==null || x.getCount()==0)
 	    return -2;
 	else{
 	    x.moveToFirst();
 	    long charOrder = x.getInt(x.getColumnIndexOrThrow("charOrder"));
-	    long charId = x.getInt(x.getColumnIndexOrThrow(CHAR_ROWID));
-	    Cursor y = mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID, "charOrder"}, "charOrder<"+charOrder +" AND charOrder>0", 
+	    long charId = x.getInt(x.getColumnIndexOrThrow(CHAR_ID));
+	    Cursor y = mDb.query(true, CHAR_TABLE, new String[] {CHAR_ID, "charOrder"}, "charOrder<"+charOrder +" AND charOrder>0", 
 		    null, null, null, "charOrder DESC", "1");
 	    if(y==null || y.getCount()==0)
 		return -1;//do not have smaller order
 	    else{
 		y.moveToFirst();
 		long charOrderUp = y.getInt(y.getColumnIndexOrThrow("charOrder"));
-		long charIdUp = y.getInt(y.getColumnIndexOrThrow(CHAR_ROWID));
+		long charIdUp = y.getInt(y.getColumnIndexOrThrow(CHAR_ID));
 		
 		ContentValues swapValues = new ContentValues();
 		swapValues.put("charOrder", charOrderUp);
@@ -504,22 +608,22 @@ public class DbAdapter {
     //Qin
     public long movedownCharacter(long id){
 	Cursor x =
-                mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID, "charOrder"}, CHAR_ROWID + "=" + id, null,
+                mDb.query(true, CHAR_TABLE, new String[] {CHAR_ID, "charOrder"}, CHAR_ID + "=" + id, null,
                         null, null, null, null);
 	if(x==null || x.getCount()==0)
 	    return -2;
 	else{
 	    x.moveToFirst();
 	    long charOrder = x.getInt(x.getColumnIndexOrThrow("charOrder"));
-	    long charId = x.getInt(x.getColumnIndexOrThrow(CHAR_ROWID));
-	    Cursor y = mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID, "charOrder"}, "charOrder>"+charOrder, 
+	    long charId = x.getInt(x.getColumnIndexOrThrow(CHAR_ID));
+	    Cursor y = mDb.query(true, CHAR_TABLE, new String[] {CHAR_ID, "charOrder"}, "charOrder>"+charOrder, 
 		    null, null, null, "charOrder ASC", "1");
 	    if(y==null || y.getCount()==0)
 		return -1;//do not have smaller order
 	    else{
 		y.moveToFirst();
 		long charOrderDown = y.getInt(y.getColumnIndexOrThrow("charOrder"));
-		long charIdDown = y.getInt(y.getColumnIndexOrThrow(CHAR_ROWID));
+		long charIdDown = y.getInt(y.getColumnIndexOrThrow(CHAR_ID));
 		
 		ContentValues swapValues = new ContentValues();
 		swapValues.put("charOrder", charOrderDown);
@@ -535,7 +639,7 @@ public class DbAdapter {
     
     public long deleteCharacter(long id){
     	Cursor mCursor =
-                mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID}, CHAR_ROWID + "=" + id, null,
+                mDb.query(true, CHAR_TABLE, new String[] {CHAR_ID}, CHAR_ID + "=" + id, null,
                         null, null, null, null);
     	 if (mCursor == null) {
              return -2;
@@ -548,21 +652,21 @@ public class DbAdapter {
     		 return -1;
     	 }
     	 else{
-    		 mDb.delete(CHAR_TABLE, CHAR_ROWID + "=" + id, null);
+    		 mDb.delete(CHAR_TABLE, CHAR_ID + "=" + id, null);
     		 mDb.delete(CHAR_DETAILS_TABLE, "CharId = " + id, null);
-    		 mCursor =  mDb.query(true, WORDS_DETAILS_TABLE, new String[] {WORDS_ROWID}, "CharId =" + id, null,
+    		 mCursor =  mDb.query(true, WORDS_DETAILS_TABLE, new String[] {WORD_ID}, "CharId =" + id, null,
                      null, null, null, null);
     		 mCursor.moveToFirst();
     		 do {
  	        	if(mCursor.getCount()==0){
  	        		break;
  	        	}
- 	        	long wordId = (mCursor.getLong(mCursor.getColumnIndexOrThrow(WORDS_ROWID)));
- 	        	mDb.delete(WORDS_TABLE, WORDS_ROWID + "=" + wordId, null);
+ 	        	long wordId = (mCursor.getLong(mCursor.getColumnIndexOrThrow(WORD_ID)));
+ 	        	mDb.delete(WORDS_TABLE, WORD_ID + "=" + wordId, null);
  	         }
  	         while(mCursor.moveToNext());
     		 mDb.delete(WORDS_DETAILS_TABLE, "CharId="+id, null);
-    		 mDb.delete(CHARTAG_TABLE, CHAR_ROWID + "=" + id, null);
+    		 mDb.delete(CHARTAG_TABLE, CHAR_ID + "=" + id, null);
     	 }
     	return id;
     }
@@ -576,7 +680,7 @@ public class DbAdapter {
     public LessonCharacter getCharacterById(long id)
     {
         Cursor mCursor =
-            mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID}, CHAR_ROWID + "=" + id, null,
+            mDb.query(true, CHAR_TABLE, new String[] {CHAR_ID}, CHAR_ID + "=" + id, null,
                     null, null, null, null);
         LessonCharacter c = new LessonCharacter();
         //if the character doesn't exists
@@ -611,7 +715,7 @@ public class DbAdapter {
         c.setId(id);
         
         mCursor =
-                mDb.query(true, CHAR_TABLE, new String[] {"name"}, CHAR_ROWID + " = "+ id, null,
+                mDb.query(true, CHAR_TABLE, new String[] {"name"}, CHAR_ID + " = "+ id, null,
                         null, null, null, null);
         mCursor.moveToFirst();
         String privateTag = mCursor.getString(mCursor.getColumnIndexOrThrow("name"));
@@ -629,7 +733,7 @@ public class DbAdapter {
     public LessonWord getWordById(long id)
     {
         Cursor mCursor =
-            mDb.query(true, WORDS_TABLE, new String[] {WORDS_ROWID}, WORDS_ROWID + "=" + id, null,
+            mDb.query(true, WORDS_TABLE, new String[] {WORD_ID}, WORD_ID + "=" + id, null,
                     null, null, null, null);
         LessonWord w = new LessonWord();
         //if the character doesn't exists
@@ -640,7 +744,7 @@ public class DbAdapter {
         //grab its details (step one might not be necessary and might cause slow downs
         // but it is for data consistency.
         mCursor =
-            mDb.query(true, WORDS_DETAILS_TABLE, new String[] {WORDS_ROWID, "CharId", "WordOrder"}, WORDS_ROWID + "=" + id, null,
+            mDb.query(true, WORDS_DETAILS_TABLE, new String[] {WORD_ID, "CharId", "WordOrder"}, WORD_ID + "=" + id, null,
                     null, null, "WordOrder ASC", null);
         mCursor.moveToFirst();
         do {
@@ -654,7 +758,7 @@ public class DbAdapter {
         w.setId(id);
         
         mCursor =
-                mDb.query(true, WORDS_TABLE, new String[] {"name"}, WORDS_ROWID + " = "+ id, null,
+                mDb.query(true, WORDS_TABLE, new String[] {"name"}, WORD_ID + " = "+ id, null,
                         null, null, null, null);
         mCursor.moveToFirst();
         String privateTag = mCursor.getString(mCursor.getColumnIndexOrThrow("name"));
@@ -688,14 +792,14 @@ public class DbAdapter {
     	if (x != null) {
             x.moveToFirst();
         }
-    	long rowid = x.getInt(x.getColumnIndexOrThrow(WORDS_ROWID));
+    	long rowid = x.getInt(x.getColumnIndexOrThrow(WORD_ID));
     	w.setId(rowid);
     	//Qin
     	ContentValues newWordsValues = new ContentValues();
     	newWordsValues.put("wordOrder", rowid);
     	int result = mDb.update(WORDS_TABLE, newWordsValues, "_id = "+rowid, null);
     	if(result==0){
-    	    mDb.delete(WORDS_TABLE, WORDS_ROWID+"="+rowid, null);
+    	    mDb.delete(WORDS_TABLE, WORD_ID+"="+rowid, null);
     	    mDb.endTransaction();
     	    return false;
     	}
@@ -730,22 +834,22 @@ public class DbAdapter {
   //Qin
     public long moveupWord(long id){
 	Cursor x =
-                mDb.query(true, WORDS_TABLE, new String[] {WORDS_ROWID, "wordOrder"}, WORDS_ROWID + "=" + id, null,
+                mDb.query(true, WORDS_TABLE, new String[] {WORD_ID, "wordOrder"}, WORD_ID + "=" + id, null,
                         null, null, null, null);
 	if(x==null || x.getCount()==0)
 	    return -2;
 	else{
 	    x.moveToFirst();
 	    long wordOrder = x.getInt(x.getColumnIndexOrThrow("wordOrder"));
-	    long wordId = x.getInt(x.getColumnIndexOrThrow(WORDS_ROWID));
-	    Cursor y = mDb.query(true, WORDS_TABLE, new String[] {WORDS_ROWID, "wordOrder"}, "wordOrder<"+wordOrder +" AND wordOrder>0", 
+	    long wordId = x.getInt(x.getColumnIndexOrThrow(WORD_ID));
+	    Cursor y = mDb.query(true, WORDS_TABLE, new String[] {WORD_ID, "wordOrder"}, "wordOrder<"+wordOrder +" AND wordOrder>0", 
 		    null, null, null, "wordOrder DESC", "1");
 	    if(y==null || y.getCount()==0)
 		return -1;//do not have smaller order
 	    else{
 		y.moveToFirst();
 		long wordOrderUp = y.getInt(y.getColumnIndexOrThrow("wordOrder"));
-		long wordIdUp = y.getInt(y.getColumnIndexOrThrow(WORDS_ROWID));
+		long wordIdUp = y.getInt(y.getColumnIndexOrThrow(WORD_ID));
 		
 		ContentValues swapValues = new ContentValues();
 		swapValues.put("wordOrder", wordOrderUp);
@@ -762,22 +866,22 @@ public class DbAdapter {
     //Qin
     public long movedownWord(long id){
 	Cursor x =
-                mDb.query(true, WORDS_TABLE, new String[] {WORDS_ROWID, "wordOrder"}, WORDS_ROWID + "=" + id, null,
+                mDb.query(true, WORDS_TABLE, new String[] {WORD_ID, "wordOrder"}, WORD_ID + "=" + id, null,
                         null, null, null, null);
 	if(x==null || x.getCount()==0)
 	    return -2;
 	else{
 	    x.moveToFirst();
 	    long wordOrder = x.getInt(x.getColumnIndexOrThrow("wordOrder"));
-	    long wordId = x.getInt(x.getColumnIndexOrThrow(WORDS_ROWID));
-	    Cursor y = mDb.query(true, WORDS_TABLE, new String[] {WORDS_ROWID, "wordOrder"}, "wordOrder>"+wordOrder, 
+	    long wordId = x.getInt(x.getColumnIndexOrThrow(WORD_ID));
+	    Cursor y = mDb.query(true, WORDS_TABLE, new String[] {WORD_ID, "wordOrder"}, "wordOrder>"+wordOrder, 
 		    null, null, null, "wordOrder ASC", "1");
 	    if(y==null || y.getCount()==0)
 		return -1;//do not have smaller order
 	    else{
 		y.moveToFirst();
 		long wordOrderDown = y.getInt(y.getColumnIndexOrThrow("wordOrder"));
-		long wordIdDown = y.getInt(y.getColumnIndexOrThrow(WORDS_ROWID));
+		long wordIdDown = y.getInt(y.getColumnIndexOrThrow(WORD_ID));
 		
 		ContentValues swapValues = new ContentValues();
 		swapValues.put("wordOrder", wordOrderDown);
@@ -793,13 +897,13 @@ public class DbAdapter {
     
     public long deleteWord(long id){
     	Cursor mCursor =
-                mDb.query(true, WORDS_TABLE, new String[] {WORDS_ROWID}, WORDS_ROWID + "=" + id, null,
+                mDb.query(true, WORDS_TABLE, new String[] {WORD_ID}, WORD_ID + "=" + id, null,
                         null, null, null, null);
     	 if (mCursor == null) {
              return -1;
          }
     	 
-		 mDb.delete(WORDS_TABLE, WORDS_ROWID + "=" + id, null);
+		 mDb.delete(WORDS_TABLE, WORD_ID + "=" + id, null);
 		 mDb.delete(WORDS_DETAILS_TABLE, "_id = " + id, null);
 		 mDb.delete(WORDTAG_TABLE, "_id="+id, null);
 		 mDb.delete(LESSONS_DETAILS_TABLE, "WordId="+id, null);
@@ -986,8 +1090,8 @@ public class DbAdapter {
     public List<Long> getAllCharIds(){
     	 Cursor mCursor =
 
-	            mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID}, null, null,
-	                    null, null, CHAR_ROWID+" ASC", null);
+	            mDb.query(true, CHAR_TABLE, new String[] {CHAR_ID}, null, null,
+	                    null, null, CHAR_ID+" ASC", null);
 	        List<Long> ids = new ArrayList<Long>();
 	        if (mCursor != null) {
 	            mCursor.moveToFirst();
@@ -996,7 +1100,7 @@ public class DbAdapter {
 	        	if(mCursor.getCount()==0){
 	        		break;
 	        	}
-	        	ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow(CHAR_ROWID)));
+	        	ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow(CHAR_ID)));
 	        }
 	        while(mCursor.moveToNext());
 	        return ids;
@@ -1004,7 +1108,7 @@ public class DbAdapter {
     //Qin
     public List<Long> getAllCharIdsByOrder(){
 	Cursor mCursor = 
-		mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID}, null, null,
+		mDb.query(true, CHAR_TABLE, new String[] {CHAR_ID}, null, null,
 	                    null, null, "charOrder ASC", null);
 	List<Long> ids = new ArrayList<Long>();
 	if (mCursor != null){
@@ -1014,7 +1118,7 @@ public class DbAdapter {
 	    if(mCursor.getCount()==0){
 		break;
 	}
-	ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow(CHAR_ROWID)));
+	ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow(CHAR_ID)));
 	}
 	while(mCursor.moveToNext());
         return ids;
@@ -1027,8 +1131,8 @@ public class DbAdapter {
     public Cursor getAllCharIdsCursor(){
    	 Cursor mCursor =
 
-	            mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID}, null, null,
-	                    null, null, CHAR_ROWID+" ASC", null);
+	            mDb.query(true, CHAR_TABLE, new String[] {CHAR_ID}, null, null,
+	                    null, null, CHAR_ID+" ASC", null);
 	        if (mCursor != null) {
 	            mCursor.moveToFirst();
 	        }
@@ -1044,10 +1148,10 @@ public class DbAdapter {
      */
     public long updatePrivateTag(long id, String tag){
     	ContentValues initialValues = new ContentValues();
-        initialValues.put(CHAR_ROWID, id); 
+        initialValues.put(CHAR_ID, id); 
         initialValues.put("name", tag);
         Log.e("Adding Private Tag",tag);
-        return mDb.update(CHAR_TABLE, initialValues, CHAR_ROWID+"="+id,null);
+        return mDb.update(CHAR_TABLE, initialValues, CHAR_ID+"="+id,null);
     }
     
     /**
@@ -1085,8 +1189,8 @@ public class DbAdapter {
     public List<Long> getAllWordIds() {
     	 Cursor mCursor =
 
- 	            mDb.query(true, WORDS_TABLE, new String[] {WORDS_ROWID}, null, null,
- 	                    null, null, WORDS_ROWID+" ASC", null);
+ 	            mDb.query(true, WORDS_TABLE, new String[] {WORD_ID}, null, null,
+ 	                    null, null, WORD_ID+" ASC", null);
  	        List<Long> ids = new ArrayList<Long>();
  	        if (mCursor != null) {
  	            mCursor.moveToFirst();
@@ -1095,7 +1199,7 @@ public class DbAdapter {
  	        	if(mCursor.getCount()==0){
  	        		break;
  	        	}
- 	        	ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow(WORDS_ROWID)));
+ 	        	ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow(WORD_ID)));
  	        }
  	        while(mCursor.moveToNext());
  	        return ids;
@@ -1104,7 +1208,7 @@ public class DbAdapter {
     //Qin
     public List<Long> getAllWordIdsByOrder(){
 	Cursor mCursor = 
-		mDb.query(true, WORDS_TABLE, new String[] {WORDS_ROWID}, null, null,
+		mDb.query(true, WORDS_TABLE, new String[] {WORD_ID}, null, null,
 	                    null, null, "wordOrder ASC", null);
 	List<Long> ids = new ArrayList<Long>();
 	if (mCursor != null){
@@ -1114,7 +1218,7 @@ public class DbAdapter {
 	    if(mCursor.getCount()==0){
 		break;
 	}
-	ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow(WORDS_ROWID)));
+	ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow(WORD_ID)));
 	}
 	while(mCursor.moveToNext());
         return ids;
