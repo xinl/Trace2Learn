@@ -18,14 +18,13 @@
 		        android:layout_centerVertical="true"
 		        android:orientation="vertical" />
    	    </RelativeLayout>
-	    
-    	
-    	
+	    
 	    <TextView
 	        android:id="@+id/tag_list"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content" 
-	        android:text="@string/tag"/>
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center_horizontal"
+	        android:text="@string/tag" />
 	    
 	    <LinearLayout
 	        android:layout_width="wrap_content"
