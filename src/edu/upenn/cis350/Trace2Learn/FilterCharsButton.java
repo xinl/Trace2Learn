@@ -64,7 +64,7 @@ public class FilterCharsButton extends Button {
         final View filter_layout = inflater.inflate(R.layout.filter_popup,(ViewGroup) findViewById(R.id.filter_layout));
         filter_layout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         Button confirmButton = (Button) filter_layout.findViewById(R.id.filter_confirm_button);
-        final PopupWindow filterWindow = new PopupWindow(filter_layout, (int)(width * 0.8), (int)(height * 0.2), true);
+        final PopupWindow filterWindow = new PopupWindow(filter_layout, (int)(width * 0.8), 200, true);
         // display the popup in the center
         filterWindow.showAtLocation(act.findViewById(android.R.id.content), Gravity.CENTER, 0, 0);
         confirmButton.setOnClickListener(new OnClickListener() {
