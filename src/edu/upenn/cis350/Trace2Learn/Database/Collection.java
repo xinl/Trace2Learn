@@ -3,10 +3,10 @@ package edu.upenn.cis350.Trace2Learn.Database;
 import java.util.List;
 
 public class Collection {
-    long id;
-    List<Long> wordIds;
-    String name;
-    String description;
+    private long id;
+    private List<Long> wordIds;
+    private String name;
+    private String description;
     
     public Collection(){
     }

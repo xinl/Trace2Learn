@@ -1,13 +1,14 @@
 package edu.upenn.cis350.Trace2Learn.Database;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import android.util.Pair;
 
 public class Word {
-    long id;
-    List<Long> charIds;
-    Map<String, String> names;
-    List<String> tags;
+    private long id;
+    private List<Long> charIds;
+    private Set<Pair<String, String>> attributes;
+    private Set<String> tags;
     
     public Word(){
     }
@@ -28,19 +29,20 @@ public class Word {
 	return this.charIds;
     }
     
-    public void addName(String key, String value){
-	this.names.put(key, value);
+    public void addAttribute(String key, String value){
+	Pair<String, String> attribute = new Pair<String, String>(key, value);
+	this.attributes.add(attribute);
     }
     
-    public Map<String, String> getNames(){
-	return this.names;
+    public Set<Pair<String, String>> getAttributes(){
+	return this.attributes;
     }
     
     public void addTag(String tag){
 	this.tags.add(tag);
     }
     
-    public List<String> getTags(){
+    public Set<String> getTags(){
 	return this.tags;
     }
 }
