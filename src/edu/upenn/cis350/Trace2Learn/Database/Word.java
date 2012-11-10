@@ -10,43 +10,43 @@ public class Word {
     private Set<Character> characters;
     
     public Word(){
-	id = -1;
-	attributes = null;
-	tags = null;
-	characters = null;
+	    id = -1;
+	    attributes = null;
+	    tags = null;
+	    characters = null;
     }
     
     public void setId(long id){
-	this.id = id;
+	    this.id = id;
     }
     
     public long getId(){
-	return this.id;
+	    return this.id;
     }
    
     public void addAttribute(String key, String value){
-	Set<String> values = this.attributes.get(key);
-	values.add(value);
-	attributes.put(key, values);
+    	Set<String> values = this.attributes.get(key);
+    	values.add(value);
+    	attributes.put(key, values);
     }
-    
+
     public Map<String, Set<String>> getAttributes(){
-	return this.attributes;
+    	return this.attributes;
     }
-    
+
     public void addTag(String tag){
-	this.tags.add(tag);
+    	this.tags.add(tag);
     }
-    
+
     public Set<String> getTags(){
-	return this.tags;
+    	return this.tags;
     }
-    
+
     public void addCharacter(Character c){
-	this.characters.add(c);
+    	this.characters.add(c);
     }
-    
+
     public Set<Character> getCharacters(){
-	return this.characters;
+    	return this.characters;
     }
 }
