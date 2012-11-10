@@ -1,14 +1,18 @@
 package edu.upenn.cis350.Trace2Learn.Database;
 
-import java.util.List;
+import java.util.Set;
 
 public class Collection {
     private long id;
-    private List<Long> wordIds;
     private String name;
     private String description;
+    private Set<Word> words;
     
     public Collection(){
+	id = -1;
+	name = null;
+	description = null;
+	words = null;
     }
     
     public void setId(long id){
@@ -17,14 +21,6 @@ public class Collection {
     
     public long getId(){
 	return this.id;
-    }
-    
-    public void addWordId(long id){
-	this.wordIds.add(id);
-    }
-    
-    public List<Long> getWordIds(){
-	return this.wordIds;
     }
     
     public void setName(String name){
@@ -41,5 +37,13 @@ public class Collection {
     
     public String getDescription(){
 	return this.description;
+    }
+    
+    public void addWord(Word w){
+	this.words.add(w);
+    }
+    
+    public Set<Word> getWords(){
+	return this.words;
     }
 }

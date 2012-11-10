@@ -2,16 +2,20 @@ package edu.upenn.cis350.Trace2Learn.Database;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import android.util.Pair;
 
 public class Character {
     private long id;
-    private Set<Pair<String, String>> attributes;
+    private Map<String, Set<String>> attributes;
     private Set<String> tags;
-    private List<Stroke> strokes = new ArrayList<Stroke>();
+    private List<Stroke> strokes;
     
     public Character(){
+	id = -1;
+	attributes = null;
+	tags = null;
+	strokes = new ArrayList<Stroke>();
     }
     
     public void setId(long id){
@@ -23,11 +27,12 @@ public class Character {
     }
     
     public void addAttribute(String key, String value){
-	Pair<String, String> attribute = new Pair<String, String>(key, value);
-	attributes.add(attribute);
+	Set<String> values = this.attributes.get(key);
+	values.add(value);
+	attributes.put(key, values);
     }
     
-    public Set<Pair<String, String>> getAttributes(){
+    public Map<String, Set<String>> getAttributes(){
 	return this.attributes;
     }
     
