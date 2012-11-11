@@ -422,8 +422,8 @@ public class DbAdapter {
     	Cursor cursor = mDb.rawQuery(
     			"SELECT A." + ATTR_NAME + " AS " + ATTR_NAME + ", " +
                        "T." + ATTR_TYPE_NAME + " AS " + ATTR_TYPE +
-                "FROM " + ATTR_TYPE_TABLE + " T, " + ATTR_TABLE + " A" +
-                "WHERE A." + ATTR_ID + "=" + id + " AND " +
+                " FROM " + ATTR_TYPE_TABLE + " T, " + ATTR_TABLE + " A" +
+                " WHERE A." + ATTR_ID + "=" + id + " AND " +
                 "A." + ATTR_TYPE + "=" + "T." + ATTR_TYPE_ID + ";",
           null);
     	if (cursor != null) {
@@ -521,7 +521,7 @@ public class DbAdapter {
     	
     	//get attributes of character
     	Cursor attrCursor = getAttributesCursor(id);
-    	if (attrCursor != null) {
+    	if (attrCursor != null && attrCursor.getCount() != 0) {
     		int typeIndex = attrCursor.getColumnIndexOrThrow(ATTR_TYPE);
     		int nameIndex = attrCursor.getColumnIndexOrThrow(ATTR_NAME);
     		do {

@@ -72,6 +72,20 @@ public class Character {
     public List<Stroke> getStrokes(){
 	    return this.strokes;
     }
+    
+    @Override
+    public boolean equals(Object o) {
+    	if (o == null) return false;
+    	if (o == this) return true;
+    	if (!(o instanceof Character)) return false;
+    	Character that = (Character) o;
+    	if (this.id != that.id) return false;
+    	if (this.order != that.order) return false;
+    	if (!this.strokes.equals(that.strokes)) return false;
+    	if (!this.tags.equals(that.tags)) return false;
+    	if (!this.attributes.equals(that.attributes)) return false;
+    	return true;
+    }
 
 }
 
