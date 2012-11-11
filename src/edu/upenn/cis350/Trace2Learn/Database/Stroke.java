@@ -54,7 +54,11 @@ public class Stroke {
 	}
 
 	public synchronized void addPoint(PointF p) {
-		points.add(p);
+		if (isValidCoordinate(p.x) && isValidCoordinate(p.y)) {
+			points.add(p);
+		} else {
+			throw new IllegalArgumentException("Invalid point: (" + p.x + ", " + p.y + ")" );
+		}
 	}
 
 	/**
@@ -150,7 +154,7 @@ public class Stroke {
 			stroke.addPoint(parsePoint(buf));
 			while (buf.hasRemaining()) {
 				float nextFloat = peekNextFloat(buf);
-				if (nextFloat >= 0 && nextFloat <= 1) {
+				if (isValidCoordinate(nextFloat)) {
 					stroke.addPoint(parsePoint(buf));
 				} else {
 					break;
@@ -158,21 +162,21 @@ public class Stroke {
 			}
 			return stroke;
 		} else {
-			throw new IllegalArgumentException("Expected MoveTo at byte " + buf.position());
+			throw new IllegalArgumentException("Expected MoveTo at byte " + buf.position() + " but got " + block);
 		}
 	}
 
 	static private PointF parsePoint(ByteBuffer buf) {
 		float x = buf.getFloat();
-		if (x >= 0 && x <= 1) {
+		if (isValidCoordinate(x)) {
 			float y = buf.getFloat();
-			if (y >= 0 && y <= 1) {
+			if (isValidCoordinate(y)) {
 				return new PointF(x, y);
 			} else {
 				throw new IllegalArgumentException("Expect Y coordinate at byte " + buf.position() + " but got " + y);
 			}
 		} else {
-			throw new IllegalArgumentException("Expect X coordinate at byte " + buf.position());
+			throw new IllegalArgumentException("Expect X coordinate at byte " + buf.position() + " but got " + x);
 		}
 	}
 
@@ -207,12 +211,10 @@ public class Stroke {
 		for (Stroke stroke : strokes) {
 			buf.putFloat(MOVE_TO_BLOCK);
 			for (PointF point : stroke.points) {
-				Log.d("BUFFPOS", "" + buf.position());
 				buf.putFloat(point.x);
 				buf.putFloat(point.y);
 			}
 		}
-		Log.d("ENCODED", buf.asFloatBuffer().toString());
 		return buf.array();
 	}
 
@@ -245,6 +247,10 @@ public class Stroke {
 				return false;
 		}
 		return true;
+	}
+	
+	static private boolean isValidCoordinate(float coord) {
+		return (coord >= 0);
 	}
 
 }
