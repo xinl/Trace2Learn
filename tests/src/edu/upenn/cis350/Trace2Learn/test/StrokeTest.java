@@ -86,6 +86,12 @@ public class StrokeTest extends AndroidTestCase {
 		s2.addPoint(0.15F, 0.35F);
 		strokes.add(s2);
 		
+		Stroke s3 = new Stroke();
+		s3.addPoint(3F, 2F);
+		s3.addPoint(3F, 1F);
+		s3.addPoint(15F, 35F);
+		strokes.add(s3);
+		
 		byte[] encoded = Stroke.encodeStrokesData(strokes);
 		
 		List<Stroke> result = Stroke.decodeStrokesData(encoded);
