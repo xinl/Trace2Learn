@@ -46,12 +46,12 @@ public class DbAdapter_AddWordTest extends AndroidTestCase {
 	public void testAddWord() {
 		assertEquals(-1, word1.getId());
 	    assertTrue(db.addWord(word1));
-	    assertEquals(0, word1.getId());
+	    assertEquals(4, word1.getId());
 	    
 	    assertEquals(-1, word2.getId());
 	    assertTrue(db.addWord(word2));
-	    assertEquals(1, word2.getId());
-	    assertEquals(1, word2.getOrder());
+	    assertEquals(5, word2.getId());
+	    assertEquals(5, word2.getOrder());
 	}
 	
 }

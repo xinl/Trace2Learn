@@ -30,7 +30,7 @@ public class DbAdapter {
     
 	public static final String CHAR_TABLE = "Character";
 	public static final String CHAR_ID = "id";
-    public static final String CHAR_ORDER = "order";
+    public static final String CHAR_ORDER = "ordering";
     public static final String CHAR_STROKES = "strokes";
     
     public static final String CHAR_ATTR_TABLE = "CharacterToAttribute";
@@ -39,7 +39,7 @@ public class DbAdapter {
     
     public static final String WORD_TABLE = "Word";
     public static final String WORD_ID = "id";
-    public static final String WORD_ORDER = "order";
+    public static final String WORD_ORDER = "ordering";
     
     public static final String WORD_ATTR_TABLE = "WordToAttribute";
 	public static final String WORD_ATTR_WORDID = "wordId";
@@ -48,18 +48,18 @@ public class DbAdapter {
 	public static final String WORD_CHAR_TABLE = "WordToCharacter";
 	public static final String WORD_CHAR_WORDID = "wordId";
 	public static final String WORD_CHAR_CHARID = "characterId";
-	public static final String WORD_CHAR_ORDER = "order";
+	public static final String WORD_CHAR_ORDER = "ordering";
 	
 	public static final String COLL_TABLE = "Collection";
     public static final String COLL_ID = "id";
-    public static final String COLL_ORDER = "order";
+    public static final String COLL_ORDER = "ordering";
     public static final String COLL_NAME = "name";
     public static final String COLL_DESCRIPTION = "description";
     
     public static final String COLL_WORD_TABLE = "CollectionToWord";
 	public static final String COLL_WORD_WORDID = "wordId";
 	public static final String COLL_WORD_COLLID = "collectionId";
-	public static final String COLL_WORD_ORDER = "order";
+	public static final String COLL_WORD_ORDER = "ordering";
 
     // Table creation statements
     private static final String CREATE_ATTR_TYPE_TABLE =
@@ -72,7 +72,8 @@ public class DbAdapter {
             ATTR_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
     		ATTR_TYPE + " INTEGER, " +
     		ATTR_TYPE_NAME + " TEXT NOT NULL, " +
-    		"FOREIGN KEY (" + ATTR_TYPE + ") REFERENCES " + ATTR_TYPE_TABLE + "(" + ATTR_TYPE_ID + "));";
+    		"FOREIGN KEY (" + ATTR_TYPE + ") REFERENCES " +
+    		ATTR_TYPE_TABLE + "(" + ATTR_TYPE_ID + "));";
     
     private static final String CREATE_CHAR_TABLE =
     		"CREATE TABLE " + CHAR_TABLE + " (" +
@@ -92,7 +93,7 @@ public class DbAdapter {
     		CHAR_ATTR_ATTRID + "));";
 
     private static final String CREATE_WORD_TABLE = 
-    		"CREATE TABLE" + WORD_TABLE + " (" + WORD_ID +
+    		"CREATE TABLE " + WORD_TABLE + " (" + WORD_ID +
     		" INTEGER PRIMARY KEY AUTOINCREMENT, " +
     		WORD_ORDER + " INTEGER NOT NULL);";
     
@@ -120,7 +121,7 @@ public class DbAdapter {
     		WORD_CHAR_CHARID + ", " + WORD_CHAR_ORDER + "));";
     
     private static final String CREATE_COLL_TABLE = 
-    		"CREATE TABLE" + COLL_TABLE + " (" + COLL_ID +
+    		"CREATE TABLE " + COLL_TABLE + " (" + COLL_ID +
     		" INTEGER PRIMARY KEY AUTOINCREMENT, " +
     		COLL_ORDER + " INTEGER NOT NULL, " +
     		COLL_NAME + " TEXT NOT NULL, " +
@@ -446,7 +447,7 @@ public class DbAdapter {
     	c.setOrder(id); //id represents location in database
     	charValues = new ContentValues();
     	charValues.put(CHAR_ORDER, c.getOrder());
-    	int rowsAffected = mDb.update(WORD_TABLE, charValues, CHAR_ID + "=" + c.getId(), null);
+    	int rowsAffected = mDb.update(CHAR_TABLE, charValues, CHAR_ID + "=" + c.getId(), null);
     	if (rowsAffected != 1) {
     		//if error
     		Log.e(CHAR_TABLE, "Cannot set order of char, " + c.getId() + ", in table.");
