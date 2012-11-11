@@ -1,6 +1,8 @@
 package edu.upenn.cis350.Trace2Learn.Database;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,8 +18,8 @@ public class Character {
     public Character() {
     	id = -1;
     	order = 0;
-    	attributes = null;
-    	tags = null;
+    	attributes = new HashMap<String, Set<String>>();
+    	tags = new HashSet<String>();
     	strokes = new ArrayList<Stroke>();
     }
     
@@ -39,6 +41,9 @@ public class Character {
     
     public void addAttribute(String key, String value){
 	    Set<String> values = this.attributes.get(key);
+	    if (values == null) {
+	    	values = new HashSet<String>();
+	    }
 	    values.add(value);
 	    attributes.put(key, values);
     }
