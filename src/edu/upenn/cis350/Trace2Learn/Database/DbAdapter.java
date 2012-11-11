@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.upenn.cis350.Trace2Learn.Database.LessonItem.ItemType;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -14,9 +12,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.PointF;
 import android.util.Log;
+import edu.upenn.cis350.Trace2Learn.Database.LessonItem.ItemType;
 
 public class DbAdapter {
 	//below is the schema for the database
+	private static final String DATABASE_NAME = "Trace2LearnDB";
+	private static final String TEST_DATABASE_NAME = "TestDB";
+	
 	public static final String ATTR_TYPE_TABLE = "AttributeType";
 	public static final String ATTR_TYPE_ID = "id";
 	public static final String ATTR_TYPE_NAME = "name";
@@ -58,39 +60,23 @@ public class DbAdapter {
 	public static final String COLL_WORD_WORDID = "wordId";
 	public static final String COLL_WORD_COLLID = "collectionId";
 	public static final String COLL_WORD_ORDER = "order";
-    
-    public static final String LESSONS_ROWID = "_id";
-    public static final String LESSONTAG_ROWID = "_id";
-    
-    public static final String CHARTAG_ROWID = "_id";
-    public static final String CHARTAG_TAG= "tag";
-    
-    public static final String WORDTAG_ROWID = "_id";
-    public static final String WORDTAG_TAG= "tag";
 
-    private static final String TAG = "TagsDbAdapter";
-    private DatabaseHelper mDbHelper;
-    private SQLiteDatabase mDb;
-
-    /**
-     * Database creation sql statement
-     */
+    // Table creation statements
     private static final String CREATE_ATTR_TYPE_TABLE =
-    		"CREATE TABLE " + ATTR_TYPE_TABLE + " (" + ATTR_TYPE_ID +
-    		" INTEGER PRIMARY KEY AUTOINCREMENT, " +
+    		"CREATE TABLE " + ATTR_TYPE_TABLE + " (" +
+            ATTR_TYPE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
     		ATTR_TYPE_NAME + " TEXT NOT NULL);";
     
     private static final String CREATE_ATTR_TABLE =
-    		"CREATE TABLE " + ATTR_TABLE + " (" + ATTR_ID +
-    		" INTEGER PRIMARY KEY AUTOINCREMENT, " +
+    		"CREATE TABLE " + ATTR_TABLE + " (" +
+            ATTR_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
     		ATTR_TYPE + " INTEGER, " +
     		ATTR_TYPE_NAME + " TEXT NOT NULL, " +
-    		"FOREIGN KEY (" + ATTR_TYPE + ") REFERENCES " +
-    		ATTR_TYPE_TABLE + "(" + ATTR_TYPE_ID + "));";
+    		"FOREIGN KEY (" + ATTR_TYPE + ") REFERENCES " + ATTR_TYPE_TABLE + "(" + ATTR_TYPE_ID + "));";
     
     private static final String CREATE_CHAR_TABLE =
-    		"CREATE TABLE " + CHAR_TABLE + " (" + CHAR_ID +
-    		" INTEGER PRIMARY KEY AUTOINCREMENT, " +
+    		"CREATE TABLE " + CHAR_TABLE + " (" +
+            CHAR_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
     		CHAR_ORDER + " INTEGER NOT NULL, " +
     		CHAR_STROKES + " BLOB);";
     
@@ -151,78 +137,29 @@ public class DbAdapter {
     		WORD_TABLE + "(" + WORD_ID + "), "+
     		"PRIMARY KEY (" + COLL_WORD_COLLID + ", " +
     		COLL_WORD_WORDID + ", " + COLL_WORD_ORDER + "));";
-/*  
-    private static final String DATABASE_CREATE_CHARTAG =
-            "CREATE TABLE CharacterTag (_id INTEGER, " +
-            "tag TEXT NOT NULL, " +
-            "FOREIGN KEY(_id) REFERENCES Character(_id));";
 
-    private static final String DATABASE_CREATE_CHAR_DETAILS =
-            "CREATE TABLE CharacterDetails (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            "CharId INTEGER, " +
-            "Stroke INTEGER NOT NULL, " +
-            "PointX DOUBLE NOT NULL, " +
-            "PointY DOUBLE NOT NULL," +
-            "OrderPoint INTEGER NOT NULL, " +
-            "FOREIGN KEY(CharId) REFERENCES Character(_id));";
-    
-    private static final String DATABASE_CREATE_WORDS_DETAILS =
-            "CREATE TABLE WordsDetails (_id INTEGER," +
-            "CharId INTEGER," +
-            "WordOrder INTEGER NOT NULL," +
-            "FlagUserCreated INTEGER," +
-            "FOREIGN KEY(CharId) REFERENCES Character(_id)," +
-            "FOREIGN KEY(_id) REFERENCES Words(_id));";
-    
-    private static final String DATABASE_CREATE_WORDSTAG =
-            "CREATE TABLE WordsTag (_id INTEGER, " +
-            "tag TEXT NOT NULL, " +
-            "FOREIGN KEY(_id) REFERENCES Words(_id));";
-    
-    private static final String DATABASE_CREATE_LESSONS=
-            "CREATE TABLE Lessons (_id INTEGER PRIMARY KEY AUTOINCREMENT,"+
-            "name TEXT);";
-        
-    private static final String DATABASE_CREATE_LESSONS_DETAILS =
-            "CREATE TABLE LessonsDetails (" +
-            "LessonId INTEGER, " +
-            "WordId INTEGER," +
-            "LessonOrder INTEGER NOT NULL, " +
-            "FOREIGN KEY(LessonId) REFERENCES Lessons(_id)," +
-            "FOREIGN KEY(WordId) REFERENCES Words(_id));";
-    
-    private static final String DATABASE_CREATE_LESSONTAG =
-            "CREATE TABLE LessonTag (_id INTEGER, " +
-            "tag TEXT NOT NULL, " +
-            "FOREIGN KEY(_id) REFERENCES Lessons(_id));";
-*/
-    //DB Drop Statements
-    
+
+    //Drop Table Statements
     private static final String DATABASE_DROP_CHAR = 
-    		"DROP TABLE IF EXISTS Character";
-    private static final String DATABASE_DROP_CHARTAG = 
-    		"DROP TABLE IF EXISTS CharacterTag";
-    private static final String DATABASE_DROP_CHAR_DETAILS = 
-    		"DROP TABLE IF EXISTS CharacterDetails";
-    private static final String DATABASE_DROP_WORDS = 
-    		"DROP TABLE IF EXISTS Words";
-    private static final String DATABASE_DROP_WORDS_DETAILS = 
-    		"DROP TABLE IF EXISTS WordsDetails";
-    private static final String DATABASE_DROP_WORDSTAG = 
-    		"DROP TABLE IF EXISTS WordsTag";
-    private static final String DATABASE_DROP_LESSONS = 
-    		"DROP TABLE IF EXISTS Lessons";
-    private static final String DATABASE_DROP_LESSONS_DETAILS = 
-    		"DROP TABLE IF EXISTS LessonsDetails";
-    private static final String DATABASE_DROP_LESSONTAG= 
-    		"DROP TABLE IF EXISTS LessonTag";
-    
-    
-    
-    
-    
-    private static final String DATABASE_NAME = "CharTags";
-    private static final String TEST_DATABASE_NAME = "TestDB";
+    		"DROP TABLE IF EXISTS " + CHAR_TABLE;
+    private static final String DATABASE_DROP_WORD = 
+    		"DROP TABLE IF EXISTS " + WORD_TABLE;
+    private static final String DATABASE_DROP_COLL = 
+    		"DROP TABLE IF EXISTS " + COLL_TABLE;
+    private static final String DATABASE_DROP_ATTR_TYPE = 
+    		"DROP TABLE IF EXISTS " + ATTR_TYPE_TABLE;
+    private static final String DATABASE_DROP_ATTR = 
+    		"DROP TABLE IF EXISTS " + ATTR_TABLE;
+    private static final String DATABASE_DROP_CHAR_ATTR= 
+    		"DROP TABLE IF EXISTS " + CHAR_ATTR_TABLE;
+    private static final String DATABASE_DROP_WORD_CHAR = 
+    		"DROP TABLE IF EXISTS " + WORD_CHAR_TABLE;
+    private static final String DATABASE_DROP_WORD_ATTR = 
+    		"DROP TABLE IF EXISTS " + WORD_ATTR_TABLE;
+    private static final String DATABASE_DROP_COLL_WORD= 
+    		"DROP TABLE IF EXISTS " + COLL_WORD_TABLE;
+
+    // old constants
     private static final String CHAR_DETAILS_TABLE = "CharacterDetails";
     private static final String CHARTAG_TABLE = "CharacterTag";
     private static final String WORDTAG_TABLE = "WordsTag";
@@ -232,11 +169,19 @@ public class DbAdapter {
     private static final String LESSONS_DETAILS_TABLE = "LessonsDetails";
     private static final String LESSONTAG_TABLE = "LessonTag";
     
+    public static final String LESSONS_ROWID = "_id";
+    public static final String LESSONTAG_ROWID = "_id";
     
+    public static final String CHARTAG_ROWID = "_id";
+    public static final String CHARTAG_TAG= "tag";
+    
+    public static final String WORDTAG_ROWID = "_id";
+    public static final String WORDTAG_TAG= "tag";
+
+    private static final String TAG = "TagsDbAdapter";
     private static final int DATABASE_VERSION = 4;
 
-    private final Context mCtx;
-
+    //class to help create a Database
     private static class DatabaseHelper extends SQLiteOpenHelper {
 
         DatabaseHelper(Context context) {
@@ -264,19 +209,29 @@ public class DbAdapter {
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
-            db.execSQL(DATABASE_DROP_CHAR);
-            db.execSQL(DATABASE_DROP_CHARTAG);
-            db.execSQL(DATABASE_DROP_CHAR_DETAILS);
-            db.execSQL(DATABASE_DROP_WORDS);
-            db.execSQL(DATABASE_DROP_WORDS_DETAILS);
-            db.execSQL(DATABASE_DROP_WORDSTAG);
-            db.execSQL(DATABASE_DROP_LESSONS);
-            db.execSQL(DATABASE_DROP_LESSONS_DETAILS);
-            db.execSQL(DATABASE_DROP_LESSONTAG);     
+            dropTables(db);
             onCreate(db);
+        }
+        
+        private void dropTables(SQLiteDatabase db) {
+        	db.execSQL(DATABASE_DROP_CHAR);
+            db.execSQL(DATABASE_DROP_WORD);
+            db.execSQL(DATABASE_DROP_ATTR_TYPE);
+            db.execSQL(DATABASE_DROP_ATTR);
+            db.execSQL(DATABASE_DROP_CHAR_ATTR);
+            db.execSQL(DATABASE_DROP_WORD_ATTR);
+            db.execSQL(DATABASE_DROP_WORD_CHAR);
+            db.execSQL(DATABASE_DROP_COLL);
+            db.execSQL(DATABASE_DROP_COLL_WORD);  
         }
     }
 
+    // object fields
+    private final Context mCtx;
+    private DatabaseHelper mDbHelper;
+    private SQLiteDatabase mDb;
+    private boolean isTest = false;
+    
     /**
      * Constructor - takes the context to allow the database to be
      * opened/created
@@ -288,13 +243,13 @@ public class DbAdapter {
     }
     
     /**
-     * Open the CharTags database. If it cannot be opened, try to create a new
+     * Open the database. If it cannot be opened, try to create a new
      * instance of the database. If it cannot be created, throw an exception to
      * signal the failure
      * 
      * @return this (self reference, allowing this to be chained in an
      *         initialization call)
-     * @throws SQLException if the database could be neither opened or created
+     * @throws SQLException if the database could be neither opened nor created
      */
     public DbAdapter open() throws SQLException {
         mDbHelper = new DatabaseHelper(mCtx);
@@ -302,7 +257,15 @@ public class DbAdapter {
         return this;
     }
     
-    private boolean isTest = false;
+    public void close() {
+        mDbHelper.close();
+    }
+    
+    /**
+     * Create a test database if one needs to be created.
+     * @return this
+     * @throws SQLException if test database could be neither opened nor created
+     */
     public DbAdapter openTest() throws SQLException {
         mDbHelper = new DatabaseHelper(mCtx, true);
         mDb = mDbHelper.getWritableDatabase();
@@ -310,23 +273,14 @@ public class DbAdapter {
         return this;
     }
     
+    /**
+     * Wipe the data from test database before closing adapter.
+     */
     public void closeTest() {
     	if (isTest) {
-    		mDb.execSQL(DATABASE_DROP_CHAR);
-    		mDb.execSQL(DATABASE_DROP_CHARTAG);
-    		mDb.execSQL(DATABASE_DROP_CHAR_DETAILS);
-    		mDb.execSQL(DATABASE_DROP_WORDS);
-    		mDb.execSQL(DATABASE_DROP_WORDS_DETAILS);
-    		mDb.execSQL(DATABASE_DROP_WORDSTAG);
-    		mDb.execSQL(DATABASE_DROP_LESSONS);
-    		mDb.execSQL(DATABASE_DROP_LESSONS_DETAILS);
-    		mDb.execSQL(DATABASE_DROP_LESSONTAG);     
+    		mDbHelper.dropTables(mDb);   
     		mDbHelper.onCreate(mDb);
     	}
-        mDbHelper.close();
-    }
-    
-    public void close() {
         mDbHelper.close();
     }
     
@@ -461,6 +415,60 @@ public class DbAdapter {
     	
     }
     
+    /**
+     * Add a character to the database
+     * @param c character to be added to the database
+     * @return true if character is added to DB.  False on error.
+     */
+    public boolean addCharacter(Character c) {
+    	if (c.getId() != -1) {
+    		throw new IllegalArgumentException("Character must be new!");
+    	} else if (c.getStrokes() == null || c.getStrokes().size() == 0) {
+    		throw new IllegalArgumentException("Character must contain strokes!");
+    	}
+    	
+    	// insert char into table
+    	mDb.beginTransaction();
+    	ContentValues charValues = new ContentValues();
+    	charValues.put(CHAR_ORDER, c.getOrder());
+    	//TODO (xin): Convert strokes into blob. add blob to charValues.
+    	
+    	long id = mDb.insert(CHAR_TABLE, null, charValues);
+    	if (id == -1){
+    		//if error
+    		Log.e(CHAR_TABLE, "Cannot add new char to table.");
+    		mDb.endTransaction();
+    		return false;
+    	}
+    	
+    	// update char to reflect new id and order.
+    	c.setId(id);
+    	c.setOrder(id); //id represents location in database
+    	charValues = new ContentValues();
+    	charValues.put(CHAR_ORDER, c.getOrder());
+    	int rowsAffected = mDb.update(WORD_TABLE, charValues, CHAR_ID + "=" + c.getId(), null);
+    	if (rowsAffected != 1) {
+    		//if error
+    		Log.e(CHAR_TABLE, "Cannot set order of char, " + c.getId() + ", in table.");
+    		mDb.endTransaction();
+    		return false;
+    	}
+    	
+    	// add char as word.
+    	Word word = new Word();
+    	word.addCharacter(c);
+    	boolean success = addWord(word);
+    	if (! success) {
+    		//if error
+    		Log.e(CHAR_TABLE, "Cannot add char, " + c.getId() + ", as word in " + WORD_TABLE + ".");
+    		mDb.endTransaction();
+    		return false;
+    	}
+    	
+    	mDb.setTransactionSuccessful();
+    	mDb.endTransaction();
+    	return true;
+    }
     
     
     /**
@@ -569,8 +577,7 @@ public class DbAdapter {
     	
     	mDb.setTransactionSuccessful();
     	mDb.endTransaction();
-    	return true;
-    	
+    	return true;	
     }
     
     //Qin
@@ -767,6 +774,62 @@ public class DbAdapter {
         w.setDatabase(this);
         return w;
     }
+    
+    /**
+     * Add a word to the database
+     * @param w word to be added to the database
+     * @return true if worded is added db. false if error occurs.
+     */
+    public boolean addWord(Word w) {
+    	if (w.getId() != -1) {
+    		throw new IllegalArgumentException("Word must be new!");
+    	} else if (w.getCharacters() == null || w.getCharacters().size() == 0) {
+    		throw new IllegalArgumentException("Word must contain characters!");
+    	}
+    	
+    	mDb.beginTransaction();
+    	ContentValues wordValues = new ContentValues();
+    	wordValues.put(WORD_ORDER, w.getOrder());
+    	long id = mDb.insert(WORD_TABLE, null, wordValues);
+    	if (id == -1){
+    		//if error
+    		Log.e(WORD_TABLE, "Cannot add new word to table.");
+    		mDb.endTransaction();
+    		return false;
+    	}
+    	
+    	// update word to reflect new id and order
+    	w.setId(id);
+    	w.setOrder(id); //id represents location in database
+    	wordValues = new ContentValues();
+    	wordValues.put(WORD_ORDER, w.getOrder());
+    	int rowsAffected = mDb.update(WORD_TABLE, wordValues, WORD_ID + "=" + w.getId(), null);
+    	if (rowsAffected != 1) {
+    		//if error
+    		Log.e(WORD_TABLE, "Cannot set order of word, " + w.getId() + ", in table.");
+    		mDb.endTransaction();
+    		return false;
+    	}
+    	List<Character> chars = w.getCharacters();
+    	for (int i = 0; i < chars.size(); i++) {
+    		Character c = chars.get(i);
+    		ContentValues wordToCharValues = new ContentValues();
+    		wordToCharValues.put(WORD_CHAR_WORDID, w.getId());
+    		wordToCharValues.put(WORD_CHAR_CHARID, c.getId());
+    		wordToCharValues.put(WORD_CHAR_ORDER, i);
+    		long success = mDb.insert(WORD_CHAR_TABLE, null, wordToCharValues);
+    		if (success == -1) {
+    			//if error
+    			Log.e(WORD_CHAR_TABLE, "Cannot add character, " + c.getId() + ", to table.");
+    			mDb.endTransaction();
+    			return false;
+    		}
+    	}
+    	mDb.setTransactionSuccessful();
+    	mDb.endTransaction();
+    	return true;
+    }
+    
      
     /**
      * Add a word to the database
