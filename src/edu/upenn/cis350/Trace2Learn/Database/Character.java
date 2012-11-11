@@ -11,14 +11,15 @@ public class Character {
     private Map<String, Set<String>> attributes;
     private Set<String> tags;
     private List<Stroke> strokes;
+  
     
     public Character() {
     	id = -1;
+    	order = 0;
     	attributes = null;
     	tags = null;
     	strokes = new ArrayList<Stroke>();
     }
-
     
     public void setId(long id){
 	    this.id = id;
@@ -32,8 +33,8 @@ public class Character {
 	    this.order = order;
     }
     
-    public long getOrder(){
-	    return this.order;
+    public long getOrder() {
+    	return this.order;
     }
     
     public void addAttribute(String key, String value){

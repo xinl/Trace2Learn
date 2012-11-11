@@ -391,7 +391,7 @@ public class DbAdapter {
     		strokeValues.put("Stroke", strokeNumber);
     		//point ordering
     		int pointNumber=0;
-    		for(PointF p : s.getSamplePoints())
+    		for(PointF p : s.getAllPoints())
     		{
     			strokeValues.put("PointX", p.x);
         		strokeValues.put("PointY", p.y);
@@ -431,7 +431,7 @@ public class DbAdapter {
     	mDb.beginTransaction();
     	ContentValues charValues = new ContentValues();
     	charValues.put(CHAR_ORDER, c.getOrder());
-    	//TODO (xin): Convert strokes into blob. add blob to charValues.
+    	//TODO (cmilner): Convert strokes into blob. add blob to charValues.
     	
     	long id = mDb.insert(CHAR_TABLE, null, charValues);
     	if (id == -1){
@@ -517,7 +517,7 @@ public class DbAdapter {
     		strokeValues.put("Stroke", strokeNumber);
     		//point ordering
     		int pointNumber=0;
-    		for(PointF p : s.getSamplePoints())
+    		for(PointF p : s.getAllPoints())
     		{
     			strokeValues.put("PointX", p.x);
         		strokeValues.put("PointY", p.y);

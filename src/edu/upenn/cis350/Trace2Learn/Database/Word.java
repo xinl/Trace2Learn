@@ -35,7 +35,7 @@ public class Word {
     public long getOrder(){
 	    return this.order;
     }
-   
+    
     public void addAttribute(String key, String value){
     	Set<String> values = this.attributes.get(key);
     	values.add(value);
