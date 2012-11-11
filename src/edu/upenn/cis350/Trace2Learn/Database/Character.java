@@ -60,6 +60,10 @@ public class Character {
 	    this.strokes.add(s);
     }
     
+    public void setStrokes(List<Stroke> strokes) {
+    	this.strokes = strokes;
+    }
+    
     public List<Stroke> getStrokes(){
 	    return this.strokes;
     }

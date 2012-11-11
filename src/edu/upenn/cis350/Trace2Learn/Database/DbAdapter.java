@@ -3,6 +3,7 @@ package edu.upenn.cis350.Trace2Learn.Database;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -22,6 +23,7 @@ public class DbAdapter {
 	public static final String ATTR_TYPE_TABLE = "AttributeType";
 	public static final String ATTR_TYPE_ID = "id";
 	public static final String ATTR_TYPE_NAME = "name";
+	public static final String ATTR_TYPE_TAG = "tag"; //reserved name for tags
 	
 	public static final String ATTR_TABLE = "Attribute";
 	public static final String ATTR_ID = "id";
@@ -416,6 +418,20 @@ public class DbAdapter {
     	
     }
     
+    private Cursor getAttributesCursor(long id) {
+    	Cursor cursor = mDb.rawQuery(
+    			"SELECT A." + ATTR_NAME + " AS " + ATTR_NAME + ", " +
+                       "T." + ATTR_TYPE_NAME + " AS " + ATTR_TYPE +
+                "FROM " + ATTR_TYPE_TABLE + " T, " + ATTR_TABLE + " A" +
+                "WHERE A." + ATTR_ID + "=" + id + " AND " +
+                "A." + ATTR_TYPE + "=" + "T." + ATTR_TYPE_ID + ";",
+          null);
+    	if (cursor != null) {
+    		cursor.moveToFirst();
+    	}
+    	return cursor;
+    }
+    
     /**
      * Add a character to the database
      * @param c character to be added to the database
@@ -471,6 +487,55 @@ public class DbAdapter {
     	return true;
     }
     
+    /** Get a character from the database.
+     *  @param id id for the character
+     *  @return the character or null if unsuccessful.
+     */
+    public Character getCharacter(long id) {
+    	Cursor cursor = mDb.query(CHAR_TABLE, null, CHAR_ID + "=" + id,
+    			null, null, null, null);
+    	if (cursor == null) {
+    		Log.e(CHAR_TABLE, "Cannot find char, " + id + ", in table.");
+    		return null;
+    	}
+    	cursor.moveToFirst();
+    	if (cursor.getCount() != 1) {
+    		Log.e(CHAR_TABLE, "Did not find exactly one " +
+    				          "Character when searching for " + id + " in table.");
+    		cursor.close();
+    		return null;
+    	} else if (id != cursor.getInt(cursor.getColumnIndexOrThrow(CHAR_ID))) {
+    		Log.e(CHAR_TABLE, "Returned wrong Character when searching for " +
+    	                       id + " in table.");
+    		cursor.close();
+    		return null;
+    	}
+    	
+    	//create character
+    	Character c = new Character();
+    	c.setId(id);
+    	c.setOrder(cursor.getInt(cursor.getColumnIndexOrThrow(CHAR_ORDER)));
+    	byte[] strokeData = cursor.getBlob(cursor.getColumnIndexOrThrow(CHAR_STROKES));
+    	c.setStrokes(Stroke.decodeStrokesData(strokeData));
+    	cursor.close();
+    	
+    	//get attributes of character
+    	Cursor attrCursor = getAttributesCursor(id);
+    	if (attrCursor != null) {
+    		int typeIndex = attrCursor.getColumnIndexOrThrow(ATTR_TYPE);
+    		int nameIndex = attrCursor.getColumnIndexOrThrow(ATTR_NAME);
+    		do {
+    			String type = attrCursor.getString(typeIndex);
+    			String attr = attrCursor.getString(nameIndex);
+    			if (type.equalsIgnoreCase(ATTR_TYPE_TAG)) {
+    				c.addTag(attr);
+    			} else {
+    				c.addAttribute(type, attr);
+    			}
+    		} while (attrCursor.moveToNext());
+    	}
+    	return c;
+    }
     
     /**
      * Add a character to the database
@@ -678,7 +743,6 @@ public class DbAdapter {
     	 }
     	return id;
     }
-    
     
     /**
      * Get a LessonCharacter from the database
