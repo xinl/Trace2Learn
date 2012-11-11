@@ -9,6 +9,7 @@ import java.util.List;
 import android.graphics.Matrix;
 import android.graphics.Path;
 import android.graphics.PointF;
+import android.util.Log;
 
 public class Stroke {
 
@@ -165,10 +166,10 @@ public class Stroke {
 		float x = buf.getFloat();
 		if (x >= 0 && x <= 1) {
 			float y = buf.getFloat();
-			if (y >= 0 && y <= 0) {
+			if (y >= 0 && y <= 1) {
 				return new PointF(x, y);
 			} else {
-				throw new IllegalArgumentException("Expect Y coordinate at byte " + buf.position());
+				throw new IllegalArgumentException("Expect Y coordinate at byte " + buf.position() + " but got " + y);
 			}
 		} else {
 			throw new IllegalArgumentException("Expect X coordinate at byte " + buf.position());
@@ -201,16 +202,49 @@ public class Stroke {
 		if (size < 2) { // there's no point in it (pun intended)
 			return null;
 		}
-		ByteBuffer buf = ByteBuffer.allocate(size);
+		ByteBuffer buf = ByteBuffer.allocate(size * 4);
 		buf.order(ByteOrder.LITTLE_ENDIAN);
 		for (Stroke stroke : strokes) {
 			buf.putFloat(MOVE_TO_BLOCK);
 			for (PointF point : stroke.points) {
+				Log.d("BUFFPOS", "" + buf.position());
 				buf.putFloat(point.x);
 				buf.putFloat(point.y);
 			}
 		}
+		Log.d("ENCODED", buf.asFloatBuffer().toString());
 		return buf.array();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((points == null) ? 0 : points.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Stroke))
+			return false;
+		Stroke other = (Stroke) obj;
+		if (points == null) {
+			if (other.points != null)
+				return false;
+		} else if (points.size() != other.points.size()) {
+			return false;
+		}
+		for (int i = 0; i < points.size(); i++) {
+			PointF otherPointF = other.points.get(i);
+			if (!points.get(i).equals(otherPointF.x, otherPointF.y))
+				return false;
+		}
+		return true;
 	}
 
 }
