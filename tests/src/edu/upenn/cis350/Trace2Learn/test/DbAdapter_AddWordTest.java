@@ -17,11 +17,14 @@ public class DbAdapter_AddWordTest extends AndroidTestCase {
 		db = new DbAdapter(this.getContext());
 		db.openTest();
 		a = new Character();
-		a.addStroke(new Stroke());
+		a.addStroke(new Stroke(1, 1));
 		b = new Character();
-		b.addStroke(new Stroke());
+		b.addStroke(new Stroke(5, 7));
+		Stroke s = new Stroke(8, 9);
+		s.addPoint(11, 13);
+		b.addStroke(s);
 		c = new Character();
-		c.addStroke(new Stroke());
+		c.addStroke(new Stroke(11, 13));
 		db.addCharacter(a);
 		db.addCharacter(b);
 		db.addCharacter(c);

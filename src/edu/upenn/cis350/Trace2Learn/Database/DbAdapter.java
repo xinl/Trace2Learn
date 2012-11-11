@@ -432,7 +432,7 @@ public class DbAdapter {
     	mDb.beginTransaction();
     	ContentValues charValues = new ContentValues();
     	charValues.put(CHAR_ORDER, c.getOrder());
-    	//TODO (cmilner): Convert strokes into blob. add blob to charValues.
+    	charValues.put(CHAR_STROKES, Stroke.encodeStrokesData(c.getStrokes()));
     	
     	long id = mDb.insert(CHAR_TABLE, null, charValues);
     	if (id == -1){
