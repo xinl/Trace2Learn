@@ -7,9 +7,11 @@ import java.util.Set;
 
 public class Character {
     private long id;
+    private int order;
     private Map<String, Set<String>> attributes;
     private Set<String> tags;
     private List<Stroke> strokes;
+  
     
     public Character() {
     	id = -1;
@@ -17,7 +19,6 @@ public class Character {
     	tags = null;
     	strokes = new ArrayList<Stroke>();
     }
-
     
     public void setId(long id){
 	    this.id = id;
@@ -25,6 +26,14 @@ public class Character {
     
     public long getId(){
 	    return this.id;
+    }
+    
+    public void setOrder(int order){
+	    this.order = order;
+    }
+    
+    public int getOrder(){
+	    return this.order;
     }
     
     public void addAttribute(String key, String value){

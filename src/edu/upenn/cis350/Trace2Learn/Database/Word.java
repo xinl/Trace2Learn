@@ -1,19 +1,22 @@
 package edu.upenn.cis350.Trace2Learn.Database;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class Word {
     private long id;
+    private int order;
     private Map<String, Set<String>> attributes;
     private Set<String> tags;
-    private Set<Character> characters;
+    private List<Character> characters;
     
     public Word(){
 	    id = -1;
 	    attributes = null;
 	    tags = null;
-	    characters = null;
+	    characters = new ArrayList<Character>();
     }
     
     public void setId(long id){
@@ -24,6 +27,14 @@ public class Word {
 	    return this.id;
     }
    
+    public void setOrder(int order){
+	    this.order = order;
+    }
+    
+    public int getOrder(){
+	    return this.order;
+    }
+    
     public void addAttribute(String key, String value){
     	Set<String> values = this.attributes.get(key);
     	values.add(value);
@@ -46,7 +57,7 @@ public class Word {
     	this.characters.add(c);
     }
 
-    public Set<Character> getCharacters(){
+    public List<Character> getCharacters(){
     	return this.characters;
     }
 }
