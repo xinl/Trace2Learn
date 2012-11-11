@@ -437,7 +437,7 @@ public class DbAdapter {
     		strokeValues.put("Stroke", strokeNumber);
     		//point ordering
     		int pointNumber=0;
-    		for(PointF p : s.getSamplePoints())
+    		for(PointF p : s.getAllPoints())
     		{
     			strokeValues.put("PointX", p.x);
         		strokeValues.put("PointY", p.y);
@@ -509,7 +509,7 @@ public class DbAdapter {
     		strokeValues.put("Stroke", strokeNumber);
     		//point ordering
     		int pointNumber=0;
-    		for(PointF p : s.getSamplePoints())
+    		for(PointF p : s.getAllPoints())
     		{
     			strokeValues.put("PointX", p.x);
         		strokeValues.put("PointY", p.y);
