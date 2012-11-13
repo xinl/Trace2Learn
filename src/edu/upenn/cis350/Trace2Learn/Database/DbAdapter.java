@@ -418,6 +418,12 @@ public class DbAdapter {
     	
     }
     
+    /**
+     * Returns a cursor for table with column ATTR_NAME and ATTR_TYPE,
+     * representing the attribute and attributetype names respectively
+     * @param id char or word id associated with attributes.
+     * @return a cursor
+     */
     private Cursor getAttributesCursor(long id) {
     	Cursor cursor = mDb.rawQuery(
     			"SELECT A." + ATTR_NAME + " AS " + ATTR_NAME + ", " +
@@ -534,6 +540,7 @@ public class DbAdapter {
     			}
     		} while (attrCursor.moveToNext());
     	}
+    	if (attrCursor != null) attrCursor.close();
     	return c;
     }
     
