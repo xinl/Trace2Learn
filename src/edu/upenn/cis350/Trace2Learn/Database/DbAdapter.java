@@ -1,9 +1,12 @@
 package edu.upenn.cis350.Trace2Learn.Database;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -90,7 +93,7 @@ public class DbAdapter {
     		"FOREIGN KEY (" + CHAR_ATTR_ATTRID + ") REFERENCES " +
     		ATTR_TABLE + "(" + ATTR_ID + "), " +
     		"FOREIGN KEY (" + CHAR_ATTR_CHARID + ") REFERENCES " +
-    		CHAR_TABLE + "(" + CHAR_ID + "), " +
+    		CHAR_TABLE + "(" + CHAR_ID + ") ON DELETE CASCADE, " +
     		"PRIMARY KEY (" + CHAR_ATTR_CHARID + ", " +
     		CHAR_ATTR_ATTRID + "));";
 
@@ -106,7 +109,7 @@ public class DbAdapter {
     		"FOREIGN KEY (" + WORD_ATTR_ATTRID + ") REFERENCES " +
     		ATTR_TABLE + "(" + ATTR_ID + "), " +
     		"FOREIGN KEY (" + WORD_ATTR_WORDID + ") REFERENCES " +
-    		WORD_TABLE + "(" + WORD_ID + "), "+
+    		WORD_TABLE + "(" + WORD_ID + ") ON DELETE CASCADE, "+
     		"PRIMARY KEY (" + WORD_ATTR_WORDID + ", " +
     		WORD_ATTR_ATTRID + "));";
     
@@ -116,9 +119,9 @@ public class DbAdapter {
     		WORD_CHAR_CHARID + " INTEGER NOT NULL, " +
     		WORD_CHAR_ORDER + " INTEGER NOT NULL, " +
     		"FOREIGN KEY (" + WORD_CHAR_CHARID + ") REFERENCES " +
-    		CHAR_TABLE + "(" + CHAR_ID + "), " +
+    		CHAR_TABLE + "(" + CHAR_ID + ") ON DELETE CASCADE, " +
     		"FOREIGN KEY (" + WORD_CHAR_WORDID + ") REFERENCES " +
-    		WORD_TABLE + "(" + WORD_ID + "), "+
+    		WORD_TABLE + "(" + WORD_ID + ") ON DELETE CASCADE, "+
     		"PRIMARY KEY (" + WORD_CHAR_WORDID + ", " +
     		WORD_CHAR_CHARID + ", " + WORD_CHAR_ORDER + "));";
     
@@ -135,9 +138,9 @@ public class DbAdapter {
     		COLL_WORD_WORDID + " INTEGER NOT NULL, " +
     		COLL_WORD_ORDER + " INTEGER NOT NULL, " +
     		"FOREIGN KEY (" + COLL_WORD_COLLID + ") REFERENCES " +
-    		COLL_TABLE + "(" + COLL_ID + "), " +
+    		COLL_TABLE + "(" + COLL_ID + ") ON DELETE CASCADE, " +
     		"FOREIGN KEY (" + COLL_WORD_WORDID + ") REFERENCES " +
-    		WORD_TABLE + "(" + WORD_ID + "), "+
+    		WORD_TABLE + "(" + WORD_ID + ") ON DELETE CASCADE, "+
     		"PRIMARY KEY (" + COLL_WORD_COLLID + ", " +
     		COLL_WORD_WORDID + ", " + COLL_WORD_ORDER + "));";
 
@@ -419,22 +422,267 @@ public class DbAdapter {
     }
     
     /**
+     * Add an attribute type, or return id of existing attribute.
+     * @param type name of attribute type
+     * @return row of attribute type in database.
+     */
+    private long addAttributeType(String type) {
+    	Cursor c = mDb.query(ATTR_TYPE_TABLE, null,
+    			"upper(" + ATTR_TYPE_NAME + ") = '" + type.toUpperCase() + "'",
+    			null, null, null, null);
+    	long typeId = -1;
+    	if (c != null) c.moveToFirst();
+    	if (c == null || c.getCount() == 0) {
+    		if (c != null) c.close();
+    		ContentValues typeValues = new ContentValues();
+    		typeValues.put(ATTR_TYPE_NAME, type);
+    		typeId = mDb.insert(ATTR_TYPE_TABLE, null, typeValues);
+    		if (typeId == -1){
+        		//if error
+        		Log.e(ATTR_TYPE_TABLE, "Cannot add attribute type, " + type + ", to table.");
+        	}
+    	} else {
+    		typeId = c.getInt(c.getColumnIndexOrThrow(ATTR_TYPE_ID));
+    		c.close();
+    	}
+
+    	return typeId;
+    }
+    
+    private String getAttributeType(long id) {
+    	Cursor c = mDb.query(ATTR_TYPE_TABLE, null,
+    			ATTR_TYPE_ID + " = " + id,
+    			null, null, null, null);
+    	if (c == null) return null;
+    	String result = null;
+    	c.moveToFirst();
+    	if (c.getCount() > 0) {
+    		result = c.getString(c.getColumnIndexOrThrow(ATTR_TYPE_NAME));
+    	}
+    	c.close();
+    	return result;
+    }
+    
+    /**
+     * Add all attributes associated with a typeId to the table.
+     * @param attributes set of attribute names
+     * @param typeId the type id they are associated with
+     * @return set of attributes ids or null if failed.
+     */
+    private Set<Long> addAttributes(Set<String> attributes, long typeId) {
+    	Set<Long> tagIds = new HashSet<Long>();
+    	Cursor c = mDb.query(ATTR_TABLE, null, ATTR_TYPE + "=" + typeId,
+				null, null, null, null);
+    	if (c != null) c.moveToFirst();
+    	
+    	//If none of the attributes exist.
+    	if (c == null || c.getCount() == 0) {
+    		if (c != null) c.close();
+    		for (String attribute: attributes) {
+    			ContentValues attrValues = new ContentValues();
+        		attrValues.put(ATTR_TYPE, typeId);
+        		attrValues.put(ATTR_NAME, attribute);
+        		long tagId = mDb.insert(ATTR_TABLE, null, attrValues);
+        		if (tagId == -1){
+            		Log.e(ATTR_TABLE, "Cannot add attribute, " + attribute +", to table.");
+            		return null;
+            	}
+        		tagIds.add(tagId);
+    		}
+    		
+        //If some of the attributes already exist.
+    	} else {
+    		//ignore attributes that already exist. ignore case.
+    		do {
+    			String oldAttr = c.getString(c.getColumnIndexOrThrow(ATTR_NAME));
+    			if (attributes.contains(oldAttr)) {
+    				tagIds.add((long) c.getInt(c.getColumnIndexOrThrow(ATTR_ID)));
+    				attributes.remove(oldAttr);
+    			} else {
+    				Set<String> temp = new HashSet<String>(attributes);
+    				for (String attribute: temp) {
+    					if (attribute.equalsIgnoreCase(oldAttr)) {
+    						tagIds.add(c.getLong(c.getColumnIndexOrThrow(ATTR_ID)));
+    	    				attributes.remove(attribute);
+    	    				break;
+    					}
+    				}
+    			}
+    		} while(c.moveToNext());
+    		c.close();
+    		//insert attributes which did not exist.
+    		for (String attribute: attributes) {
+    			ContentValues attrValues = new ContentValues();
+        		attrValues.put(ATTR_TYPE, typeId);
+        		attrValues.put(ATTR_NAME, attribute);
+        		long tagId = mDb.insert(ATTR_TABLE, null, attrValues);
+        		if (tagId == -1){
+            		Log.e(ATTR_TABLE, "Cannot add attribute, " + attribute +", to table.");
+            		return null;
+            	}
+        		tagIds.add(tagId);
+    		}
+    	}
+    	return tagIds;
+    }
+    
+    private boolean deleteAttributes(long itemId, String itemAttrTable,
+    		String itemColumn, String attrColumn, Set<String> attributes) {
+    	for (String attribute: attributes) {
+    		Cursor c = mDb.query(ATTR_TABLE, null,
+        			"upper(" + ATTR_NAME + ") = '" + attribute.toUpperCase() + "'",
+        			null, null, null, null);
+    		if (c == null || c.getCount() == 0) {
+    			if (c != null) c.close();
+    			Log.e(ATTR_TABLE, "Cannot find attribute, " + attribute + ", to delete");
+    			return false;
+    		}
+    		c.moveToFirst();
+    		long attrId = c.getLong(c.getColumnIndexOrThrow(ATTR_ID));
+    		c.close();
+    		int rowsDeleted = mDb.delete(itemAttrTable, itemColumn + "=" + itemId + " AND " +
+    		        attrColumn + "=" + attrId, null);
+    		if (rowsDeleted != 1) {
+    			Log.e(itemAttrTable, "Cannot delete attribute, " + attribute + ", from table");
+    			return false;
+    		}
+    	}
+    	return true;
+    }
+    
+    /**
+     * Update all of the attributes associated with an item
+     * @param itemId id of the item
+     * @param attributes map of attributes
+     * @param itemAttrTable table matching attributes with item
+     * @param itemColumn table column representing the item
+     * @param attrColumn table column representing the attributes
+     * @return true if update was successful.
+     */
+    private boolean updateAttributes(long itemId, Map<String,Set<String>> attributes,
+    		Map<String, Set<String>> oldAttributes, String itemAttrTable,
+    		String itemColumn, String attrColumn) {
+    	//add new values to the set
+    	for(String type: attributes.keySet()) {
+    		Set<String> newValues = minus(
+    				attributes.get(type), oldAttributes.get(type));
+    		if (newValues.size() == 0) continue;
+    		if (addAttributes(itemId, type, newValues,
+    				itemAttrTable, itemColumn, attrColumn) == false) {
+    			return false;
+    		}
+    	}
+    	//delete old values
+    	for(String type: oldAttributes.keySet()) {
+    		Set<String> oldValues = minus(
+    				oldAttributes.get(type), attributes.get(type));
+    		if (oldValues.size() == 0) continue;
+    		if (deleteAttributes(itemId, itemAttrTable, itemColumn,
+    				attrColumn, oldValues) == false) {
+    			return false;
+    		}
+    	}
+    	return true;
+    }
+    
+    private Set<String> minus(Set<String> a, Set<String> b) {
+    	if (a == null || b == null) return a;
+    	Set<String> retVal = new HashSet<String>(a);
+    	for(String s : a) {
+    		if (b.contains(s)) {
+    			retVal.remove(s);
+    		} else {
+    			for (String s2: b) {
+    				if (s2.equalsIgnoreCase(s)) {
+    					retVal.remove(s2);
+    					break;
+    				}
+    			}
+    		}
+    	}
+    	return retVal;
+    }
+    
+    /**
+     * Update all of the attributes associated with an item
+     * @param itemId id of the item
+     * @param type name of the attribute type
+     * @param attribute set of attribute names
+     * @param itemAttrTable table matching attributes with item
+     * @param itemColumn table column representing the item
+     * @param attrColumn table column representing the attributes
+     * @return true if update was successful.
+     */
+    private boolean addAttributes(long itemId, String type, Set<String> attributes,
+    		String itemAttrTable, String itemColumn, String attrColumn) {
+    	//put type in attribute type table
+    	long typeId = addAttributeType(type);
+    	if (typeId == -1) {
+    		return false;
+    	}
+    	
+    	//put attributes in attribute table
+    	Set<Long> tagIds = addAttributes(attributes, typeId);
+    	if (tagIds == null) {
+    		return false;
+    	}
+    	
+    	//associate item with attributes
+    	Cursor c = mDb.query(itemAttrTable, null, itemColumn + "=" + itemId, null, null, null, null);
+    	if (c != null) c.moveToFirst();
+    	//if all attributes are new to item.
+    	if (c == null || c.getCount() == 0) {
+    		if (c != null) c.close();
+    		for (long tagId: tagIds) {
+    			ContentValues values = new ContentValues();
+    			values.put(itemColumn, itemId);
+    			values.put(attrColumn, tagId);
+    			if (mDb.insert(itemAttrTable, null, values) == -1) {
+    				Log.e(itemAttrTable, "Cannot add row to table.");
+    				return false;
+    			}
+    		}
+    	//if some items already existed.
+    	} else {
+    		//ignore items that already exist.
+    		do {
+    			long oldId = c.getLong(c.getColumnIndexOrThrow(attrColumn));
+    			if (tagIds.contains(oldId)) {
+    				tagIds.remove(oldId);
+    			}
+    		} while (c.moveToNext());
+    		c.close();
+    		//add items that did not exist.
+    		for(Long tagId: tagIds) {
+    			ContentValues values = new ContentValues();
+    			values.put(itemColumn, itemId);
+    			values.put(attrColumn, tagId);
+    			if (mDb.insert(itemAttrTable, null, values) == -1) {
+    				Log.e(itemAttrTable, "Cannot add row to table.");
+    				return false;
+    			}
+    		}
+    	}
+    	return true;
+    }
+    
+    /**
      * Returns a cursor for table with column ATTR_NAME and ATTR_TYPE,
      * representing the attribute and attributetype names respectively
      * @param id char or word id associated with attributes.
      * @return a cursor
      */
-    private Cursor getAttributesCursor(long id) {
-    	Cursor cursor = mDb.rawQuery(
-    			"SELECT A." + ATTR_NAME + " AS " + ATTR_NAME + ", " +
-                       "T." + ATTR_TYPE_NAME + " AS " + ATTR_TYPE +
-                " FROM " + ATTR_TYPE_TABLE + " T, " + ATTR_TABLE + " A" +
-                " WHERE A." + ATTR_ID + "=" + id + " AND " +
-                "A." + ATTR_TYPE + "=" + "T." + ATTR_TYPE_ID + ";",
-          null);
-    	if (cursor != null) {
-    		cursor.moveToFirst();
-    	}
+    private Cursor getAttributesCursor(long id, String attrItemTable,
+    		String itemColumn, String attrColumn) {
+    	String query = "SELECT A." + ATTR_NAME + " AS " + ATTR_NAME + ", " +
+                "T." + ATTR_TYPE_NAME + " AS " + ATTR_TYPE +
+         " FROM " + ATTR_TYPE_TABLE + " T, " + ATTR_TABLE + " A, " +
+                attrItemTable + " I" +
+         " WHERE I." + itemColumn + " = " + id + " AND " +
+                "I." + attrColumn + " = " + "A." + ATTR_ID + " AND " + 
+                "A." + ATTR_TYPE + " = " + "T." + ATTR_TYPE_ID + ";";
+    	Cursor cursor = mDb.rawQuery(query, null);
+    	
     	return cursor;
     }
     
@@ -488,6 +736,20 @@ public class DbAdapter {
     		return false;
     	}
     	
+    	//add attributes;
+    	if (! c.getTags().isEmpty()) {
+    		c.getAttributes().put(ATTR_TYPE_TAG, c.getTags());
+    	}
+    	if (! c.getAttributes().isEmpty()) {
+    		Map<String, Set<String>> emptyMap = new HashMap<String, Set<String>>();
+    		boolean result = updateAttributes(c.getId(), c.getAttributes(),
+    				emptyMap, CHAR_ATTR_TABLE, CHAR_ATTR_CHARID, CHAR_ATTR_ATTRID);
+    		if (result == false) {
+    			mDb.endTransaction();
+    			return false;
+    		}
+    	}
+    	
     	mDb.setTransactionSuccessful();
     	mDb.endTransaction();
     	return true;
@@ -526,7 +788,11 @@ public class DbAdapter {
     	cursor.close();
     	
     	//get attributes of character
-    	Cursor attrCursor = getAttributesCursor(id);
+    	Cursor attrCursor = getAttributesCursor(
+    			id, CHAR_ATTR_TABLE, CHAR_ATTR_CHARID, CHAR_ATTR_ATTRID);
+    	if (attrCursor != null) {
+    		attrCursor.moveToFirst();
+    	}
     	if (attrCursor != null && attrCursor.getCount() != 0) {
     		int typeIndex = attrCursor.getColumnIndexOrThrow(ATTR_TYPE);
     		int nameIndex = attrCursor.getColumnIndexOrThrow(ATTR_NAME);
@@ -544,6 +810,61 @@ public class DbAdapter {
     	return c;
     }
     
+    /**
+     * Update a character in the Database. Call this method when the in memory
+     * character has changed from the database character
+     * @param c the character to be updated
+     * @return true if the update was successful.
+     */
+    public boolean updateCharacter(Character c) {
+    	Character oldCharacter = getCharacter(c.getId());
+    	if (oldCharacter == null) return addCharacter(c);
+    	if (c.equals(oldCharacter)) return true; //no need to update
+    	mDb.beginTransaction();
+    	if (! c.getAttributes().equals(oldCharacter.getAttributes())) {
+    		if (updateAttributes(c.getId(), c.getAttributes(),
+    				oldCharacter.getAttributes(), CHAR_ATTR_TABLE,
+    				CHAR_ATTR_CHARID, CHAR_ATTR_ATTRID) == false) {
+    			mDb.endTransaction();
+    			return false;
+    		}
+    	}
+    	if (! c.getTags().equals(oldCharacter.getTags())) {
+    		Map<String, Set<String>> tagMap = new HashMap<String, Set<String>>();
+    		tagMap.put(ATTR_TYPE_TAG, c.getTags());
+    		Map<String, Set<String>> oldTags = new HashMap<String, Set<String>>();
+    		oldTags.put(ATTR_TYPE_TAG, oldCharacter.getTags());
+    		if (updateAttributes(c.getId(), tagMap, oldTags,
+    				CHAR_ATTR_TABLE, CHAR_ATTR_CHARID, CHAR_ATTR_ATTRID) == false) {
+    			mDb.endTransaction();
+    			return false;
+    		}
+    	}
+    	if (! c.getStrokes().equals(oldCharacter.getStrokes())) {
+    		ContentValues charValues = new ContentValues();
+    		charValues.put(CHAR_STROKES, Stroke.encodeStrokesData(c.getStrokes()));
+    		int numRows = mDb.update(CHAR_TABLE, charValues, CHAR_ID + "=" + c.getId(), null);
+    		if (numRows != 1) {
+    			Log.e(CHAR_TABLE, "Unable to update strokes for char, " + c.getId());
+    			mDb.endTransaction();
+    			return false;
+    		}
+    	}
+    	if (c.getOrder() != oldCharacter.getOrder()) {
+    		ContentValues charValues = new ContentValues();
+    		charValues.put(CHAR_ORDER, c.getOrder());
+    		int numRows = mDb.update(CHAR_TABLE, charValues, CHAR_ID + "=" + c.getId(), null);
+    		if (numRows != 1) {
+    			Log.e(CHAR_TABLE, "Unable to update order for char, " + c.getId());
+    			mDb.endTransaction();
+    			return false;
+    		}
+    	}
+    	mDb.setTransactionSuccessful();
+    	mDb.endTransaction();
+    	return true;
+    }
+
     /**
      * Add a character to the database
      * @param c character to be added to the database

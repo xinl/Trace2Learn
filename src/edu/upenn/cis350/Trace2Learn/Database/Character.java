@@ -39,7 +39,7 @@ public class Character {
     	return this.order;
     }
     
-    public void addAttribute(String key, String value){
+    public void addAttribute(String key, String value) {
 	    Set<String> values = this.attributes.get(key);
 	    if (values == null) {
 	    	values = new HashSet<String>();
@@ -48,7 +48,20 @@ public class Character {
 	    attributes.put(key, values);
     }
     
-    public Map<String, Set<String>> getAttributes(){
+    public void removeAttribute(String key, String value) {
+    	Set<String> values = this.attributes.get(key);
+    	if (values == null) {
+    		return;
+    	}
+    	values.remove(value);
+    	attributes.put(key, values);
+    }
+    
+    public void setAttributes(Map<String, Set<String>> attributes) {
+    	this.attributes = attributes;
+    }
+    
+    public Map<String, Set<String>> getAttributes() {
 	    return this.attributes;
     }
     
@@ -56,6 +69,9 @@ public class Character {
 	    this.tags.add(tag);
     }
     
+    public void removeTag(String tag) {
+    	this.tags.remove(tag);
+    }
 
     public Set<String> getTags(){
 	    return this.tags;
