@@ -526,6 +526,17 @@ public class DbAdapter {
     	return tagIds;
     }
     
+    /**
+     * Delete the attributes associated with an item. Only deletes from
+     * itemAttrTable.
+     * @param itemId id of item
+     * @param itemAttrTable table linking items and attribute
+     * @param itemColumn column in table for item id
+     * @param attrColumn column in table for attributes id
+     * @param type the type of attribute being deleted
+     * @param attributes names of attributes being deleted
+     * @return true if deletion is successful.
+     */
     private boolean deleteAttributes(long itemId, String itemAttrTable,
     		String itemColumn, String attrColumn,
     		String type, Set<String> attributes) {
@@ -574,7 +585,7 @@ public class DbAdapter {
     		Set<String> newValues = minus(
     				attributes.get(type), oldAttributes.get(type));
     		if (newValues.isEmpty()) continue;
-    		if (addAttributes(itemId, type, newValues,
+    		if (addAttributesToItem(itemId, type, newValues,
     				itemAttrTable, itemColumn, attrColumn) == false) {
     			return false;
     		}
@@ -620,8 +631,9 @@ public class DbAdapter {
      * @param attrColumn table column representing the attributes
      * @return true if update was successful.
      */
-    private boolean addAttributes(long itemId, String type, Set<String> attributes,
-    		String itemAttrTable, String itemColumn, String attrColumn) {
+    private boolean addAttributesToItem(long itemId, String type,
+    		Set<String> attributes, String itemAttrTable,
+    		String itemColumn, String attrColumn) {
     	//put type in attribute type table
     	long typeId = addAttributeType(type);
     	if (typeId == -1) {
@@ -745,7 +757,7 @@ public class DbAdapter {
     	
     	//add attributes;
     	if (! c.getTags().isEmpty()) {
-    		c.getAttributes().put(ATTR_TYPE_TAG, c.getTags());
+    		c.addAttributes(ATTR_TYPE_TAG, c.getTags());
     	}
     	if (! c.getAttributes().isEmpty()) {
     		Map<String, Set<String>> emptyMap = new HashMap<String, Set<String>>();
@@ -756,6 +768,7 @@ public class DbAdapter {
     			return false;
     		}
     	}
+    	c.removeAttributes(ATTR_TYPE_TAG);
     	
     	mDb.setTransactionSuccessful();
     	mDb.endTransaction();
@@ -767,6 +780,7 @@ public class DbAdapter {
      *  @return the character or null if unsuccessful.
      */
     public Character getCharacter(long id) {
+    	if (id == -1) return null;
     	Cursor cursor = mDb.query(CHAR_TABLE, null, CHAR_ID + "=" + id,
     			null, null, null, null);
     	if (cursor == null) {
@@ -866,6 +880,24 @@ public class DbAdapter {
     			mDb.endTransaction();
     			return false;
     		}
+    	}
+    	mDb.setTransactionSuccessful();
+    	mDb.endTransaction();
+    	return true;
+    }
+    
+    /**
+     * Delete the character from the database. Cascading gets rid of attributes.
+     * @param c the character to be deleted.
+     * @return true if deletion was successful.
+     */
+    public boolean deleteCharacter(Character c) {
+    	mDb.beginTransaction();
+    	int rowsDeleted = mDb.delete(CHAR_TABLE, CHAR_ID + "=" + c.getId(), null);
+    	if (rowsDeleted != 1) {
+    		mDb.endTransaction();
+    		Log.e(CHAR_TABLE, "Unable to delete char, " + c.getId());
+    		return false;
     	}
     	mDb.setTransactionSuccessful();
     	mDb.endTransaction();

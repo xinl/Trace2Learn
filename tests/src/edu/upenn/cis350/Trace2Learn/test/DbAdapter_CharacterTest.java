@@ -168,4 +168,51 @@ public class DbAdapter_CharacterTest extends AndroidTestCase {
 		newA = db.getCharacter(a.getId());
 		assertNull(newA.getAttributes().get("key2"));
 	}
+	
+	public void testRemoveTags() {
+		a.addTag("tag");
+		a.addTag("tag2");
+		a.addTag("tag3");
+		a.addAttribute("key", "value");
+		
+		assertTrue(db.updateCharacter(a));
+		Set<String> expected = new HashSet<String>();
+		expected.add("tag");
+		expected.add("tag2");
+		expected.add("tag3");
+		Character newA = db.getCharacter(a.getId());
+		assertEquals(expected, newA.getTags());
+		
+		assertFalse(a.getTags().isEmpty());
+		a.removeTag("tag");
+		assertFalse(a.getTags().isEmpty());
+		assertTrue(db.updateCharacter(a));
+		expected.remove("tag");
+		newA = db.getCharacter(a.getId());
+		assertEquals(expected, newA.getTags());
+		
+		a.removeTag("tag2");
+		a.addTag("tag4");
+		assertTrue(db.updateCharacter(a));
+		expected.remove("tag2");
+		expected.add("tag4");
+		newA = db.getCharacter(a.getId());
+		assertEquals(expected, newA.getTags());
+	}
+	
+	public void testDeleteCharacter() {
+		a.addTag("tag");
+		a.addAttribute("key", "value");
+		db.addCharacter(a);
+		b.addTag("tag");
+		b.addAttribute("key", "value");
+		db.addCharacter(b);
+		
+		assertNotNull(db.getCharacter(a.getId()));
+		assertTrue(db.deleteCharacter(a));
+		assertNull(db.getCharacter(a.getId()));
+		Character newB = db.getCharacter(b.getId());
+		assertEquals(b.getAttributes(), newB.getAttributes());
+		assertEquals(b.getTags(), newB.getTags());
+	}
 }

@@ -48,6 +48,10 @@ public class Character {
 	    attributes.put(key, values);
     }
     
+    public void addAttributes(String key, Set<String> values) {
+    	attributes.put(key, new HashSet<String>(values));
+    }
+    
     public void removeAttribute(String key, String value) {
     	Set<String> values = this.attributes.get(key);
     	if (values == null) {
@@ -61,12 +65,16 @@ public class Character {
     	}
     }
     
+    public void removeAttributes(String key) {
+    	attributes.remove(key);
+    }
+    
     public void setAttributes(Map<String, Set<String>> attributes) {
-    	this.attributes = attributes;
+    	this.attributes = deepCopy(attributes);
     }
     
     public Map<String, Set<String>> getAttributes() {
-	    return this.attributes;
+	    return deepCopy(this.attributes);
     }
     
     public void addTag(String tag){
@@ -78,7 +86,7 @@ public class Character {
     }
 
     public Set<String> getTags(){
-	    return this.tags;
+	    return new HashSet<String>(this.tags);
     }
     
     public void addStroke(Stroke s){
@@ -86,11 +94,11 @@ public class Character {
     }
     
     public void setStrokes(List<Stroke> strokes) {
-    	this.strokes = strokes;
+    	this.strokes = new ArrayList<Stroke>(strokes);
     }
     
     public List<Stroke> getStrokes(){
-	    return this.strokes;
+	    return new ArrayList<Stroke>(this.strokes);
     }
     
     @Override
@@ -105,6 +113,14 @@ public class Character {
     	if (!this.tags.equals(that.tags)) return false;
     	if (!this.attributes.equals(that.attributes)) return false;
     	return true;
+    }
+    
+    private Map<String, Set<String>> deepCopy(Map<String, Set<String>> original) {
+    	Map<String, Set<String>> newMap = new HashMap<String, Set<String>>();
+    	for (String key : original.keySet()) {
+    		newMap.put(key, new HashSet<String>(original.get(key)));
+    	}
+    	return newMap;
     }
 
 }
