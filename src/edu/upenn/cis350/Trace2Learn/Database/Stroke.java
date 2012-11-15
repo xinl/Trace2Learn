@@ -9,13 +9,12 @@ import java.util.List;
 import android.graphics.Matrix;
 import android.graphics.Path;
 import android.graphics.PointF;
-import android.util.Log;
 
 public class Stroke {
 
 	List<PointF> points = new ArrayList<PointF>();
 
-	static private float MOVE_TO_BLOCK = -1F;
+	static private float MOVE_TO_BLOCK = -100000F;
 
 	public Stroke() {
 
@@ -46,7 +45,11 @@ public class Stroke {
 	 * @return a list of points sampled to represent the stroke
 	 */
 	public synchronized List<PointF> getAllPoints() {
-		return new ArrayList<PointF>(points);
+		return points;
+	}
+	
+	public synchronized PointF getLastPoint() {
+		return points.get(points.size() - 1);
 	}
 
 	public synchronized void addPoint(float x, float y) {
@@ -206,7 +209,7 @@ public class Stroke {
 		if (size < 2) { // there's no point in it (pun intended)
 			return null;
 		}
-		ByteBuffer buf = ByteBuffer.allocate(size * 4);
+		ByteBuffer buf = ByteBuffer.allocate(size * 4); // 1 block = 4 bytes
 		buf.order(ByteOrder.LITTLE_ENDIAN);
 		for (Stroke stroke : strokes) {
 			buf.putFloat(MOVE_TO_BLOCK);
@@ -250,7 +253,7 @@ public class Stroke {
 	}
 	
 	static private boolean isValidCoordinate(float coord) {
-		return (coord >= 0);
+		return (coord > MOVE_TO_BLOCK); // numbers < MOVE_TO_BLOCK are reserved for commands
 	}
 
 }
