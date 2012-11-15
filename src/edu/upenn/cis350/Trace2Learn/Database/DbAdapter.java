@@ -449,15 +449,15 @@ public class DbAdapter {
     	return typeId;
     }
     
-    private String getAttributeType(long id) {
+    private long getAttributeTypeId(String name) {
     	Cursor c = mDb.query(ATTR_TYPE_TABLE, null,
-    			ATTR_TYPE_ID + " = " + id,
+    			"upper(" + ATTR_TYPE_NAME + ") = '" + name.toUpperCase() + "'",
     			null, null, null, null);
-    	if (c == null) return null;
-    	String result = null;
+    	if (c == null) return -1;
+    	long result = -1;
     	c.moveToFirst();
     	if (c.getCount() > 0) {
-    		result = c.getString(c.getColumnIndexOrThrow(ATTR_TYPE_NAME));
+    		result = c.getLong(c.getColumnIndexOrThrow(ATTR_TYPE_ID));
     	}
     	c.close();
     	return result;
@@ -527,9 +527,16 @@ public class DbAdapter {
     }
     
     private boolean deleteAttributes(long itemId, String itemAttrTable,
-    		String itemColumn, String attrColumn, Set<String> attributes) {
+    		String itemColumn, String attrColumn,
+    		String type, Set<String> attributes) {
+    	long typeId = getAttributeTypeId(type);
+    	if (typeId == -1) {
+    		Log.e(itemAttrTable, "Type, " + type + ", does not exist.");
+    		return false;
+    	}
     	for (String attribute: attributes) {
     		Cursor c = mDb.query(ATTR_TABLE, null,
+    				ATTR_TYPE + "=" + typeId + " AND " +
         			"upper(" + ATTR_NAME + ") = '" + attribute.toUpperCase() + "'",
         			null, null, null, null);
     		if (c == null || c.getCount() == 0) {
@@ -540,8 +547,8 @@ public class DbAdapter {
     		c.moveToFirst();
     		long attrId = c.getLong(c.getColumnIndexOrThrow(ATTR_ID));
     		c.close();
-    		int rowsDeleted = mDb.delete(itemAttrTable, itemColumn + "=" + itemId + " AND " +
-    		        attrColumn + "=" + attrId, null);
+    		int rowsDeleted = mDb.delete(itemAttrTable, itemColumn + " = " + itemId + " AND " +
+    		        attrColumn + " = " + attrId, null);
     		if (rowsDeleted != 1) {
     			Log.e(itemAttrTable, "Cannot delete attribute, " + attribute + ", from table");
     			return false;
@@ -566,7 +573,7 @@ public class DbAdapter {
     	for(String type: attributes.keySet()) {
     		Set<String> newValues = minus(
     				attributes.get(type), oldAttributes.get(type));
-    		if (newValues.size() == 0) continue;
+    		if (newValues.isEmpty()) continue;
     		if (addAttributes(itemId, type, newValues,
     				itemAttrTable, itemColumn, attrColumn) == false) {
     			return false;
@@ -576,9 +583,9 @@ public class DbAdapter {
     	for(String type: oldAttributes.keySet()) {
     		Set<String> oldValues = minus(
     				oldAttributes.get(type), attributes.get(type));
-    		if (oldValues.size() == 0) continue;
+    		if (oldValues.isEmpty()) continue;
     		if (deleteAttributes(itemId, itemAttrTable, itemColumn,
-    				attrColumn, oldValues) == false) {
+    				attrColumn, type, oldValues) == false) {
     			return false;
     		}
     	}
@@ -705,7 +712,7 @@ public class DbAdapter {
     	charValues.put(CHAR_STROKES, Stroke.encodeStrokesData(c.getStrokes()));
     	
     	long id = mDb.insert(CHAR_TABLE, null, charValues);
-    	if (id == -1){
+    	if (id == -1) {
     		//if error
     		Log.e(CHAR_TABLE, "Cannot add new char to table.");
     		mDb.endTransaction();

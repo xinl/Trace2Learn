@@ -54,7 +54,11 @@ public class Character {
     		return;
     	}
     	values.remove(value);
-    	attributes.put(key, values);
+    	if (values.isEmpty()) {
+    		attributes.remove(key);
+    	} else {
+    		attributes.put(key, values);
+    	}
     }
     
     public void setAttributes(Map<String, Set<String>> attributes) {
