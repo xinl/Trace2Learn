@@ -1242,6 +1242,34 @@ public class DbAdapter {
     		mDb.endTransaction();
     		return false;
     	}
+    	
+    	// add characters to word
+    	if (addCharsToWord(w) == false) {
+    		mDb.endTransaction();
+    		return false;
+    	}
+    	
+    	//add attributes
+    	if (! w.getTags().isEmpty()) {
+    		w.addAttributes(ATTR_TYPE_TAG, w.getTags());
+    	}
+    	if (! w.getAttributes().isEmpty()) {
+    		Map<String, Set<String>> emptyMap = new HashMap<String, Set<String>>();
+    		boolean result = updateAttributes(w.getId(), w.getAttributes(),
+    				emptyMap, WORD_ATTR_TABLE, WORD_ATTR_WORDID, WORD_ATTR_ATTRID);
+    		if (result == false) {
+    			mDb.endTransaction();
+    			return false;
+    		}
+    	}
+    	w.removeAttributes(ATTR_TYPE_TAG);
+    	
+    	mDb.setTransactionSuccessful();
+    	mDb.endTransaction();
+    	return true;
+    }
+    
+    private boolean addCharsToWord(Word w) {
     	List<Character> chars = w.getCharacters();
     	for (int i = 0; i < chars.size(); i++) {
     		Character c = chars.get(i);
@@ -1252,10 +1280,168 @@ public class DbAdapter {
     		long success = mDb.insert(WORD_CHAR_TABLE, null, wordToCharValues);
     		if (success == -1) {
     			//if error
-    			Log.e(WORD_CHAR_TABLE, "Cannot add character, " + c.getId() + ", to table.");
+    			Log.e(WORD_CHAR_TABLE, "Cannot add character, " + c + ", to table.");;
+    			return false;
+    		}
+    	}
+    	return true;
+    }
+    
+    /** 
+     *  Get a word from the database.
+     *  @param id for the word
+     *  @return the word or null if unsuccessful.
+     */
+    public Word getWord(long id) {
+    	if (id == -1) return null;
+    	Cursor cursor = mDb.query(WORD_TABLE, null, CHAR_ID + "=" + id,
+    			null, null, null, null);
+    	if (cursor == null) {
+    		Log.e(WORD_TABLE, "Cannot find word, " + id + ", in table.");
+    		return null;
+    	}
+    	cursor.moveToFirst();
+    	if (cursor.getCount() != 1) {
+    		Log.e(WORD_TABLE, "Did not find exactly one " +
+    				          "word when searching for " + id + " in table.");
+    		cursor.close();
+    		return null;
+    	} else if (id != cursor.getInt(cursor.getColumnIndexOrThrow(CHAR_ID))) {
+    		Log.e(WORD_TABLE, "Returned wrong word when searching for " +
+    	                       id + " in table.");
+    		cursor.close();
+    		return null;
+    	}
+    	
+    	//create word
+    	Word w = new Word();
+    	w.setId(id);
+    	w.setOrder(cursor.getInt(cursor.getColumnIndexOrThrow(WORD_ORDER)));
+    	cursor.close();
+    	
+    	//get attributes of character
+    	Cursor attrCursor = getAttributesCursor(
+    			id, WORD_ATTR_TABLE, WORD_ATTR_WORDID, WORD_ATTR_ATTRID);
+    	if (attrCursor != null) {
+    		attrCursor.moveToFirst();
+    	}
+    	if (attrCursor != null && attrCursor.getCount() > 0) {
+    		int typeIndex = attrCursor.getColumnIndexOrThrow(ATTR_TYPE);
+    		int nameIndex = attrCursor.getColumnIndexOrThrow(ATTR_NAME);
+    		do {
+    			String type = attrCursor.getString(typeIndex);
+    			String attr = attrCursor.getString(nameIndex);
+    			if (type.equalsIgnoreCase(ATTR_TYPE_TAG)) {
+    				w.addTag(attr);
+    			} else {
+    				w.addAttribute(type, attr);
+    			}
+    		} while (attrCursor.moveToNext());
+    	}
+    	if (attrCursor != null) attrCursor.close();
+    	
+    	//get characters
+    	cursor = mDb.query(WORD_CHAR_TABLE, null,
+    			WORD_CHAR_WORDID + "=" + w.getId(), null, null, null, WORD_CHAR_ORDER);
+    	if (cursor != null) {
+    		cursor.moveToFirst();
+    	}
+    	if (cursor != null && cursor.getCount() > 0) {
+    		int charIndex = cursor.getColumnIndexOrThrow(WORD_CHAR_CHARID);
+    		do {
+    			long charId = cursor.getLong(charIndex);
+    			Character c = getCharacter(charId);
+    			if (c == null) {
+    				Log.e("WORD_CHAR_WORDID", "Could not find character with id " + charId);
+    				cursor.close();
+    				return null;
+    			} else {
+    				w.addCharacter(c);
+    			}
+    		} while (cursor.moveToNext());
+    	}
+    	return w;
+    }
+    
+    /**
+     * Update a word in the Database. Call this method when the in memory
+     * word has changed from the database word.
+     * @param w the word to be updated
+     * @return true if the update was successful.
+     */
+    public boolean updateWord(Word w) {
+    	Word oldWord = getWord(w.getId());
+    	if (oldWord == null) return addWord(w);
+    	if (w.equals(oldWord)) return true; //no need to update
+    	mDb.beginTransaction();
+    	if (! w.getAttributes().equals(oldWord.getAttributes())) {
+    		//update attributes;
+    		if (updateAttributes(w.getId(), w.getAttributes(),
+    				oldWord.getAttributes(), WORD_ATTR_TABLE,
+    				WORD_ATTR_WORDID, WORD_ATTR_ATTRID) == false) {
     			mDb.endTransaction();
     			return false;
     		}
+    	}
+    	if (! w.getTags().equals(oldWord.getTags())) {
+    		//update tags
+    		Map<String, Set<String>> tagMap = new HashMap<String, Set<String>>();
+    		tagMap.put(ATTR_TYPE_TAG, w.getTags());
+    		Map<String, Set<String>> oldTags = new HashMap<String, Set<String>>();
+    		oldTags.put(ATTR_TYPE_TAG, oldWord.getTags());
+    		if (updateAttributes(w.getId(), tagMap, oldTags,
+    				WORD_ATTR_TABLE, WORD_ATTR_WORDID, WORD_ATTR_ATTRID) == false) {
+    			mDb.endTransaction();
+    			return false;
+    		}
+    	}
+    	if (! w.getCharacters().equals(oldWord.getCharacters())) {
+    		//delete old characters
+    		int rowsDeleted = mDb.delete(
+    				WORD_CHAR_TABLE, WORD_CHAR_WORDID + "=" + w.getId(), null);
+    		if (rowsDeleted != oldWord.getCharacters().size()) {
+    			Log.e(WORD_CHAR_TABLE,
+    					"Could not delete all characters in word " +
+    			         oldWord.toString());
+    			mDb.endTransaction();
+    			return false;
+    		}
+    		
+    		// add characters to word
+        	if (addCharsToWord(w) == false) {
+        		mDb.endTransaction();
+        		return false;
+        	}
+    	}
+    	if (w.getOrder() != oldWord.getOrder()) {
+    		//update order
+    		ContentValues charValues = new ContentValues();
+    		charValues.put(WORD_ORDER, w.getOrder());
+    		int numRows = mDb.update(WORD_TABLE, charValues, WORD_ID + "=" + w.getId(), null);
+    		if (numRows != 1) {
+    			Log.e(WORD_TABLE, "Unable to update order for word, " + w.getId());
+    			mDb.endTransaction();
+    			return false;
+    		}
+    	}
+    	mDb.setTransactionSuccessful();
+    	mDb.endTransaction();
+    	return true;
+    }
+    
+    /**
+     * Delete the word from the database.
+     * Cascading gets rid of attributes, link to characters.
+     * @param w the word to be deleted.
+     * @return true if deletion was successful.
+     */
+    public boolean deleteWord(Word w) {
+    	mDb.beginTransaction();
+    	int rowsDeleted = mDb.delete(WORD_TABLE, WORD_ID + "=" + w.getId(), null);
+    	if (rowsDeleted != 1) {
+    		mDb.endTransaction();
+    		Log.e(WORD_TABLE, "Unable to delete word, " + w.toString());
+    		return false;
     	}
     	mDb.setTransactionSuccessful();
     	mDb.endTransaction();

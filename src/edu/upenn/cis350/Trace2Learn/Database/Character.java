@@ -115,6 +115,13 @@ public class Character {
     	return true;
     }
     
+    @Override
+    public String toString() {
+    	return "\nCHAR\tTags: " + tags.toString() + "\t" +
+               "Attributes: " + attributes.toString() + "\t" +
+    		   "Id: " + id + "\t" + "Order: " + order;
+    }
+    
     private Map<String, Set<String>> deepCopy(Map<String, Set<String>> original) {
     	Map<String, Set<String>> newMap = new HashMap<String, Set<String>>();
     	for (String key : original.keySet()) {
