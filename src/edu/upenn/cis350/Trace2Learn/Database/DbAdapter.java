@@ -657,7 +657,7 @@ public class DbAdapter {
     			values.put(itemColumn, itemId);
     			values.put(attrColumn, tagId);
     			if (mDb.insert(itemAttrTable, null, values) == -1) {
-    				Log.e(itemAttrTable, "Cannot add row to table.");
+    				Log.e(itemAttrTable, "Cannot add row to table for: " + itemId + " " + tagId);
     				return false;
     			}
     		}
@@ -677,7 +677,7 @@ public class DbAdapter {
     			values.put(itemColumn, itemId);
     			values.put(attrColumn, tagId);
     			if (mDb.insert(itemAttrTable, null, values) == -1) {
-    				Log.e(itemAttrTable, "Cannot add row to table.");
+    				Log.e(itemAttrTable, "Cannot add row to table: " + itemId + " " + tagId );
     				return false;
     			}
     		}
@@ -726,7 +726,7 @@ public class DbAdapter {
     	long id = mDb.insert(CHAR_TABLE, null, charValues);
     	if (id == -1) {
     		//if error
-    		Log.e(CHAR_TABLE, "Cannot add new char to table.");
+    		Log.e(CHAR_TABLE, "Cannot add new char to table:" + c);
     		mDb.endTransaction();
     		return false;
     	}
@@ -739,7 +739,7 @@ public class DbAdapter {
     	int rowsAffected = mDb.update(CHAR_TABLE, charValues, CHAR_ID + "=" + c.getId(), null);
     	if (rowsAffected != 1) {
     		//if error
-    		Log.e(CHAR_TABLE, "Cannot set order of char, " + c.getId() + ", in table.");
+    		Log.e(CHAR_TABLE, "Cannot set order of char in table: " + c);
     		mDb.endTransaction();
     		return false;
     	}
@@ -750,7 +750,7 @@ public class DbAdapter {
     	boolean success = addWord(word);
     	if (! success) {
     		//if error
-    		Log.e(CHAR_TABLE, "Cannot add char, " + c.getId() + ", as word in " + WORD_TABLE + ".");
+    		Log.e(CHAR_TABLE, "Cannot add char, " + c + ", as word in " + WORD_TABLE + ".");
     		mDb.endTransaction();
     		return false;
     	}
@@ -866,7 +866,7 @@ public class DbAdapter {
     		charValues.put(CHAR_STROKES, Stroke.encodeStrokesData(c.getStrokes()));
     		int numRows = mDb.update(CHAR_TABLE, charValues, CHAR_ID + "=" + c.getId(), null);
     		if (numRows != 1) {
-    			Log.e(CHAR_TABLE, "Unable to update strokes for char, " + c.getId());
+    			Log.e(CHAR_TABLE, "Unable to update strokes for char, " + c);
     			mDb.endTransaction();
     			return false;
     		}
@@ -876,7 +876,7 @@ public class DbAdapter {
     		charValues.put(CHAR_ORDER, c.getOrder());
     		int numRows = mDb.update(CHAR_TABLE, charValues, CHAR_ID + "=" + c.getId(), null);
     		if (numRows != 1) {
-    			Log.e(CHAR_TABLE, "Unable to update order for char, " + c.getId());
+    			Log.e(CHAR_TABLE, "Unable to update order for char, " + c);
     			mDb.endTransaction();
     			return false;
     		}
@@ -896,7 +896,7 @@ public class DbAdapter {
     	int rowsDeleted = mDb.delete(CHAR_TABLE, CHAR_ID + "=" + c.getId(), null);
     	if (rowsDeleted != 1) {
     		mDb.endTransaction();
-    		Log.e(CHAR_TABLE, "Unable to delete char, " + c.getId());
+    		Log.e(CHAR_TABLE, "Unable to delete char, " + c);
     		return false;
     	}
     	mDb.setTransactionSuccessful();
@@ -1225,7 +1225,7 @@ public class DbAdapter {
     	long id = mDb.insert(WORD_TABLE, null, wordValues);
     	if (id == -1){
     		//if error
-    		Log.e(WORD_TABLE, "Cannot add new word to table.");
+    		Log.e(WORD_TABLE, "Cannot add new word to table " + w);
     		mDb.endTransaction();
     		return false;
     	}
@@ -1238,7 +1238,7 @@ public class DbAdapter {
     	int rowsAffected = mDb.update(WORD_TABLE, wordValues, WORD_ID + "=" + w.getId(), null);
     	if (rowsAffected != 1) {
     		//if error
-    		Log.e(WORD_TABLE, "Cannot set order of word, " + w.getId() + ", in table.");
+    		Log.e(WORD_TABLE, "Cannot set order of word in table " + w);
     		mDb.endTransaction();
     		return false;
     	}
@@ -1294,7 +1294,7 @@ public class DbAdapter {
      */
     public Word getWord(long id) {
     	if (id == -1) return null;
-    	Cursor cursor = mDb.query(WORD_TABLE, null, CHAR_ID + "=" + id,
+    	Cursor cursor = mDb.query(WORD_TABLE, null, WORD_ID + "=" + id,
     			null, null, null, null);
     	if (cursor == null) {
     		Log.e(WORD_TABLE, "Cannot find word, " + id + ", in table.");
@@ -1306,7 +1306,7 @@ public class DbAdapter {
     				          "word when searching for " + id + " in table.");
     		cursor.close();
     		return null;
-    	} else if (id != cursor.getInt(cursor.getColumnIndexOrThrow(CHAR_ID))) {
+    	} else if (id != cursor.getInt(cursor.getColumnIndexOrThrow(WORD_ID))) {
     		Log.e(WORD_TABLE, "Returned wrong word when searching for " +
     	                       id + " in table.");
     		cursor.close();
@@ -1319,7 +1319,7 @@ public class DbAdapter {
     	w.setOrder(cursor.getInt(cursor.getColumnIndexOrThrow(WORD_ORDER)));
     	cursor.close();
     	
-    	//get attributes of character
+    	//get attributes of word
     	Cursor attrCursor = getAttributesCursor(
     			id, WORD_ATTR_TABLE, WORD_ATTR_WORDID, WORD_ATTR_ATTRID);
     	if (attrCursor != null) {
@@ -1340,7 +1340,7 @@ public class DbAdapter {
     	}
     	if (attrCursor != null) attrCursor.close();
     	
-    	//get characters
+    	//get characters of word
     	cursor = mDb.query(WORD_CHAR_TABLE, null,
     			WORD_CHAR_WORDID + "=" + w.getId(), null, null, null, WORD_CHAR_ORDER);
     	if (cursor != null) {
@@ -1401,8 +1401,7 @@ public class DbAdapter {
     				WORD_CHAR_TABLE, WORD_CHAR_WORDID + "=" + w.getId(), null);
     		if (rowsDeleted != oldWord.getCharacters().size()) {
     			Log.e(WORD_CHAR_TABLE,
-    					"Could not delete all characters in word " +
-    			         oldWord.toString());
+    					"Could not delete all characters in word " + oldWord);
     			mDb.endTransaction();
     			return false;
     		}
@@ -1419,7 +1418,7 @@ public class DbAdapter {
     		charValues.put(WORD_ORDER, w.getOrder());
     		int numRows = mDb.update(WORD_TABLE, charValues, WORD_ID + "=" + w.getId(), null);
     		if (numRows != 1) {
-    			Log.e(WORD_TABLE, "Unable to update order for word, " + w.getId());
+    			Log.e(WORD_TABLE, "Unable to update order for word, " + w);
     			mDb.endTransaction();
     			return false;
     		}
@@ -1440,7 +1439,7 @@ public class DbAdapter {
     	int rowsDeleted = mDb.delete(WORD_TABLE, WORD_ID + "=" + w.getId(), null);
     	if (rowsDeleted != 1) {
     		mDb.endTransaction();
-    		Log.e(WORD_TABLE, "Unable to delete word, " + w.toString());
+    		Log.e(WORD_TABLE, "Unable to delete word, " + w);
     		return false;
     	}
     	mDb.setTransactionSuccessful();
@@ -1951,6 +1950,225 @@ public class DbAdapter {
     	mDb.setTransactionSuccessful();
     	mDb.endTransaction();
     	return ret;
+    }
+    
+    /**
+     * Add a collection to the database
+     * @param c collection to be added to the database
+     * @return true if collection is added. false if error occurs.
+     */
+    public boolean addCollection(Collection c) {
+    	if (c.getId() != -1) {
+    		throw new IllegalArgumentException("Collection must be new!");
+    	} else if (c.getWords() == null || c.getWords().size() == 0) {
+    		throw new IllegalArgumentException("Collection must contain characters!");
+    	} else if (c.getName() ==  null) {
+    		throw new IllegalArgumentException("Collection must have a name!");
+    	}
+    	
+    	mDb.beginTransaction();
+    	ContentValues collValues = new ContentValues();
+    	collValues.put(COLL_ORDER, c.getOrder());
+    	collValues.put(COLL_NAME, c.getName());
+    	collValues.put(COLL_DESCRIPTION, c.getDescription());
+    	long id = mDb.insert(COLL_TABLE, null, collValues);
+    	if (id == -1){
+    		Log.e(COLL_TABLE, "Cannot add new collection to table " + c);
+    		mDb.endTransaction();
+    		return false;
+    	}
+    	
+    	// update collection to reflect new id and order
+    	c.setId(id);
+    	c.setOrder(id); //id represents location in database
+    	collValues = new ContentValues();
+    	collValues.put(COLL_ORDER, c.getOrder());
+    	int rowsAffected = mDb.update(COLL_TABLE, collValues, COLL_ID + "=" + c.getId(), null);
+    	if (rowsAffected != 1) {
+    		//if error
+    		Log.e(COLL_TABLE, "Cannot set order of collection in table " + c);
+    		mDb.endTransaction();
+    		return false;
+    	}
+    	
+    	// add words to collection
+    	if (addWordsToColl(c) == false) {
+    		mDb.endTransaction();
+    		return false;
+    	}
+    	
+    	mDb.setTransactionSuccessful();
+    	mDb.endTransaction();
+    	return true;
+    }
+    
+    private boolean addWordsToColl(Collection coll) {
+    	List<Word> words = coll.getWords();
+    	for (int i = 0; i < words.size(); i++) {
+    		Word w = words.get(i);
+    		ContentValues values = new ContentValues();
+    		values.put(COLL_WORD_COLLID, coll.getId());
+    		values.put(COLL_WORD_WORDID, w.getId());
+    		values.put(COLL_WORD_ORDER, i);
+    		long success = mDb.insert(COLL_WORD_TABLE, null, values);
+    		if (success == -1) {
+    			//if error
+    			Log.e(COLL_WORD_TABLE, "Cannot add word, " + w + ", to table.");;
+    			return false;
+    		}
+    	}
+    	return true;
+    }
+    
+    /** 
+     *  Get a collection from the database including words.
+     *  @param id for the collection
+     *  @return the collection or null if unsuccessful.
+     */
+    public Collection getCollection(long id) {
+    	return getCollection(id, false);
+    }
+    
+    
+    /** 
+     *  Get a collection from the database.
+     *  @param id for the collection
+     *  @param shallow if true, only gathers the ids for associated words
+     *  @return the collection or null if unsuccessful.
+     */
+    private Collection getCollection(long id, boolean shallow) {
+    	if (id == -1) return null;
+    	Cursor cursor = mDb.query(COLL_TABLE, null, COLL_ID + "=" + id,
+    			null, null, null, null);
+    	if (cursor == null) {
+    		Log.e(COLL_TABLE, "Cannot find collection, " + id + ", in table.");
+    		return null;
+    	}
+    	cursor.moveToFirst();
+    	if (cursor.getCount() != 1) {
+    		Log.e(COLL_TABLE, "Did not find exactly one " +
+    				          "collection when searching for " + id + " in table.");
+    		cursor.close();
+    		return null;
+    	} else if (id != cursor.getInt(cursor.getColumnIndexOrThrow(COLL_ID))) {
+    		Log.e(COLL_TABLE, "Returned wrong collection when searching for " +
+    	                       id + " in table.");
+    		cursor.close();
+    		return null;
+    	}
+    	
+    	//create collection
+    	Collection c = new Collection();
+    	c.setId(id);
+    	c.setOrder(cursor.getInt(cursor.getColumnIndexOrThrow(COLL_ORDER)));
+    	c.setName(cursor.getString(cursor.getColumnIndexOrThrow(COLL_NAME)));
+    	c.setDescription(cursor.getString(
+    			cursor.getColumnIndexOrThrow(COLL_DESCRIPTION)));
+    	cursor.close();
+    	
+    	//get words for collection
+    	cursor = mDb.query(COLL_WORD_TABLE, null,
+    			COLL_WORD_COLLID + "=" + c.getId(),
+    			null, null, null, COLL_WORD_ORDER);
+    	if (cursor != null) {
+    		cursor.moveToFirst();
+    	}
+    	if (cursor != null && cursor.getCount() > 0) {
+    		int wordIndex = cursor.getColumnIndexOrThrow(COLL_WORD_WORDID);
+    		do {
+    			long wordId = cursor.getLong(wordIndex);
+    			Word w = null;
+    			if (shallow) {
+    				w = new Word();
+    				w.setId(wordId);
+    			} else {
+    				w = getWord(wordId);
+    			}
+    			if (w == null) {
+    				Log.e(COLL_WORD_TABLE, "Could not find word with id " + wordId);
+    				cursor.close();
+    				return null;
+    			} else {
+    				c.addWord(w);
+    			}
+    		} while (cursor.moveToNext());
+    	}
+    	return c;
+    }
+    
+    /**
+     * Update a collection in the Database. Call this method when the in memory
+     * collection has changed from the database collection.
+     * @param c the collection to be updated
+     * @return true if the update was successful.
+     */
+    public boolean updateCollection(Collection coll) {
+    	Collection oldColl = getCollection(coll.getId(), true);
+    	Collection c = coll.makeShallow();
+    	if (oldColl == null) return addCollection(c);
+    	if (c.equals(oldColl)) return true; //no need to update
+    	mDb.beginTransaction();
+    	
+    	//update words
+    	if (! c.getWords().equals(oldColl.getWords())) {
+    		//delete old words
+    		int rowsDeleted = mDb.delete(
+    				COLL_WORD_TABLE, COLL_WORD_COLLID + "=" + c.getId(), null);
+    		if (rowsDeleted != oldColl.getWords().size()) {
+    			Log.e(COLL_WORD_TABLE,
+    					"Could not delete all words in collection" + oldColl);
+    			mDb.endTransaction();
+    			return false;
+    		}
+    		
+    		// add new words to collection
+        	if (addWordsToColl(c) == false) {
+        		mDb.endTransaction();
+        		return false;
+        	}
+    	}
+    	
+    	//update columns in Collection table;
+    	String newDesc = c.getDescription();
+    	String oldDesc = oldColl.getDescription();
+    	boolean diffDesc = (newDesc == null && oldDesc == null) || 
+    			           (newDesc != null && newDesc.equals(oldDesc));
+    	if (diffDesc || c.getOrder() != oldColl.getOrder() ||
+    			oldColl.getName().equals(c.getName())) {
+    		ContentValues collValues = new ContentValues();
+    		collValues.put(COLL_ORDER, c.getOrder());
+    		collValues.put(COLL_NAME, c.getName());
+    		collValues.put(COLL_DESCRIPTION, c.getDescription());
+    		int numRows = mDb.update(COLL_TABLE, collValues, COLL_ID + "=" + c.getId(), null);
+    		if (numRows != 1) {
+    			Log.e(COLL_TABLE, "Unable to update order for coll, " + c);
+    			mDb.endTransaction();
+    			return false;
+    		}
+    	}
+    	
+    	mDb.setTransactionSuccessful();
+    	mDb.endTransaction();
+    	return true;
+    }
+    
+    /**
+     * Delete the word from the database.
+     * Cascading gets rid of attributes, link to characters.
+     * @param c the word to be deleted.
+     * @return true if deletion was successful.
+     */
+    public boolean deleteCollection(Collection c) {
+    	mDb.beginTransaction();
+    	int rowsDeleted = mDb.delete(COLL_TABLE, COLL_ID + "=" + c.getId(), null);
+    	if (rowsDeleted != 1) {
+    		mDb.endTransaction();
+    		Log.e(COLL_TABLE, "Unable to delete collection, " + c);
+    		return false;
+    	}
+    	mDb.setTransactionSuccessful();
+    	mDb.endTransaction();
+    	return true;
     }
     
     /**

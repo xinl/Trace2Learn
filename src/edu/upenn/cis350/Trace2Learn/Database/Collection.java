@@ -1,19 +1,22 @@
 package edu.upenn.cis350.Trace2Learn.Database;
 
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Collection {
     private long id;
+    private long order;
     private String name;
     private String description;
-    private Set<Word> words;
+    private List<Word> words;
     
     public Collection(){
 	    id = -1;
+	    order = -1;
 	    name = null;
 	    description = null;
-	    words = null;
+	    words = new ArrayList<Word>() ;
     }
     
     public void setId(long id){
@@ -22,6 +25,14 @@ public class Collection {
     
     public long getId(){
 	    return this.id;
+    }
+    
+    public void setOrder(long order){
+	    this.order = order;
+    }
+    
+    public long getOrder() {
+    	return this.order;
     }
 
     public void setName(String name){
@@ -44,8 +55,58 @@ public class Collection {
 	    this.words.add(w);
     }
     
-    public Set<Word> getWords(){
-	    return this.words;
+    public void setWords(List<Word> words) {
+    	this.words = new ArrayList<Word>(words);
+    }
+    
+    public List<Word> getWords(){
+	    return new ArrayList<Word>(this.words);
+    }
+    
+    public void removeWord(int location){
+    	this.words.remove(location);
+    }
+    
+    //make all words only hold their id
+    public Collection makeShallow() {
+    	List<Word> shallow = new ArrayList<Word>();
+    	for (Word w : words) {
+    		Word shallowWord = new Word();
+    		shallowWord.setId(w.getId());
+    		shallow.add(shallowWord);
+    	}
+    	Collection c = new Collection();
+    	c.setDescription(description);
+    	c.setName(name);
+    	c.setId(id);
+    	c.setOrder(order);
+    	c.setWords(shallow);
+    	return c;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+    	if (o == null) return false;
+    	if (o == this) return true;
+    	if (!(o instanceof Collection)) return false;
+    	Collection that = (Collection) o;
+    	if (this.id != that.id) return false;
+    	if (this.order != that.order) return false;
+    	if (words.size() != that.words.size()) return false;
+    	for (int i = 0; i < words.size(); i++) {
+    		if (this.words.get(i).getId() != that.words.get(i).getId()) {
+    			return false;
+    		}
+    	}
+    	return true;
+    }
+    
+    @Override
+    public String toString() {
+    	return "\nCOLLECTION\tName: " + name + "\t" +
+               "Description: " + description + "\t" +
+    		   "Id: " + id + "\t" + "Order: " + order +
+    		   "\tWords: " + words;
     }
 }
 

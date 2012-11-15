@@ -90,7 +90,7 @@ public class DbAdapter_WordTest extends AndroidTestCase {
 	    assertFalse(newWord.equals(oldWord));
 	}
 	
-	public void testDeleteCharacter() {
+	public void testDeleteWord() {
 		word1.addTag("tag");
 		word1.addAttribute("key", "value");
 		db.addWord(word1);
