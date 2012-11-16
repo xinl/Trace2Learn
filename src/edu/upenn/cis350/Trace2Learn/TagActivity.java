@@ -225,7 +225,7 @@ public class TagActivity extends Activity {
 		
     }
 	
-	public void onAddPrivateTagButtonClick(View view){
+	public void onAddAttributeClick(View view){
 		Editable input = editAttributeText.getText();
 		String input2 = input.toString().trim();
 		String[] kvPair = input2.split(":");
