@@ -35,24 +35,31 @@ public class BrowseCharactersActivity extends ListActivity implements Filterable
         dba = new DbAdapter(this);
         dba.open();
         
-        setCharList(dba.getAllCharIdsByOrder());
+        setCharList(dba.getAllCharacters());
         registerForContextMenu(getListView());
         
-        Button b = new FilterCharsButton(this, dba);
+        Button b = new FilterButton(this);
         LinearLayout layout = (LinearLayout) findViewById(R.id.button_panel);
         layout.addView(b);
 	}
 	
-	@Override
-	public void setCharList(List<Long> charIds) {
+	public void setCharList(List<Character> characters) {
 		items = new ArrayList<TraceableItem>();
-        for(long id : charIds){
-        	TraceableItem character = dba.getCharacter(id);
-        	character.setTags(dba.getCharacterTags(id));
-        	items.add(character);
-        }
-        LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		for(Character c: characters) {
+			items.add(c);
+		}
+		resetListView();
+	}
+	
+	public void resetListView() {
+		LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         setListAdapter(new TraceableListAdapter(this, items, vi));
+	}
+	
+	@Override
+	public void filterView(String attr) {
+		List<Character> filteredList = dba.getCharactersByAttribute(attr);
+		setCharList(filteredList);
 	}
 	
 	@Override  
@@ -78,7 +85,7 @@ public class BrowseCharactersActivity extends ListActivity implements Filterable
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 	    menu.setHeaderTitle("Options");
-	    String[] menuItems = {"Edit Tags","Move Up","Move Down", "Delete"};//Qin
+	    String[] menuItems = {"Edit Tags","Move Up","Move Down", "Delete"};
 	    for (int i = 0; i<menuItems.length; i++) {
 	      menu.add(Menu.NONE, i, i, menuItems[i]);
 	    }
@@ -86,69 +93,73 @@ public class BrowseCharactersActivity extends ListActivity implements Filterable
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-	  AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-	  int menuItemIndex = item.getItemId();
-	  Character lc = (Character)items.get(info.position);
-	  Log.e("MenuIndex",Integer.toString(menuItemIndex));
-	  Log.e("ListIndex",Integer.toString(info.position));
-	  
-	  //add tags
-	  if(menuItemIndex==0){
-		  Intent i = new Intent(this, TagActivity.class);
-		  i.putExtra("ID", lc.getId());
-		  i.putExtra("TYPE", "CHARACTER");
-		  startActivity(i);
-		  finish();
-		  return true;
-	  }
-	//Qin
-	  if(menuItemIndex==1){
-	      long id = lc.getId();
-	      long result = dba.moveupCharacter(id);//swap two rows' order
-	      Log.e("Result" , Long.toString(result));
-	      if(result<0){
-		  showToast("Character can't be moved up");
-		  return false;
-	      }
-	      else{
-		  showToast("Successfully moved up");
-		  startActivity(getIntent());
-		  finish();
-		  return true;
-	      }
-	  }
-	  if(menuItemIndex==2){
-	      long id = lc.getId();
-	      long result = dba.movedownCharacter(id);//swap two rows' order
-	      Log.e("Result" , Long.toString(result));
-	      if(result<0){
-		  showToast("Character can't be moved down");
-		  return false;
-	      }
-	      else{
-		  showToast("Successfully moved down");
-		  startActivity(getIntent());
-		  finish();
-		  return true;
-	      }
-	  }
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+		int menuItemIndex = item.getItemId();
+		Character lc = (Character)items.get(info.position);
+		Log.e("MenuIndex",Integer.toString(menuItemIndex));
+		Log.e("ListIndex",Integer.toString(info.position));
+
+		//add tags
+		if(menuItemIndex==0){
+			Intent i = new Intent(this, TagActivity.class);
+			i.putExtra("ID", lc.getId());
+			i.putExtra("TYPE", "CHARACTER");
+			startActivity(i);
+			finish();
+			return true;
+		}
+		if(menuItemIndex==1){
+			if(info.position == 0) {
+				showToast("Character can't be moved up");
+				return false;
+			}
+			else {
+				Character above = (Character)items.get(info.position - 1);
+				swapPositions(lc, above, info.position, info.position - 1);
+
+				showToast("Successfully moved up");
+				return true;
+			}
+		}
+		if(menuItemIndex==2){
+			if(info.position == items.size() - 1){
+				showToast("Character can't be moved down");
+				return false;
+			}
+			else {
+				Character above = (Character)items.get(info.position + 1);
+				swapPositions(lc, above, info.position, info.position + 1);
+				showToast("Successfully moved down");
+				return true;
+			}
+
+		}
 	  //delete
-	  else if(menuItemIndex==3){
-		  long id = lc.getId();
-		  long result = dba.deleteCharacter(id);
-		  Log.e("Result",Long.toString(result));
-		  if(result<0){
-			  showToast("Character is used by a phrase: cannot delete");
-			  return false;
-		  }
-		  else{
+	  else if(menuItemIndex==3) {
+		  if (dba.deleteCharacter(lc)) {
 			  showToast("Successfully deleted");
-			  startActivity(getIntent()); 
-			  finish();
+			  items.remove(info.position);
+			  resetListView();
 			  return true;
+		  } else {
+			  showToast("Character could not be deleted.");
+			  return false;
 		  }
 	  }
 	  return false;
+	}
+	
+	private void swapPositions(Character c1, Character c2, int position1, int position2) {
+		  long temp = c2.getOrder();
+	      c2.setOrder(c1.getOrder());
+	      c1.setOrder(temp);
+	      dba.updateCharacter(c1);
+	      dba.updateCharacter(c2);
+	      
+	      items.set(position1, c2);
+	      items.set(position2, c1);
+	      
+	      resetListView();
 	}
 	
     @Override

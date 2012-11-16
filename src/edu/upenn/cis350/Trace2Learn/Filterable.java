@@ -1,6 +1,5 @@
 package edu.upenn.cis350.Trace2Learn;
 
-import java.util.List;
 
 /**
  * Required interface for activity that wants to feature a FilterCharsButton.
@@ -10,10 +9,10 @@ import java.util.List;
 public interface Filterable {
 
 	/**
-	 * Display a list of Characters.
-	 * @param charIds the ids for the Characters to be displayed.
+	 * Filter the view to show only items matching attr.
+	 * @param attr the attribute to be matched..
 	 */
-	void setCharList(List<Long> charIds);
+	void filterView(String attr);
 	
 	/**
 	 * Display a toast message in the activity.

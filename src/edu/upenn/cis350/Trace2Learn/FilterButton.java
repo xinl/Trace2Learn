@@ -1,7 +1,5 @@
 package edu.upenn.cis350.Trace2Learn;
 
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Context;
 import android.view.Display;
@@ -12,19 +10,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
 
 /**
  * Button to filter Characters in an activity. The activity must implement filterable.
  * @author cmilner (Charles Milner)
  */
-public class FilterCharsButton extends Button {
+public class FilterButton extends Button {
 	final Activity act;
 	final Filterable filterAct;
-	final DbAdapter dba;
 	boolean filtered;
 
-	public FilterCharsButton(Activity activity, DbAdapter dbAdapter) {
+	public FilterButton(Activity activity) {
 		super(activity.getApplicationContext());
 		act = activity;
 		if (act instanceof Filterable) {
@@ -32,7 +28,6 @@ public class FilterCharsButton extends Button {
 		} else {
 			throw new IllegalArgumentException("Activity must implement Filterable!");
 		}
-		this.dba = dbAdapter;
 		setText(R.string.filter);
 		filtered = false;
         setOnClickListener(new OnClickListener() {
@@ -40,7 +35,7 @@ public class FilterCharsButton extends Button {
 			public void onClick(View v) {
 				if (filtered) {
 					filtered = false;
-					filterAct.setCharList(dba.getAllCharIdsByOrder());
+					filterAct.filterView("");
 					setText(act.getString(R.string.filter));
 					filterAct.showToast(act.getString(R.string.filter_toast));
 				} else {
@@ -57,7 +52,7 @@ public class FilterCharsButton extends Button {
 	private void initiateFilterPopup() {
 		Display display = act.getWindowManager().getDefaultDisplay(); 
 		int width = display.getWidth();
-		int height = display.getHeight();  // deprecated
+		
         //We need to get the instance of the LayoutInflater, use the context of this activity
         LayoutInflater inflater = (LayoutInflater) act.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         //Inflate the view from a predefined XML layout
@@ -72,8 +67,7 @@ public class FilterCharsButton extends Button {
 			public void onClick(View v) {
 				String filter = ((TextView) filter_layout.findViewById(R.id.filter_text)).getText().toString().trim();
 				if (filter.length() > 0) {
-				    List<Long> charIds = dba.getCharsByTag(filter);
-				    filterAct.setCharList(charIds);
+				    filterAct.filterView(filter);
 				}
 				filterWindow.dismiss();
 			}	
