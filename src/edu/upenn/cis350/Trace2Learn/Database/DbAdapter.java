@@ -859,6 +859,57 @@ public class DbAdapter {
     }
     
     /**
+     * Retrieve all characters that have the attribute.
+     * Employ partial matching if the attr is 3 characters or longer.
+     * @param attr the attribute to match against
+     * @return characters matching that attribute.
+     */
+    public List<Character> getCharactersByAttribute(String attr) {
+        attr = attr.trim().toUpperCase();
+        if (attr.length() == 0) return getAllCharacters();
+        //return only exact matches if the tag is two or less characters
+        String query = "SELECT C." + CHAR_ID + " AS " + CHAR_ID + " " +
+                       "FROM " + CHAR_TABLE + " C, " + ATTR_TABLE + " A, " +
+        		                 CHAR_ATTR_TABLE + " L " +
+                       "WHERE C." + CHAR_ID + " = " + "L." + CHAR_ATTR_CHARID +
+                            " AND " + "A." + ATTR_ID + " = " + "L." + CHAR_ATTR_ATTRID +
+                            " AND ";
+                       
+        if (attr.length() < 3) {
+        	query += "upper(" + ATTR_NAME + ") = '" + attr + "' ";
+        } else {
+        	query += "upper(" + ATTR_NAME + ") LIKE '%" + attr + "%' ";
+        }
+        
+        query += "ORDER BY C." + CHAR_ORDER + ";"; 
+        
+        Cursor cursor = mDb.rawQuery(query, null);
+        if (cursor == null) {
+        	Log.e(CHAR_TABLE, "Could not process query " + query);
+        	return null;
+        }
+        cursor.moveToFirst();
+        List<Character> characters = new ArrayList<Character>();
+        if (cursor.getCount() == 0) {
+        	cursor.close();
+        	return characters;
+        }
+		do{
+			long id = cursor.getLong(cursor.getColumnIndexOrThrow(CHAR_ID));
+			Character c = getCharacter(id);
+			if (c == null) {
+				Log.e(CHAR_TABLE, "Could not retrieve character with id " + id);
+				return null;
+			}
+			characters.add(c);
+		}
+		while (cursor.moveToNext());
+        cursor.close();
+        
+        return characters;
+    }
+    
+    /**
      * Update a character in the Database. Call this method when the in memory
      * character has changed from the database character
      * @param c the character to be updated
