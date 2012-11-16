@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
+@Deprecated
 public class SearchActivity extends ListActivity {
 
 	private DbAdapter mDbHelper;
@@ -75,7 +76,7 @@ public class SearchActivity extends ListActivity {
 		setListAdapter(new TraceableListAdapter(this, items, vi));
 	}
 	
-	private void setWordList(List<Long> ids)
+	public void setWordList(List<Long> ids)
 	{
 		items = new ArrayList<TraceableItem>();
 		for(long id : ids)

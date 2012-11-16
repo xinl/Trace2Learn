@@ -8,7 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
-
+@Deprecated
 public abstract class LessonItem {
 	
 	/** The tag cache*/

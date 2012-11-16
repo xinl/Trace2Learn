@@ -6,6 +6,7 @@ import java.util.List;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+@Deprecated
 public class LessonWord extends LessonItem {
 	
 	private List<Long> _characters;

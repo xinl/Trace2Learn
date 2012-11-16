@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.Log;
 
+@Deprecated
 public class LessonCharacter extends LessonItem {
 
 	private List<Stroke> _strokes;

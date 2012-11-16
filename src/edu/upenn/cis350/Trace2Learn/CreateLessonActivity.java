@@ -11,12 +11,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Gallery;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
-
+import edu.upenn.cis350.Trace2Learn.Database.Collection;
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.Lesson;
 import edu.upenn.cis350.Trace2Learn.Database.TraceableItem;
 import edu.upenn.cis350.Trace2Learn.Database.Word;
 
@@ -26,7 +25,7 @@ public class CreateLessonActivity extends Activity {
 	private ListView list; //list of words to display in listview
 	private Gallery gallery; 
 	private ImageAdapter imgAdapter;
-	private Lesson newLesson; 
+	private Collection newCollection; 
 	private ArrayList<Bitmap> currentWords;
 	private int numWords;
 
@@ -48,15 +47,13 @@ public class CreateLessonActivity extends Activity {
     	
         //list = (ListView)findViewById(R.id.wordlist);
      
-        newLesson = new Lesson();
+        newCollection = new Collection();
         
         //Set up the ListView
         ArrayList<TraceableItem> items = new ArrayList<TraceableItem>(); //items to show in ListView to choose from 
-        List<Long> ids = dba.getAllWordIds();
-        for(long id : ids){
-        	TraceableItem word = dba.getWord(id);
-        	word.setTags(dba.getCharacterTags(id));
-        	items.add(word);
+        List<Word> words = dba.getAllWords();
+        for(Word w : words){
+        	items.add(w);
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         list.setAdapter(new TraceableListAdapter(this, items, vi));
@@ -66,11 +63,10 @@ public class CreateLessonActivity extends Activity {
             	numWords++;
                 Log.e("Position",Long.toString(position));
                 Log.e("Type",list.getItemAtPosition(position).getClass().getName());
-                long wordId = ((Word)list.getItemAtPosition(position)).getId();
-                Log.e("Id",Long.toString(wordId));
-                newLesson.addWord(wordId);
-                TraceableItem item = (Word)list.getItemAtPosition(position);
-                Bitmap bitmap = BitmapFactory.buildBitmap(item, 64, 64);
+                Word w = ((Word)list.getItemAtPosition(position));
+                Log.e("Word", w.toString());
+                newCollection.addWord(w);
+                Bitmap bitmap = BitmapFactory.buildBitmap(w, 64, 64);
                 currentWords.add(bitmap);
                 imgAdapter.update(currentWords);
                 imgAdapter.notifyDataSetChanged();

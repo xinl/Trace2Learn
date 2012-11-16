@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+@Deprecated
 public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 
 	private ArrayList<LessonItem> _items;

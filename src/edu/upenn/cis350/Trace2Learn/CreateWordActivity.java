@@ -27,7 +27,6 @@ import android.widget.Toast;
 import edu.upenn.cis350.Trace2Learn.Database.Character;
 import edu.upenn.cis350.Trace2Learn.Database.Collection;
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.Lesson;
 import edu.upenn.cis350.Trace2Learn.Database.TraceableItem;
 import edu.upenn.cis350.Trace2Learn.Database.Word;
 
@@ -154,10 +153,10 @@ public class CreateWordActivity extends Activity implements Filterable {
 			showToast("You must name the lesson!");
 			return;
 		}
-		Lesson lesson = new Lesson();
-		lesson.setPrivateTag(name);
-		lesson.addWord(newWord.getId());
-		dba.addLesson(lesson);
+		Collection coll = new Collection();
+		coll.setName(name);
+		coll.addWord(newWord);
+		dba.addCollection(coll);
 		window.dismiss();
 	}
 	
