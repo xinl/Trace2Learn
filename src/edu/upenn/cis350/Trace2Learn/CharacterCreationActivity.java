@@ -1,6 +1,7 @@
 package edu.upenn.cis350.Trace2Learn;
 
 import java.util.List;
+import java.util.Set;
 
 import edu.upenn.cis350.Trace2Learn.R.id;
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
@@ -141,9 +142,10 @@ public class CharacterCreationActivity extends Activity {
 	{
 		if (id_to_pass >= 0)
 		{
-			List<String> tags = _dbHelper.getCharacterTags(id_to_pass);
+			Character character = _dbHelper.getCharacter(id_to_pass);
+			Set<String> tags = character.getTags();
 			this._tagText.setText(tagsToString(tags));
-			setCharacter(_dbHelper.getCharacter(id_to_pass));
+			setCharacter(character);
 		}
 	}
 
@@ -166,7 +168,7 @@ public class CharacterCreationActivity extends Activity {
 		updateTags();
 	}
 
-	private String tagsToString(List<String> tags)
+	private String tagsToString(Set<String> tags)
 	{
 		StringBuffer buf = new StringBuffer();
 		for (String str : tags)
