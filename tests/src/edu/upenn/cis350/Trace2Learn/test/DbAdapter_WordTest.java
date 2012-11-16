@@ -1,5 +1,7 @@
 package edu.upenn.cis350.Trace2Learn.test;
 
+import java.util.List;
+
 import android.test.AndroidTestCase;
 import edu.upenn.cis350.Trace2Learn.Database.Character;
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
@@ -105,4 +107,23 @@ public class DbAdapter_WordTest extends AndroidTestCase {
 		assertEquals(word2, newWord);
 	}
 	
+	
+	public void testGetAllWords() {
+		db.addWord(word1);
+		db.addWord(word2);
+		
+		List<Word> all = db.getAllWords();
+		assertEquals(word1, all.get(3));
+		assertEquals(word2, all.get(4));
+		
+		word1.setOrder(5);
+		word2.setOrder(4);
+		
+		db.updateWord(word1);
+		db.updateWord(word2);
+		
+		all = db.getAllWords();
+		assertEquals(word2, all.get(3));
+		assertEquals(word1, all.get(4));
+	}
 }

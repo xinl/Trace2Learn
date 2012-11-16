@@ -87,6 +87,10 @@ public class Word {
     public Set<String> getTags(){
 	    return new HashSet<String>(this.tags);
     }
+    
+    public void setTags(Set<String> tags) {
+    	this.tags = new HashSet<String>(tags);
+    }
 
     public void addCharacter(Character c){
     	this.characters.add(c);

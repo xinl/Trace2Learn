@@ -747,6 +747,8 @@ public class DbAdapter {
     	// add char as word.
     	Word word = new Word();
     	word.addCharacter(c);
+    	word.setAttributes(c.getAttributes());
+    	word.setTags(c.getTags());
     	boolean success = addWord(word);
     	if (! success) {
     		//if error
@@ -829,6 +831,31 @@ public class DbAdapter {
     	}
     	if (attrCursor != null) attrCursor.close();
     	return c;
+    }
+    
+    /**
+     * Get all characters in the database
+     * @return returns the characters, ordered by order.
+     */
+    public List<Character> getAllCharacters() {
+    	List<Character> characters = new ArrayList<Character>();
+    	Cursor cursor = mDb.query(CHAR_TABLE, new String[] {CHAR_ID},
+    			null, null, null, null, CHAR_ORDER);
+    	if (cursor == null) return null;
+    	cursor.moveToFirst();
+    	if (cursor.getCount() == 0) return characters;
+    	do {
+    		long id = cursor.getLong(cursor.getColumnIndexOrThrow(CHAR_ID));
+    		Character c = getCharacter(id);
+    		if (c == null) {
+    			Log.e(CHAR_TABLE, "Could not retrieve character with id " + id);
+    			cursor.close();
+    			return null;
+    		}
+    		characters.add(c);
+    	} while (cursor.moveToNext());
+    	cursor.close();
+    	return characters;
     }
     
     /**
@@ -1377,6 +1404,31 @@ public class DbAdapter {
     		} while (cursor.moveToNext());
     	}
     	return w;
+    }
+    
+    /**
+     * Get all words in the database
+     * @return returns the words, ordered by order.
+     */
+    public List<Word> getAllWords() {
+    	List<Word> words = new ArrayList<Word>();
+    	Cursor cursor = mDb.query(WORD_TABLE, new String[] {WORD_ID},
+    			null, null, null, null, WORD_ORDER);
+    	if (cursor == null) return null;
+    	cursor.moveToFirst();
+    	if (cursor.getCount() == 0) return words;
+    	do {
+    		long id = cursor.getLong(cursor.getColumnIndexOrThrow(WORD_ID));
+    		Word w = getWord(id);
+    		if (w == null) {
+    			Log.e(WORD_TABLE, "Could not retrieve word with id " + id);
+    			cursor.close();
+    			return null;
+    		}
+    		words.add(w);
+    	} while (cursor.moveToNext());
+    	cursor.close();
+    	return words;
     }
     
     /**
@@ -2123,6 +2175,31 @@ public class DbAdapter {
     		} while (cursor.moveToNext());
     	}
     	return c;
+    }
+    
+    /**
+     * Get all (shallow) collections in the database.
+     * @return returns the words, ordered by order.
+     */
+    public List<Collection> getAllCollections() {
+    	List<Collection> collections = new ArrayList<Collection>();
+    	Cursor cursor = mDb.query(COLL_TABLE, new String[] {COLL_ID},
+    			null, null, null, null, COLL_ORDER);
+    	if (cursor == null) return null;
+    	cursor.moveToFirst();
+    	if (cursor.getCount() == 0) return collections;
+    	do {
+    		long id = cursor.getLong(cursor.getColumnIndexOrThrow(COLL_ID));
+    		Collection c = getCollection(id, true);
+    		if (c == null) {
+    			Log.e(COLL_TABLE, "Could not retrieve word with id " + id);
+    			cursor.close();
+    			return null;
+    		}
+    		collections.add(c);
+    	} while (cursor.moveToNext());
+    	cursor.close();
+    	return collections;
     }
     
     /**

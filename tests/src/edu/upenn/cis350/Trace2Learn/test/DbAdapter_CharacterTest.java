@@ -1,6 +1,7 @@
 package edu.upenn.cis350.Trace2Learn.test;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import android.test.AndroidTestCase;
@@ -214,5 +215,24 @@ public class DbAdapter_CharacterTest extends AndroidTestCase {
 		Character newB = db.getCharacter(b.getId());
 		assertEquals(b.getAttributes(), newB.getAttributes());
 		assertEquals(b.getTags(), newB.getTags());
+	}
+	
+	public void testGetAllCharacters() {
+		db.addCharacter(a);
+		db.addCharacter(b);
+		
+		List<Character> all = db.getAllCharacters();
+		assertEquals(a, all.get(0));
+		assertEquals(b, all.get(1));
+		
+		a.setOrder(2);
+		b.setOrder(1);
+		
+		db.updateCharacter(a);
+		db.updateCharacter(b);
+		
+		all = db.getAllCharacters();
+		assertEquals(b, all.get(0));
+		assertEquals(a, all.get(1));
 	}
 }

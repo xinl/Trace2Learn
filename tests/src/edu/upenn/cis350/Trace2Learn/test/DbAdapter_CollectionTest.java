@@ -1,5 +1,7 @@
 package edu.upenn.cis350.Trace2Learn.test;
 
+import java.util.List;
+
 import android.test.AndroidTestCase;
 import edu.upenn.cis350.Trace2Learn.Database.Character;
 import edu.upenn.cis350.Trace2Learn.Database.Collection;
@@ -120,5 +122,13 @@ public class DbAdapter_CollectionTest extends AndroidTestCase {
 		assertNull(db.getCollection(coll.getId()));
 		Word newWord = db.getWord(word2.getId());
 		assertEquals(word2, newWord);
+	}
+	
+	public void testGetAllCollections() {
+		db.addCollection(coll);
+		
+		List<Collection> all = db.getAllCollections();
+		assertEquals(coll, all.get(0));
+		
 	}
 }
