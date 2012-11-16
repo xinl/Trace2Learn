@@ -1,11 +1,7 @@
 package edu.upenn.cis350.Trace2Learn.Database;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -14,9 +10,9 @@ import android.graphics.Path;
 import android.util.Log;
 
 public class Character extends TraceableItem {
-    private List<Stroke> strokes;
-  
     
+	private List<Stroke> strokes;
+
     public Character() {
     	super();
     	strokes = new ArrayList<Stroke>();
