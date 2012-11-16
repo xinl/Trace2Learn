@@ -67,6 +67,16 @@ public class Collection {
     	this.words.remove(location);
     }
     
+    public List<Long> getWordIds() {
+		List<Long> ids = new ArrayList<Long>();
+		if (words != null) {
+			for (Word c : words){
+				ids.add(c.getId());
+			}
+		}
+		return ids;
+	}
+    
     @Override
     public boolean equals(Object o) {
     	if (o == null) return false;

@@ -2168,7 +2168,7 @@ public class DbAdapter {
      *  @param shallow if true, only gathers the ids for associated words
      *  @return the collection or null if unsuccessful.
      */
-    private Collection getCollection(long id, boolean shallow) {
+    public Collection getCollection(long id, boolean shallow) {
     	if (id == -1) return null;
     	Cursor cursor = mDb.query(COLL_TABLE, null, COLL_ID + "=" + id,
     			null, null, null, null);

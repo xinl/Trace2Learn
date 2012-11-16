@@ -2,8 +2,10 @@ package edu.upenn.cis350.Trace2Learn;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import edu.upenn.cis350.Trace2Learn.CharacterTracePane.OnTraceCompleteListener;
+import edu.upenn.cis350.Trace2Learn.Database.Collection;
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
 import edu.upenn.cis350.Trace2Learn.Database.Character;
 import edu.upenn.cis350.Trace2Learn.Database.Word;
@@ -107,7 +109,8 @@ public class PhrasePracticeActivity extends Activity {
 		
 		if (currentCollectionID != -1) {
 			currentCollectionName = this.getIntent().getStringExtra("collectionName");
-			wordIDs = (ArrayList<Long>) dbAdapter.getWordsFromLessonId(currentCollectionID);
+			Collection currentCollection = dbAdapter.getCollection(currentCollectionID, true);
+			wordIDs = (ArrayList<Long>) currentCollection.getWordIds();
 			currentWordIndex = wordIDs.indexOf(currentWordID);
 		} else {
 			wordIDs.add(currentWordID);
@@ -240,7 +243,7 @@ public class PhrasePracticeActivity extends Activity {
 		if (characters.size() > 0)
 		{
 			int ind = animator.getDisplayedChild();
-			List<String> tags = dbAdapter.getCharacterTags(characters.get(ind).getId());
+			Set<String> tags = characters.get(ind).getTags();
 			this.tagTextView.setText(tagsToString(tags));
 		}
 	}
@@ -263,7 +266,7 @@ public class PhrasePracticeActivity extends Activity {
 		updateTags();
 	}
 
-	private String tagsToString(List<String> tags)
+	private String tagsToString(Set<String> tags)
 	{
 		StringBuffer buf = new StringBuffer();
 		for (String str : tags)
