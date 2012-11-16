@@ -1293,6 +1293,16 @@ public class DbAdapter {
      *  @return the word or null if unsuccessful.
      */
     public Word getWord(long id) {
+    	return getWord(id, false);
+    }
+    
+    /** 
+     *  Get a word from the database.
+     *  @param id for the word
+     *  @param shallow if true, only gets character ids.
+     *  @return the word or null if unsuccessful.
+     */
+    public Word getWord(long id, boolean shallow) {
     	if (id == -1) return null;
     	Cursor cursor = mDb.query(WORD_TABLE, null, WORD_ID + "=" + id,
     			null, null, null, null);
@@ -1350,7 +1360,13 @@ public class DbAdapter {
     		int charIndex = cursor.getColumnIndexOrThrow(WORD_CHAR_CHARID);
     		do {
     			long charId = cursor.getLong(charIndex);
-    			Character c = getCharacter(charId);
+    			Character c = null;
+    			if (shallow) {
+    				c = new Character();
+    				c.setId(charId);
+    			} else {
+    				c = getCharacter(charId);
+    			}
     			if (c == null) {
     				Log.e("WORD_CHAR_WORDID", "Could not find character with id " + charId);
     				cursor.close();
@@ -1370,7 +1386,7 @@ public class DbAdapter {
      * @return true if the update was successful.
      */
     public boolean updateWord(Word w) {
-    	Word oldWord = getWord(w.getId());
+    	Word oldWord = getWord(w.getId(), true);
     	if (oldWord == null) return addWord(w);
     	if (w.equals(oldWord)) return true; //no need to update
     	mDb.beginTransaction();
@@ -1395,7 +1411,20 @@ public class DbAdapter {
     			return false;
     		}
     	}
-    	if (! w.getCharacters().equals(oldWord.getCharacters())) {
+    	//see if the characters are different
+    	boolean differentChars = false;
+    	if (w.getCharacters().size() != oldWord.getCharacters().size()) {
+    		differentChars = true;
+    	} else {
+    		for (int i = 0; i < w.getCharacters().size(); i++) {
+        		if (w.getCharacters().get(i).getId() !=
+        				oldWord.getCharacters().get(i).getId()) {
+        			differentChars = true;
+        			break;
+        		}
+        	}
+    	}
+    	if (differentChars) {
     		//delete old characters
     		int rowsDeleted = mDb.delete(
     				WORD_CHAR_TABLE, WORD_CHAR_WORDID + "=" + w.getId(), null);
@@ -2102,15 +2131,27 @@ public class DbAdapter {
      * @param c the collection to be updated
      * @return true if the update was successful.
      */
-    public boolean updateCollection(Collection coll) {
-    	Collection oldColl = getCollection(coll.getId(), true);
-    	Collection c = coll.makeShallow();
+    public boolean updateCollection(Collection c) {
+    	Collection oldColl = getCollection(c.getId(), true);
     	if (oldColl == null) return addCollection(c);
     	if (c.equals(oldColl)) return true; //no need to update
     	mDb.beginTransaction();
     	
-    	//update words
-    	if (! c.getWords().equals(oldColl.getWords())) {
+    	//see if the words are different
+    	boolean differentWords = false;
+    	List<Word> newWords = c.getWords();
+    	List<Word> oldWords = oldColl.getWords();
+    	if (newWords.size() != oldWords.size()) {
+    		differentWords = true;
+    	} else {
+    		for (int i = 0; i < newWords.size(); i++) {
+        		if (newWords.get(i).getId() != oldWords.get(i).getId()) {
+        			differentWords = true;
+        			break;
+        		}
+        	}
+    	}
+    	if (differentWords) {
     		//delete old words
     		int rowsDeleted = mDb.delete(
     				COLL_WORD_TABLE, COLL_WORD_COLLID + "=" + c.getId(), null);

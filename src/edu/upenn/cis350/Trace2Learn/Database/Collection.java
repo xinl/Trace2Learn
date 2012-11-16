@@ -67,23 +67,6 @@ public class Collection {
     	this.words.remove(location);
     }
     
-    //make all words only hold their id
-    public Collection makeShallow() {
-    	List<Word> shallow = new ArrayList<Word>();
-    	for (Word w : words) {
-    		Word shallowWord = new Word();
-    		shallowWord.setId(w.getId());
-    		shallow.add(shallowWord);
-    	}
-    	Collection c = new Collection();
-    	c.setDescription(description);
-    	c.setName(name);
-    	c.setId(id);
-    	c.setOrder(order);
-    	c.setWords(shallow);
-    	return c;
-    }
-    
     @Override
     public boolean equals(Object o) {
     	if (o == null) return false;

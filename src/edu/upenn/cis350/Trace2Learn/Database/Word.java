@@ -108,7 +108,13 @@ public class Word {
     	Word that = (Word) o;
     	if (this.id != that.id) return false;
     	if (this.order != that.order) return false;
-    	if (!this.characters.equals(that.characters)) return false;
+    	if (characters.size() != that.characters.size()) return false;
+    	for (int i = 0; i < characters.size(); i++) {
+    		if (this.characters.get(i).getId() !=
+    				that.characters.get(i).getId()) {
+    			return false;
+    		}
+    	}
     	if (!this.tags.equals(that.tags)) return false;
     	if (!this.attributes.equals(that.attributes)) return false;
     	return true;
