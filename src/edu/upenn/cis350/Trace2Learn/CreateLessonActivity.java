@@ -17,8 +17,8 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
 import edu.upenn.cis350.Trace2Learn.Database.Lesson;
-import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
-import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
+import edu.upenn.cis350.Trace2Learn.Database.TraceableItem;
+import edu.upenn.cis350.Trace2Learn.Database.Word;
 
 public class CreateLessonActivity extends Activity {
 	
@@ -51,25 +51,25 @@ public class CreateLessonActivity extends Activity {
         newLesson = new Lesson();
         
         //Set up the ListView
-        ArrayList<LessonItem> items = new ArrayList<LessonItem>(); //items to show in ListView to choose from 
+        ArrayList<TraceableItem> items = new ArrayList<TraceableItem>(); //items to show in ListView to choose from 
         List<Long> ids = dba.getAllWordIds();
         for(long id : ids){
-        	LessonItem word = dba.getWordById(id);
-        	word.setTagList(dba.getCharacterTags(id));
+        	TraceableItem word = dba.getWord(id);
+        	word.setTags(dba.getCharacterTags(id));
         	items.add(word);
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        list.setAdapter(new LessonItemListAdapter(this, items, vi));
+        list.setAdapter(new TraceableListAdapter(this, items, vi));
 
         list.setOnItemClickListener(new OnItemClickListener() {    
             public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
             	numWords++;
                 Log.e("Position",Long.toString(position));
                 Log.e("Type",list.getItemAtPosition(position).getClass().getName());
-                long wordId = ((LessonWord)list.getItemAtPosition(position)).getId();
+                long wordId = ((Word)list.getItemAtPosition(position)).getId();
                 Log.e("Id",Long.toString(wordId));
                 newLesson.addWord(wordId);
-                LessonItem item = (LessonWord)list.getItemAtPosition(position);
+                TraceableItem item = (Word)list.getItemAtPosition(position);
                 Bitmap bitmap = BitmapFactory.buildBitmap(item, 64, 64);
                 currentWords.add(bitmap);
                 imgAdapter.update(currentWords);

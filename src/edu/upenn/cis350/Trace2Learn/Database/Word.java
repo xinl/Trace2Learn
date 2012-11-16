@@ -30,6 +30,17 @@ public class Word extends TraceableItem {
     	return characters.size();
     }
     
+
+	public List<Long> getCharacterIds() {
+		List<Long> ids = new ArrayList<Long>();
+		if (characters != null) {
+			for (Character c : characters){
+				ids.add(c.getId());
+			}
+		}
+		return ids;
+	}
+    
     @Override
     public boolean equals(Object o) {
     	if (super.equals(o) == false) return false;
@@ -89,4 +100,5 @@ public class Word extends TraceableItem {
 			i++;
 		}
 	}
+
 }

@@ -30,6 +30,10 @@ public class Character extends TraceableItem {
 	    return new ArrayList<Stroke>(this.strokes);
     }
     
+    public int getNumberOfStrokes() {
+    	return strokes.size();
+    }
+    
     @Override
     public boolean equals(Object o) {
     	if (super.equals(o) == false) return false;

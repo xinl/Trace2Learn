@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
-import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
+import edu.upenn.cis350.Trace2Learn.Database.TraceableItem;
+import edu.upenn.cis350.Trace2Learn.Database.Character;
+import edu.upenn.cis350.Trace2Learn.Database.Word;
 
 import android.app.ListActivity;
 import android.content.Context;
@@ -22,7 +22,7 @@ public class SearchActivity extends ListActivity {
 
 	private DbAdapter mDbHelper;
 	private boolean showingChars;
-	ArrayList<LessonItem> items;
+	ArrayList<TraceableItem> items;
 	
 	
 	@Override
@@ -53,40 +53,40 @@ public class SearchActivity extends ListActivity {
 	
 	private void setCharList(List<Long> ids)
 	{
-		items = new ArrayList<LessonItem>();
+		items = new ArrayList<TraceableItem>();
 		for(long id : ids)
 		{
 			Log.i("Found", "id:"+id);
 			// TODO add in code for loading LessonWord
-			LessonItem character;
+			TraceableItem character;
 			try
 			{
-				character = mDbHelper.getCharacterById(id);
+				character = mDbHelper.getCharacter(id);
 			}
 			catch(Exception e)
 			{
-				character = new LessonCharacter(id);
+				character = new Character();
 				Log.d("SEARCH", "Character " + id + " not found in db");
 			}
-			character.setTagList(mDbHelper.getCharacterTags(id));
+			character.setTags(mDbHelper.getCharacterTags(id));
 			items.add(character);
 		}
 		LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		setListAdapter(new LessonItemListAdapter(this, items, vi));
+		setListAdapter(new TraceableListAdapter(this, items, vi));
 	}
 	
 	private void setWordList(List<Long> ids)
 	{
-		items = new ArrayList<LessonItem>();
+		items = new ArrayList<TraceableItem>();
 		for(long id : ids)
 		{
 			Log.i("Found", "Word id: "+id);
 			// TODO add in code for loading LessonWord
-			LessonWord word = this.mDbHelper.getWordById(id);
+			Word word = this.mDbHelper.getWord(id);
 			items.add(word);
 		}
 		LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		setListAdapter(new LessonItemListAdapter(this, items, vi));
+		setListAdapter(new TraceableListAdapter(this, items, vi));
 	}
 	
 	@Override  
@@ -98,7 +98,7 @@ public class SearchActivity extends ListActivity {
 		  clickOnWord(items.get(position));
 	}  
 	
-	public void clickOnChar(LessonItem li){
+	public void clickOnChar(TraceableItem li){
 		Intent intent = new Intent();
 		Bundle bun = new Bundle();
 
@@ -110,7 +110,7 @@ public class SearchActivity extends ListActivity {
 		startActivity(intent);
 	}
 
-	public void clickOnWord(LessonItem li){
+	public void clickOnWord(TraceableItem li){
 		//TODO: implement 
 	}
 

@@ -4,7 +4,7 @@ import java.util.List;
 
 import edu.upenn.cis350.Trace2Learn.R.id;
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
+import edu.upenn.cis350.Trace2Learn.Database.Character;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -46,7 +46,7 @@ public class CharacterCreationActivity extends Activity {
 		_playbackPane = new CharacterPlaybackPane(this, false, 2);
 		_tracePane = new CharacterTracePane(this);
 
-		setCharacter(new LessonCharacter());
+		setCharacter(new Character());
 
 		_tagText = (TextView) this.findViewById(id.tag_list);
 
@@ -69,7 +69,7 @@ public class CharacterCreationActivity extends Activity {
 			String mode = bun.getString("mode");
 			if (mode.equals("display")) 
 			{
-				setCharacter(_dbHelper.getCharacterById(bun.getLong("charId")));
+				setCharacter(_dbHelper.getCharacter(bun.getLong("charId")));
 				setCharacterDisplayPane();
 				id_to_pass = bun.getLong("charId");
 				updateTags();
@@ -101,7 +101,7 @@ public class CharacterCreationActivity extends Activity {
 		_playbackPane.setAnimated(true);
 		if (_currentMode != Mode.DISPLAY) 
 		{
-			LessonCharacter curChar = _creationPane.getCharacter();
+			Character curChar = _creationPane.getCharacter();
 			setCharacter(curChar);
 			_currentMode = Mode.DISPLAY;
 			_characterViewSlot.removeAllViews();
@@ -117,7 +117,7 @@ public class CharacterCreationActivity extends Activity {
 		_tracePane.clearPane();
 		if (_currentMode != Mode.TRACE) 
 		{
-			LessonCharacter curChar = _creationPane.getCharacter();
+			Character curChar = _creationPane.getCharacter();
 			setCharacter(curChar);
 			_currentMode = Mode.TRACE;
 			_characterViewSlot.removeAllViews();
@@ -130,7 +130,7 @@ public class CharacterCreationActivity extends Activity {
 		super.setContentView(view);
 	}
 
-	private void setCharacter(LessonCharacter character)
+	private void setCharacter(Character character)
 	{
 		_creationPane.setCharacter(character);
 		_playbackPane.setCharacter(character);
@@ -143,7 +143,7 @@ public class CharacterCreationActivity extends Activity {
 		{
 			List<String> tags = _dbHelper.getCharacterTags(id_to_pass);
 			this._tagText.setText(tagsToString(tags));
-			setCharacter(_dbHelper.getCharacterById(id_to_pass));
+			setCharacter(_dbHelper.getCharacter(id_to_pass));
 		}
 	}
 
@@ -188,8 +188,8 @@ public class CharacterCreationActivity extends Activity {
 
 	public void onSaveButtonClick(View view)
 	{
-		LessonCharacter character = _creationPane.getCharacter();
-		if(character.getNumStrokes()==0){
+		Character character = _creationPane.getCharacter();
+		if(character.getNumberOfStrokes()==0){
 			showToast("Please add a stroke");
 			return;
 		}
@@ -197,7 +197,7 @@ public class CharacterCreationActivity extends Activity {
 		if(id==-1)
 			_dbHelper.addCharacter(character);
 		else
-			_dbHelper.modifyCharacter(character);
+			_dbHelper.updateCharacter(character);
 		Log.e("Adding to DB", Long.toString(character.getId()));
 		id_to_pass = character.getId();
 		//if(id >= 0)
@@ -209,14 +209,14 @@ public class CharacterCreationActivity extends Activity {
 
 	public void onTagButtonClick(View view) 
 	{
-		LessonCharacter character = _creationPane.getCharacter();
+		Character character = _creationPane.getCharacter();
 		if (id_to_pass >= 0) 
 		{
 			Log.e("Passing this CharID", Long.toString(id_to_pass));
 			Intent i = new Intent(this, TagActivity.class);
 
 			i.putExtra("ID", id_to_pass);
-			i.putExtra("TYPE", character.getItemType().toString());
+			i.putExtra("TYPE", character.getClass().getSimpleName().toUpperCase());
 
 			startActivity(i);
 		} else

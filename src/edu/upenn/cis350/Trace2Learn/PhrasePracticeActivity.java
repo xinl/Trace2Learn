@@ -5,8 +5,8 @@ import java.util.List;
 
 import edu.upenn.cis350.Trace2Learn.CharacterTracePane.OnTraceCompleteListener;
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
+import edu.upenn.cis350.Trace2Learn.Database.Character;
+import edu.upenn.cis350.Trace2Learn.Database.Word;
 import edu.upenn.cis350.Trace2Learn.R.id;
 import android.app.Activity;
 import android.content.Context;
@@ -31,7 +31,7 @@ public class PhrasePracticeActivity extends Activity {
 	private Mode currentMode = Mode.INVALID;
 	
 	private ArrayList<Long> wordIDs;
-	private ArrayList<LessonCharacter> characters;
+	private ArrayList<Character> characters;
 	private ArrayList<Bitmap> bitmaps;
 	
 	private int currentCharacterIndex = -1;
@@ -73,7 +73,7 @@ public class PhrasePracticeActivity extends Activity {
 		animator = (ViewAnimator)this.findViewById(R.id.view_slot);
 		
 		wordIDs = new ArrayList<Long>();
-		characters = new ArrayList<LessonCharacter>();
+		characters = new ArrayList<Character>();
 		bitmaps = new ArrayList<Bitmap>();
 		
 		displayLayouts = new ArrayList<SquareLayout>();
@@ -127,7 +127,7 @@ public class PhrasePracticeActivity extends Activity {
 		currentWordIndex = position;
 		long wordId = wordIDs.get(position);
 		currentWordID = wordId;
-		LessonWord word = dbAdapter.getWordById(wordId);
+		Word word = dbAdapter.getWord(wordId);
 		setCharacterList(word.getCharacterIds());
 		setSelectedCharacter(0);
 		if (currentMode == Mode.TRACE) {
@@ -165,7 +165,7 @@ public class PhrasePracticeActivity extends Activity {
 		displayLayouts.clear();
 		for(long id : ids)
 		{
-			LessonCharacter ch = dbAdapter.getCharacterById(id);
+			Character ch = dbAdapter.getCharacter(id);
 			Bitmap bmp = BitmapFactory.buildBitmap(ch, 64, 64);
 			this.characters.add(ch);
 			this.bitmaps.add(bmp);

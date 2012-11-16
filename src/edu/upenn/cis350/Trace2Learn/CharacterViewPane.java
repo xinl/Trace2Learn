@@ -3,7 +3,7 @@
  */
 package edu.upenn.cis350.Trace2Learn;
 
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
+import edu.upenn.cis350.Trace2Learn.Database.Character;
 import edu.upenn.cis350.Trace2Learn.Database.Stroke;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -48,7 +48,7 @@ public abstract class CharacterViewPane extends View {
 	 * @param canvas - the canvas on which to draw the stroke
 	 * @param character - the character that should be drawn
 	 */
-	protected void drawCharacter(Canvas canvas, LessonCharacter character)
+	protected void drawCharacter(Canvas canvas, Character character)
 	{
 		character.draw(canvas);
 		/*List<Stroke> strokes = character.getStrokes();

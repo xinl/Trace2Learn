@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Collection;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -47,7 +48,7 @@ public abstract class TraceableItem {
 	    attributes.put(key, values);
     }
     
-    public void addAttributes(String key, Set<String> values) {
+    public void addAttributes(String key, Collection<String> values) {
     	attributes.put(key, new HashSet<String>(values));
     }
     
@@ -88,7 +89,7 @@ public abstract class TraceableItem {
 	    return new HashSet<String>(this.tags);
     }
     
-    public void setTags(Set<String> tags) {
+    public void setTags(Collection<String> tags) {
     	this.tags = new HashSet<String>(tags);
     }
     
@@ -254,4 +255,11 @@ public abstract class TraceableItem {
 	 */
 	public abstract void draw(Canvas canvas, Paint paint, float left,
 			float top, float width, float height, float time);
+	
+	public enum ItemType
+	{
+		CHARACTER,
+		WORD,
+		LESSON
+	}
 }

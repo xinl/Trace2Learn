@@ -20,12 +20,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
+import edu.upenn.cis350.Trace2Learn.Database.Character;
+import edu.upenn.cis350.Trace2Learn.Database.TraceableItem;
 
 public class BrowseCharactersActivity extends ListActivity implements Filterable {
 	private DbAdapter dba;
-	private ArrayList<LessonItem> items;
+	private ArrayList<TraceableItem> items;
 	
 	//initialized list of all characters
 	@Override
@@ -45,14 +45,14 @@ public class BrowseCharactersActivity extends ListActivity implements Filterable
 	
 	@Override
 	public void setCharList(List<Long> charIds) {
-		items = new ArrayList<LessonItem>();
+		items = new ArrayList<TraceableItem>();
         for(long id : charIds){
-        	LessonItem character = dba.getCharacterById(id);
-        	character.setTagList(dba.getCharacterTags(id));
+        	TraceableItem character = dba.getCharacter(id);
+        	character.setTags(dba.getCharacterTags(id));
         	items.add(character);
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        setListAdapter(new LessonItemListAdapter(this, items, vi));
+        setListAdapter(new TraceableListAdapter(this, items, vi));
 	}
 	
 	@Override  
@@ -62,7 +62,7 @@ public class BrowseCharactersActivity extends ListActivity implements Filterable
 	}  
 
 	//when character is clicked, it starts the display mode for that char
-	public void clickOnItem(LessonItem li){
+	public void clickOnItem(TraceableItem li){
 		Intent intent = new Intent();
 		Bundle bun = new Bundle();
 
@@ -88,7 +88,7 @@ public class BrowseCharactersActivity extends ListActivity implements Filterable
 	public boolean onContextItemSelected(MenuItem item) {
 	  AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 	  int menuItemIndex = item.getItemId();
-	  LessonCharacter lc = (LessonCharacter)items.get(info.position);
+	  Character lc = (Character)items.get(info.position);
 	  Log.e("MenuIndex",Integer.toString(menuItemIndex));
 	  Log.e("ListIndex",Integer.toString(info.position));
 	  
