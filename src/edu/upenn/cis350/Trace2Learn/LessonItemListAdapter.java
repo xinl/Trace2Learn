@@ -3,7 +3,7 @@ package edu.upenn.cis350.Trace2Learn;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.upenn.cis350.Trace2Learn.Database.TraceableItem;
+import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,19 +15,19 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class LessonItemListAdapter extends ArrayAdapter<TraceableItem> {
+public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 
-	private ArrayList<TraceableItem> _items;
+	private ArrayList<LessonItem> _items;
 	
 	private LayoutInflater _vi;
 	
 	public LessonItemListAdapter(
 			Context context,
-			List<TraceableItem> objects,
+			List<LessonItem> objects,
 			LayoutInflater vi) 
 	{
 		super(context, 0, objects);
-		_items = new ArrayList<TraceableItem>(objects);
+		_items = new ArrayList<LessonItem>(objects);
 		_vi = vi;
 	}
 	/**
@@ -42,7 +42,7 @@ public class LessonItemListAdapter extends ArrayAdapter<TraceableItem> {
 		if (v == null) {
 			v = _vi.inflate(R.layout.lesson_item_desc, null);
 		}
-		TraceableItem item = _items.get(position);
+		LessonItem item = _items.get(position);
 		ImageView image = (ImageView)v.findViewById(R.id.li_image);
 		TextView text = (TextView)v.findViewById(R.id.li_description);
 		TextView text2 = (TextView)v.findViewById(R.id.li_description2);

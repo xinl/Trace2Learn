@@ -20,12 +20,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.Character;
-import edu.upenn.cis350.Trace2Learn.Database.TraceableItem;
+import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
+import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
 
 public class BrowseCharactersActivity extends ListActivity implements Filterable {
 	private DbAdapter dba;
-	private ArrayList<TraceableItem> items;
+	private ArrayList<LessonItem> items;
 	
 	//initialized list of all characters
 	@Override
@@ -45,9 +45,9 @@ public class BrowseCharactersActivity extends ListActivity implements Filterable
 	
 	@Override
 	public void setCharList(List<Long> charIds) {
-		items = new ArrayList<TraceableItem>();
+		items = new ArrayList<LessonItem>();
         for(long id : charIds){
-        	TraceableItem character = dba.getCharacterById(id);
+        	LessonItem character = dba.getCharacterById(id);
         	character.setTagList(dba.getCharacterTags(id));
         	items.add(character);
         }
@@ -62,7 +62,7 @@ public class BrowseCharactersActivity extends ListActivity implements Filterable
 	}  
 
 	//when character is clicked, it starts the display mode for that char
-	public void clickOnItem(TraceableItem li){
+	public void clickOnItem(LessonItem li){
 		Intent intent = new Intent();
 		Bundle bun = new Bundle();
 
@@ -88,7 +88,7 @@ public class BrowseCharactersActivity extends ListActivity implements Filterable
 	public boolean onContextItemSelected(MenuItem item) {
 	  AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 	  int menuItemIndex = item.getItemId();
-	  Character lc = (Character)items.get(info.position);
+	  LessonCharacter lc = (LessonCharacter)items.get(info.position);
 	  Log.e("MenuIndex",Integer.toString(menuItemIndex));
 	  Log.e("ListIndex",Integer.toString(info.position));
 	  

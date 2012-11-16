@@ -3,9 +3,9 @@ package edu.upenn.cis350.Trace2Learn;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import edu.upenn.cis350.Trace2Learn.Database.TraceableItem;
-import edu.upenn.cis350.Trace2Learn.Database.TraceableItem.ItemType;
-import edu.upenn.cis350.Trace2Learn.Database.Word;
+import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
+import edu.upenn.cis350.Trace2Learn.Database.LessonItem.ItemType;
+import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
 import edu.upenn.cis350.Trace2Learn.Database.TraceableItem;
 import edu.upenn.cis350.Trace2Learn.Database.Word;
 
@@ -14,7 +14,7 @@ public class BitmapFactory {
 	private static final int default_width = 64;
 	private static final int default_height = 64;
 	
-	public static Bitmap buildBitmap(TraceableItem item) {
+	public static Bitmap buildBitmap(LessonItem item) {
 		return buildBitmap(item, default_width, default_height);
 	}
 	
@@ -24,11 +24,11 @@ public class BitmapFactory {
 	 * @param height - the height of the bitmap to be created
 	 * @return a bitmap which is size (items.length()*height)x(height) in dimensions
 	 */
-	public static Bitmap buildBitmap(TraceableItem item, int height)
+	public static Bitmap buildBitmap(LessonItem item, int height)
 	{
 		if(item.getItemType() == ItemType.WORD)
 		{
-			int width = ((Word)item).length()*height;
+			int width = ((LessonWord)item).length()*height;
 			if(width == 0) width = height;
 			return buildBitmap(item, width, height);
 		}
@@ -45,7 +45,7 @@ public class BitmapFactory {
 	 * @param height - The height of the bitmap to be created
 	 * @return
 	 */
-	public static Bitmap buildBitmap(TraceableItem item, int width, int height)
+	public static Bitmap buildBitmap(LessonItem item, int width, int height)
 	{
 		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);

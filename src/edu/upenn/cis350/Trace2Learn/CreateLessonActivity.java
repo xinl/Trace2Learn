@@ -17,8 +17,8 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
 import edu.upenn.cis350.Trace2Learn.Database.Lesson;
-import edu.upenn.cis350.Trace2Learn.Database.TraceableItem;
-import edu.upenn.cis350.Trace2Learn.Database.Word;
+import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
+import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
 
 public class CreateLessonActivity extends Activity {
 	
@@ -51,10 +51,10 @@ public class CreateLessonActivity extends Activity {
         newLesson = new Lesson();
         
         //Set up the ListView
-        ArrayList<TraceableItem> items = new ArrayList<TraceableItem>(); //items to show in ListView to choose from 
+        ArrayList<LessonItem> items = new ArrayList<LessonItem>(); //items to show in ListView to choose from 
         List<Long> ids = dba.getAllWordIds();
         for(long id : ids){
-        	TraceableItem word = dba.getWordById(id);
+        	LessonItem word = dba.getWordById(id);
         	word.setTagList(dba.getCharacterTags(id));
         	items.add(word);
         }
@@ -66,10 +66,10 @@ public class CreateLessonActivity extends Activity {
             	numWords++;
                 Log.e("Position",Long.toString(position));
                 Log.e("Type",list.getItemAtPosition(position).getClass().getName());
-                long wordId = ((Word)list.getItemAtPosition(position)).getId();
+                long wordId = ((LessonWord)list.getItemAtPosition(position)).getId();
                 Log.e("Id",Long.toString(wordId));
                 newLesson.addWord(wordId);
-                TraceableItem item = (Word)list.getItemAtPosition(position);
+                LessonItem item = (LessonWord)list.getItemAtPosition(position);
                 Bitmap bitmap = BitmapFactory.buildBitmap(item, 64, 64);
                 currentWords.add(bitmap);
                 imgAdapter.update(currentWords);

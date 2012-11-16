@@ -6,76 +6,67 @@ import java.util.List;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-public class Lesson extends LessonItem {
+public class LessonWord extends LessonItem {
 	
-	private List<Long> _words;
-	private String name;
-
-	public Lesson(){
-		_type = ItemType.LESSON;
-		_words = new ArrayList<Long>();
-	}
-
-	public synchronized void addWord(Long word){
-		_words.add(word);
-	}
-
-	public synchronized List<Long> getWordIds(){
-		return new ArrayList<Long>(_words);
-	}
-
-	public synchronized long getWordId(int i){
-		return _words.get(i).longValue();
+	private List<Long> _characters;
+	
+	public LessonWord(){
+		_type = ItemType.WORD;
+		_characters = new ArrayList<Long>();
 	}
 	
-	public String getLessonName(){
-		return this.name;
+	public void addCharacter(Long character){
+		_characters.add(character);
 	}
 	
-	public void setName(String name){
-		this.name = name;
+	public List<Long> getCharacterIds(){
+		return new ArrayList<Long>(_characters);
 	}
-
+	
+	public long getCharacterId(int i){
+		return _characters.get(i).longValue();
+	}
+	
 	/**
-	 * Get the list of items that compose this lesson
-	 * @return the list of characters that compose this word
+	 * Gets a list of the Characters that make up the word
+	 * @return
 	 */
-	public synchronized List<LessonWord> getWords()
+	public List<LessonCharacter> getCharacters()
 	{
-		ArrayList<LessonWord> words = new ArrayList<LessonWord>(_words.size());
-		for(Long id : _words)
+		ArrayList<LessonCharacter> chars = new ArrayList<LessonCharacter>(_characters.size());
+		for(Long id : _characters)
 		{
 			if(_db == null) 
 			{
-				words.add(new LessonWord());
+				chars.add(new LessonCharacter(id));
 			}
 			else
 			{
-				LessonWord word = _db.getWordById(id);
-				words.add(word);
+				LessonCharacter ch = _db.getCharacterById(id);
+				chars.add(ch);
 			}
-
+			
 		}
-		return words;
+		return chars;
 	}
-
+	
 	public int length()
 	{
-		return _words.size();
+		return _characters.size();
 	}
-
-	public synchronized boolean removeWord(Long word){
-		return _words.remove(word);
+	
+	public boolean removeCharacter(Long character){
+		return _characters.remove(character);
 	}
-
-	public synchronized long removeWord(int i){
-		return _words.remove(i).longValue();
+	
+	public long removeCharacter(int i){
+		return _characters.remove(i).longValue();
 	}
-
-	public synchronized void clearWords(){
-		_words.clear();
+	
+	public void clearCharacters(){
+		_characters.clear();
 	}
-
+	
 	/**
 	 * Draws the item in the canvas provided, using the provided paint brush
 	 * within the provided bounding box
@@ -92,15 +83,10 @@ public class Lesson extends LessonItem {
 	@Override
 	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height, float time)
 	{
+		// TODO add animation code
 		draw(canvas, paint, left, top, width, height);
 	}
-
-	@Override
-	protected boolean updateTypeData() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
+	
 	/**
 	 * Draws the item in the canvas provided, using the provided paint brush
 	 * within the provided bounding box
@@ -114,24 +100,29 @@ public class Lesson extends LessonItem {
 	@Override
 	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height)
 	{
-		// TODO
-		/*int i = 0;
+		int i = 0;
 		float charWidth = width/length();
-		for(Long id : _phrases)
+		for(Long id : _characters)
 		{
-			LessonWord word;
+			LessonCharacter character;
 			if(_db == null)
 			{
-				word = new LessonWord(id);
+				character = new LessonCharacter(id);
 			}
 			else
 			{
-				word = _db.getCharacterById(id);
+				character = _db.getCharacterById(id);
 			}
-			word.draw(canvas, paint, left + charWidth*i, top, charWidth, height);
+			character.draw(canvas, paint, left + charWidth*i, top, charWidth, height);
 			i++;
-		}*/
+		}
 	}
 
-
+	@Override
+	protected boolean updateTypeData() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	
 }

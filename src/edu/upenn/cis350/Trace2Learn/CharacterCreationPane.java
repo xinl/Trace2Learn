@@ -1,6 +1,6 @@
 package edu.upenn.cis350.Trace2Learn;
 
-import edu.upenn.cis350.Trace2Learn.Database.Character;
+import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
 import edu.upenn.cis350.Trace2Learn.Database.Stroke;
 
 import android.content.Context;
@@ -8,13 +8,13 @@ import android.graphics.Canvas;
 
 public class CharacterCreationPane extends DrawingPane {
 
-	protected Character _character;
+	protected LessonCharacter _character;
 	private Stroke _currentStroke;
 	
 	public CharacterCreationPane(Context c) {
 		super(c);
 
-		_character = new Character();
+		_character = new LessonCharacter();
 		
 	}
 
@@ -68,12 +68,12 @@ public class CharacterCreationPane extends DrawingPane {
 	 * character if the pane is revisited
 	 * @return a copy of the on screen character
 	 */
-	public Character getCharacter()
+	public LessonCharacter getCharacter()
 	{
 		return _character;
 	}
 	
-	public void setCharacter(Character character)
+	public void setCharacter(LessonCharacter character)
 	{
 		_character = character;
 		invalidate();
@@ -81,7 +81,7 @@ public class CharacterCreationPane extends DrawingPane {
 	
 	public void clearPane()
 	{
-		_character = new Character();
+		_character = new LessonCharacter();
 		invalidate();
 	}
 	

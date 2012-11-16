@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.Character;
-import edu.upenn.cis350.Trace2Learn.Database.TraceableItem;
-import edu.upenn.cis350.Trace2Learn.Database.Word;
+import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
+import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
+import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
 
 import android.app.ListActivity;
 import android.content.Context;
@@ -22,7 +22,7 @@ public class SearchActivity extends ListActivity {
 
 	private DbAdapter mDbHelper;
 	private boolean showingChars;
-	ArrayList<TraceableItem> items;
+	ArrayList<LessonItem> items;
 	
 	
 	@Override
@@ -53,19 +53,19 @@ public class SearchActivity extends ListActivity {
 	
 	private void setCharList(List<Long> ids)
 	{
-		items = new ArrayList<TraceableItem>();
+		items = new ArrayList<LessonItem>();
 		for(long id : ids)
 		{
 			Log.i("Found", "id:"+id);
 			// TODO add in code for loading LessonWord
-			TraceableItem character;
+			LessonItem character;
 			try
 			{
 				character = mDbHelper.getCharacterById(id);
 			}
 			catch(Exception e)
 			{
-				character = new Character(id);
+				character = new LessonCharacter(id);
 				Log.d("SEARCH", "Character " + id + " not found in db");
 			}
 			character.setTagList(mDbHelper.getCharacterTags(id));
@@ -77,12 +77,12 @@ public class SearchActivity extends ListActivity {
 	
 	private void setWordList(List<Long> ids)
 	{
-		items = new ArrayList<TraceableItem>();
+		items = new ArrayList<LessonItem>();
 		for(long id : ids)
 		{
 			Log.i("Found", "Word id: "+id);
 			// TODO add in code for loading LessonWord
-			Word word = this.mDbHelper.getWordById(id);
+			LessonWord word = this.mDbHelper.getWordById(id);
 			items.add(word);
 		}
 		LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -98,7 +98,7 @@ public class SearchActivity extends ListActivity {
 		  clickOnWord(items.get(position));
 	}  
 	
-	public void clickOnChar(TraceableItem li){
+	public void clickOnChar(LessonItem li){
 		Intent intent = new Intent();
 		Bundle bun = new Bundle();
 
@@ -110,7 +110,7 @@ public class SearchActivity extends ListActivity {
 		startActivity(intent);
 	}
 
-	public void clickOnWord(TraceableItem li){
+	public void clickOnWord(LessonItem li){
 		//TODO: implement 
 	}
 

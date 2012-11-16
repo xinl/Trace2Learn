@@ -1,6 +1,6 @@
 package edu.upenn.cis350.Trace2Learn;
 
-import edu.upenn.cis350.Trace2Learn.Database.Character;
+import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.os.Handler;
@@ -40,7 +40,7 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 		this(context, false);
 	}
 	
-	public void setCharacter(Character character)
+	public void setCharacter(LessonCharacter character)
 	{
 		super.setCharacter(character);
 		resetPlayback();

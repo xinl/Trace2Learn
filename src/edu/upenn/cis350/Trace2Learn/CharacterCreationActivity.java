@@ -4,7 +4,7 @@ import java.util.List;
 
 import edu.upenn.cis350.Trace2Learn.R.id;
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.Character;
+import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -46,7 +46,7 @@ public class CharacterCreationActivity extends Activity {
 		_playbackPane = new CharacterPlaybackPane(this, false, 2);
 		_tracePane = new CharacterTracePane(this);
 
-		setCharacter(new Character());
+		setCharacter(new LessonCharacter());
 
 		_tagText = (TextView) this.findViewById(id.tag_list);
 
@@ -101,7 +101,7 @@ public class CharacterCreationActivity extends Activity {
 		_playbackPane.setAnimated(true);
 		if (_currentMode != Mode.DISPLAY) 
 		{
-			Character curChar = _creationPane.getCharacter();
+			LessonCharacter curChar = _creationPane.getCharacter();
 			setCharacter(curChar);
 			_currentMode = Mode.DISPLAY;
 			_characterViewSlot.removeAllViews();
@@ -117,7 +117,7 @@ public class CharacterCreationActivity extends Activity {
 		_tracePane.clearPane();
 		if (_currentMode != Mode.TRACE) 
 		{
-			Character curChar = _creationPane.getCharacter();
+			LessonCharacter curChar = _creationPane.getCharacter();
 			setCharacter(curChar);
 			_currentMode = Mode.TRACE;
 			_characterViewSlot.removeAllViews();
@@ -130,7 +130,7 @@ public class CharacterCreationActivity extends Activity {
 		super.setContentView(view);
 	}
 
-	private void setCharacter(Character character)
+	private void setCharacter(LessonCharacter character)
 	{
 		_creationPane.setCharacter(character);
 		_playbackPane.setCharacter(character);
@@ -188,7 +188,7 @@ public class CharacterCreationActivity extends Activity {
 
 	public void onSaveButtonClick(View view)
 	{
-		Character character = _creationPane.getCharacter();
+		LessonCharacter character = _creationPane.getCharacter();
 		if(character.getNumStrokes()==0){
 			showToast("Please add a stroke");
 			return;
@@ -209,7 +209,7 @@ public class CharacterCreationActivity extends Activity {
 
 	public void onTagButtonClick(View view) 
 	{
-		Character character = _creationPane.getCharacter();
+		LessonCharacter character = _creationPane.getCharacter();
 		if (id_to_pass >= 0) 
 		{
 			Log.e("Passing this CharID", Long.toString(id_to_pass));

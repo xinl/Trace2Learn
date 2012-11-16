@@ -1,7 +1,11 @@
 package edu.upenn.cis350.Trace2Learn.Database;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -9,11 +13,10 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.Log;
 
-
 public class Character extends TraceableItem {
-
     private List<Stroke> strokes;
   
+    
     public Character() {
     	super();
     	strokes = new ArrayList<Stroke>();
@@ -42,10 +45,19 @@ public class Character extends TraceableItem {
     
     @Override
     public String toString() {
-
     	return "\nCHAR\t" + super.toString();
     }
-
+    
+    /**
+	 * Draws the item in the canvas provided, using the provided paint brush
+	 * within the provided bounding box
+	 * @param canvas - the canvas to draw on
+	 * @param paint - the drawing settings for the item
+	 * @param left - the left bound in which the item should be drawn
+	 * @param top - the top bound in which the item should be drawn
+	 * @param width - the width of the bounding box in which the item should be drawn
+	 * @param height - the height of the bounding box in which the item should be drawn
+	 */
 	@Override
 	public void draw(Canvas canvas, Paint paint, float left,
 			float top, float width, float height) {
@@ -83,6 +95,7 @@ public class Character extends TraceableItem {
 		Log.i("DRAW", "Time: " + time);
 		matrix.postScale(width, height);
 		matrix.postTranslate(left,  top);
+		
 		float strokeTime = 1F/strokes.size();
 		float coveredTime = 0;
 		for(Stroke stroke : strokes) {
@@ -96,3 +109,4 @@ public class Character extends TraceableItem {
 	}
 
 }
+

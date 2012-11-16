@@ -6,7 +6,7 @@ import android.util.Log;
 import edu.upenn.cis350.Trace2Learn.BrowseCharactersActivity;
 import edu.upenn.cis350.Trace2Learn.CharacterCreationActivity;
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.Character;
+import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
 import edu.upenn.cis350.Trace2Learn.Database.Stroke;
 import junit.framework.TestCase;
 
@@ -50,7 +50,7 @@ public class LessonCharacterTest extends AndroidTestCase {
 		dumpDBs();
 	}
 	
-	public void compareCharacters(Character expected, Character actual)
+	public void compareCharacters(LessonCharacter expected, LessonCharacter actual)
 	{
 		assertEquals(expected.getId(), actual.getId());
 		assertEquals(expected.getNumStrokes(), actual.getNumStrokes());
@@ -60,7 +60,7 @@ public class LessonCharacterTest extends AndroidTestCase {
 	
 	public void testNoStrokes()
 	{
-		Character c = new Character();
+		LessonCharacter c = new LessonCharacter();
 		assertEquals(0,c.getNumStrokes());
 		assertEquals(0,c.getStrokes().size());
 		try{
@@ -74,14 +74,14 @@ public class LessonCharacterTest extends AndroidTestCase {
 	
 	public void testNoStrokesSave()
 	{
-		Character c = new Character();
+		LessonCharacter c = new LessonCharacter();
 		db.addCharacter(c);
 		compareCharacters(c, db.getCharacterById(c.getId()));
 	}
 	
 	public void testOneStroke()
 	{
-		Character c = new Character();
+		LessonCharacter c = new LessonCharacter();
 		c.addStroke(s1);
 		assertEquals(1,c.getNumStrokes());
 		assertEquals(1,c.getStrokes().size());
@@ -98,7 +98,7 @@ public class LessonCharacterTest extends AndroidTestCase {
 	
 	public void testOneStrokeSave()
 	{
-		Character c = new Character();
+		LessonCharacter c = new LessonCharacter();
 		c.addStroke(s1);
 		db.addCharacter(c);
 		compareCharacters(c, db.getCharacterById(c.getId()));
@@ -106,7 +106,7 @@ public class LessonCharacterTest extends AndroidTestCase {
 	
 	public void testAddStrokeAfterSave()
 	{
-		Character c = new Character();
+		LessonCharacter c = new LessonCharacter();
 		c.addStroke(s1);
 		db.addCharacter(c);
 		compareCharacters(c, db.getCharacterById(c.getId()));
@@ -117,7 +117,7 @@ public class LessonCharacterTest extends AndroidTestCase {
 	
 	public void testRemovalByIndex()
 	{
-		Character c = new Character();
+		LessonCharacter c = new LessonCharacter();
 		c.addStroke(s1);
 		c.addStroke(s2);
 		c.addStroke(s2);
@@ -134,7 +134,7 @@ public class LessonCharacterTest extends AndroidTestCase {
 	
 	public void testRemovalByRefernece()
 	{
-		Character c = new Character();
+		LessonCharacter c = new LessonCharacter();
 		c.addStroke(s1);
 		c.addStroke(s2);
 		c.addStroke(s2);
@@ -151,7 +151,7 @@ public class LessonCharacterTest extends AndroidTestCase {
 	
 	public void testReorder()
 	{
-		Character c = new Character();
+		LessonCharacter c = new LessonCharacter();
 		c.addStroke(s1);
 		c.addStroke(s2);
 		c.addStroke(s2);
@@ -177,10 +177,10 @@ public class LessonCharacterTest extends AndroidTestCase {
 	
 	public void testSaveTags()
 	{
-		Character c = new Character();
+		LessonCharacter c = new LessonCharacter();
 		c.addTag("Tag1");
 		db.addCharacter(c);
-		Character c1 = db.getCharacterById(c.getId());
+		LessonCharacter c1 = db.getCharacterById(c.getId());
 		compareCharacters(c1, c);
 	}
 	
