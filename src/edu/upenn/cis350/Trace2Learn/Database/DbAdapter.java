@@ -299,6 +299,7 @@ public class DbAdapter {
      * @param tag the text of the tag
      * @return rowId or -1 if failed
      */
+    @Deprecated
     public long createWordTags(long id, String tag) {
         ContentValues initialValues = new ContentValues();
         initialValues.put(WORDTAG_ROWID, id);
@@ -316,6 +317,7 @@ public class DbAdapter {
      * @param tag the text of the tag
      * @return rowId or -1 if failed
      */
+    @Deprecated
     public long createLessonTags(long id, String tag) {
     	ContentValues initialValues = new ContentValues();
         initialValues.put("_id", id);
@@ -333,6 +335,7 @@ public class DbAdapter {
      * @param tag the text of the tag
      * @return rowId or -1 if failed
      */
+    @Deprecated
     public long createTags(long id, String tag) {
         ContentValues initialValues = new ContentValues();
         initialValues.put(CHARTAG_ROWID, id);
@@ -348,6 +351,7 @@ public class DbAdapter {
      * @param tag text of tag to delete
      * @return true if deleted, false otherwise
      */
+    @Deprecated
     public boolean deleteTag(long rowId, String tag) {
         return mDb.delete(CHARTAG_TABLE, CHARTAG_ROWID + "=" + rowId + " AND " + CHARTAG_TAG+"="+tag, null) > 0;
     }
@@ -359,6 +363,7 @@ public class DbAdapter {
      * @param tag text of tag to delete
      * @return true if deleted, false otherwise
      */
+    @Deprecated
     public boolean deleteWordTag(long rowId, String tag) {
         return mDb.delete(WORDTAG_TABLE, WORDTAG_ROWID + "=" + rowId + " AND " + WORDTAG_TAG+"="+tag, null) > 0;
     }
@@ -370,6 +375,7 @@ public class DbAdapter {
      * @param tag text of tag to delete
      * @return true if deleted, false otherwise
      */
+    @Deprecated
     public boolean deleteLessonTag(long rowId, String tag) {
         return mDb.delete(LESSONTAG_TABLE, LESSONTAG_ROWID + "=" + rowId + " AND " + "tag="+tag, null) > 0;
     }
@@ -379,6 +385,7 @@ public class DbAdapter {
      * @param c character to be modified to the database
      * @return true if change is pushed to DB.  False on error.
      */
+    @Deprecated
     public boolean modifyCharacter(LessonCharacter c)
     {
     	mDb.beginTransaction();
@@ -987,6 +994,7 @@ public class DbAdapter {
      * @param c character to be added to the database
      * @return true if character is added to DB.  False on error.
      */
+    @Deprecated
     public boolean addCharacter(LessonCharacter c)
     {
     	mDb.beginTransaction();
@@ -1092,6 +1100,7 @@ public class DbAdapter {
     }
     
     //Qin
+    @Deprecated
     public long moveupCharacter(long id){
 	Cursor x =
                 mDb.query(true, CHAR_TABLE, new String[] {CHAR_ID, "charOrder"}, CHAR_ID + "=" + id, null,
@@ -1124,6 +1133,7 @@ public class DbAdapter {
     }
     
     //Qin
+    @Deprecated
     public long movedownCharacter(long id){
 	Cursor x =
                 mDb.query(true, CHAR_TABLE, new String[] {CHAR_ID, "charOrder"}, CHAR_ID + "=" + id, null,
@@ -1155,6 +1165,7 @@ public class DbAdapter {
 	return id;
     }
     
+    @Deprecated
     public long deleteCharacter(long id){
     	Cursor mCursor =
                 mDb.query(true, CHAR_TABLE, new String[] {CHAR_ID}, CHAR_ID + "=" + id, null,
@@ -1194,6 +1205,7 @@ public class DbAdapter {
      * @param id id of the LessonCharacter
      * @return The LessonCharacter if id exists, null otherwise.
      */
+    @Deprecated
     public LessonCharacter getCharacterById(long id)
     {
         Cursor mCursor =
@@ -1247,6 +1259,7 @@ public class DbAdapter {
      * @param id id of the LessonCharacter
      * @return The LessonCharacter if id exists, null otherwise.
      */
+    @Deprecated
     public LessonWord getWordById(long id)
     {
         Cursor mCursor =
@@ -1585,6 +1598,7 @@ public class DbAdapter {
      * @param w word to be added to the database
      * @return true if word is added to DB.  False on error.
      */
+    @Deprecated
     public boolean addWord(LessonWord w)
     {
     	mDb.beginTransaction();
@@ -1644,6 +1658,7 @@ public class DbAdapter {
     }
     
   //Qin
+    @Deprecated
     public long moveupWord(long id){
 	Cursor x =
                 mDb.query(true, WORDS_TABLE, new String[] {WORD_ID, "wordOrder"}, WORD_ID + "=" + id, null,
@@ -1676,6 +1691,7 @@ public class DbAdapter {
     }
     
     //Qin
+    @Deprecated
     public long movedownWord(long id){
 	Cursor x =
                 mDb.query(true, WORDS_TABLE, new String[] {WORD_ID, "wordOrder"}, WORD_ID + "=" + id, null,
@@ -1707,6 +1723,7 @@ public class DbAdapter {
 	return id;
     }
     
+    @Deprecated
     public long deleteWord(long id){
     	Cursor mCursor =
                 mDb.query(true, WORDS_TABLE, new String[] {WORD_ID}, WORD_ID + "=" + id, null,
@@ -1723,6 +1740,7 @@ public class DbAdapter {
     	return id;
     }
     
+    @Deprecated
     public String getPrivateTag(long id, ItemType type)
     {
     	String tableName;
@@ -1759,6 +1777,7 @@ public class DbAdapter {
      * @return List of tags
      * @throws SQLException if character could not be found/retrieved
      */
+    @Deprecated
     public List<String> getCharacterTags(long charId) throws SQLException {
 
         Cursor mCursor =
@@ -1787,6 +1806,7 @@ public class DbAdapter {
      * @return List of char ids, or null if cursor not created.
      * @throws SQLException if character could not be found/retrieved
      */
+    @Deprecated
     public List<Long> getCharsByTag(String tag) throws SQLException {
     
         Cursor mCursor = null;
@@ -1826,6 +1846,7 @@ public class DbAdapter {
      * @return List of tags
      * @throws SQLException if lesson could not be found/retrieved
      */
+    @Deprecated
     public List<String> getLessonTags(long lessonId) throws SQLException {
 
         Cursor mCursor =
@@ -1854,6 +1875,7 @@ public class DbAdapter {
      * @return List of tags
      * @throws SQLException if word could not be found/retrieved
      */
+    @Deprecated
     public List<String> getWordTags(long wordId) throws SQLException {
 
         Cursor mCursor =
@@ -1882,6 +1904,7 @@ public class DbAdapter {
      * @return Cursor positioned to matching word, if found
      * @throws SQLException if word could not be found/retrieved
      */
+    @Deprecated
     public Cursor getWords(String tag) throws SQLException {
 
         Cursor mCursor =
@@ -1899,6 +1922,7 @@ public class DbAdapter {
      * Return a list of char ids from the database
      * @return ids list of all char ids
      */
+    @Deprecated
     public List<Long> getAllCharIds(){
     	 Cursor mCursor =
 
@@ -1940,6 +1964,7 @@ public class DbAdapter {
      * Return a Cursor positioned at all characters
      * @return Cursor positioned to characters
      */
+    @Deprecated
     public Cursor getAllCharIdsCursor(){
    	 Cursor mCursor =
 
@@ -1958,6 +1983,7 @@ public class DbAdapter {
      * @param tag the text of the tag to add
      * @return number of rows that were affected, 0 on no rows affected
      */
+    @Deprecated
     public long updatePrivateTag(long id, String tag){
     	ContentValues initialValues = new ContentValues();
         initialValues.put(CHAR_ID, id); 
@@ -1973,6 +1999,7 @@ public class DbAdapter {
      * @param tag the text of the tag to add
      * @return number of rows that were affected, 0 on no rows affected
      */
+    @Deprecated
     public long updatePrivateWordTag(long id, String tag){
     	ContentValues initialValues = new ContentValues();
         //initialValues.put(CHAR_ROWID, id);
@@ -1988,6 +2015,7 @@ public class DbAdapter {
      * @param tag the text of the tag to add
      * @return number of rows that were affected, 0 on no rows affected
      */
+    @Deprecated
     public long updatePrivateLessonTag(long id, String tag){
     	ContentValues initialValues = new ContentValues();
         initialValues.put("name", tag);
@@ -1998,6 +2026,7 @@ public class DbAdapter {
      * Return a list of word ids from the database
      * @return ids list of all word ids
      */
+    @Deprecated
     public List<Long> getAllWordIds() {
     	 Cursor mCursor =
 
@@ -2345,6 +2374,7 @@ public class DbAdapter {
      * @param les lesson to be added to the database
      * @return true if lesson is added to DB.  False on error.
      */
+    @Deprecated
     public boolean addLesson(Lesson les)
     {
     	mDb.beginTransaction();
@@ -2391,6 +2421,7 @@ public class DbAdapter {
     	return true;
     }
     
+    @Deprecated
     public List<Long> getWordsFromLessonId(long id){
     	Cursor mCursor =
     			mDb.query(true, LESSONS_DETAILS_TABLE, new String[] {"WordId"}, "LessonId="+id, null,
@@ -2414,6 +2445,7 @@ public class DbAdapter {
      * Return a list of lesson ids from the database
      * @return ids list of all lesson ids
      */
+    @Deprecated
     public List<Long> getAllLessonIds() {
     	Cursor mCursor =
     			mDb.query(true, LESSONS_TABLE, new String[] {LESSONS_ROWID}, null, null,
@@ -2437,6 +2469,7 @@ public class DbAdapter {
      * @param id 
      * @return id if found, -1 if not
      */
+    @Deprecated
     public long deleteLesson(long id){
     	Cursor mCursor =
                 mDb.query(true, LESSONS_TABLE, new String[] {LESSONS_ROWID}, LESSONS_ROWID + "=" + id, null,
@@ -2461,6 +2494,7 @@ public class DbAdapter {
      * @param id
      * @return
      */
+    @Deprecated
     public Lesson getLessonById(long id) {
     	Cursor mCursor =
     			mDb.query(true, LESSONS_TABLE, new String[] {LESSONS_ROWID, "name"}, LESSONS_ROWID + "=" + id, null,
@@ -2499,6 +2533,7 @@ public class DbAdapter {
      * @param i the LessonItem
      * @param v ContentValues
      */
+    @Deprecated
     private void initializePrivateTag(LessonItem i, ContentValues v)
     {
     	if(i.getPrivateTag()!=null)
