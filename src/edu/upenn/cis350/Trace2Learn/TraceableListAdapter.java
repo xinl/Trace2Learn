@@ -59,7 +59,9 @@ public class TraceableListAdapter extends ArrayAdapter<TraceableItem> {
 			sb.deleteCharAt(sb.length() - 1);
 			sb.append("\n");
 		}
-		sb.deleteCharAt(sb.length() - 1);
+		if (sb.length() > 0) {
+			sb.deleteCharAt(sb.length() - 1);
+		}
 		text.setText(sb.toString());
 		
 		Set<String> tags = item.getTags();
