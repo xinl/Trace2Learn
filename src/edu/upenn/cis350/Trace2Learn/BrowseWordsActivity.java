@@ -170,7 +170,7 @@ public class BrowseWordsActivity extends ListActivity {
 			  resetListView();
 			  return true;
 		  } else {
-			  showToast("Character could not be deleted.");
+			  showToast("Word could not be deleted.");
 			  return false;
 		  }
 	  }

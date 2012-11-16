@@ -181,7 +181,7 @@ public class CreateWordActivity extends Activity implements Filterable {
 		}
 		Intent i = new Intent(this, TagActivity.class);
 		i.putExtra("ID", newWord.getId());
-		i.putExtra("TYPE", TraceableItem.ItemType.WORD);
+		i.putExtra("TYPE", TraceableItem.ItemType.WORD.toString());
 		startActivity(i);
 	}
 	
