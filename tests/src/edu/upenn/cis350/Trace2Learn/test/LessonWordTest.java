@@ -1,20 +1,20 @@
 package edu.upenn.cis350.Trace2Learn.test;
 
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
+import edu.upenn.cis350.Trace2Learn.Database.Character;
+import edu.upenn.cis350.Trace2Learn.Database.Word;
 import edu.upenn.cis350.Trace2Learn.Database.Stroke;
 import junit.framework.TestCase;
 
 public class LessonWordTest extends TestCase {
 
-	LessonCharacter c1, c2, c3;
+	Character c1, c2, c3;
 	
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		c1 = new LessonCharacter();
-		c2 = new LessonCharacter();
-		c3 = new LessonCharacter();
+		c1 = new Character();
+		c2 = new Character();
+		c3 = new Character();
 		
 		c1.setId(1);
 		c2.setId(2);
@@ -23,7 +23,7 @@ public class LessonWordTest extends TestCase {
 
 	public void testNoStrokes()
 	{
-		LessonWord w = new LessonWord();
+		Word w = new Word();
 		assertEquals(0,w.getCharacters().size());
 		try{
 			w.getCharacterId(0);
@@ -36,7 +36,7 @@ public class LessonWordTest extends TestCase {
 	
 	public void testOneChar()
 	{
-		LessonWord w = new LessonWord();
+		Word w = new Word();
 		w.addCharacter(c1.getId());
 		assertEquals(1,w.getCharacters().size());
 		assertEquals(c1.getId(),w.getCharacterId(0));
@@ -52,7 +52,7 @@ public class LessonWordTest extends TestCase {
 	
 	public void testRemovalByIndex()
 	{
-		LessonWord w = new LessonWord();
+		Word w = new Word();
 		w.addCharacter(c1.getId());
 		w.addCharacter(c2.getId());
 		w.addCharacter(c2.getId());

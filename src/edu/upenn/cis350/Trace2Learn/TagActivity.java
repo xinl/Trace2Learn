@@ -3,7 +3,7 @@ package edu.upenn.cis350.Trace2Learn;
 import java.util.List;
 
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonItem.ItemType;
+import edu.upenn.cis350.Trace2Learn.Database.TraceableItem.ItemType;
 
 import android.app.Activity;
 import android.app.AlertDialog;

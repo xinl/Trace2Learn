@@ -5,8 +5,8 @@ import java.util.List;
 
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
 import edu.upenn.cis350.Trace2Learn.Database.Lesson;
-import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
-import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
+import edu.upenn.cis350.Trace2Learn.Database.TraceableItem;
+import edu.upenn.cis350.Trace2Learn.Database.Word;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -34,10 +34,10 @@ import android.widget.AdapterView.OnItemClickListener;
 public class BrowseWordsActivity extends ListActivity {
 	private DbAdapter dba; 
 	private ListView lessonList; //list of words to display in listview
-	private ArrayList<LessonItem> items;
+	private ArrayList<TraceableItem> items;
 	private View layout;
 	private PopupWindow window;
-	private LessonWord lw;
+	private Word lw;
 	private long id;
 	private boolean fromCollection; 
 	private String collectionName = "";
@@ -50,7 +50,7 @@ public class BrowseWordsActivity extends ListActivity {
         dba.open();
         
         //Set up the ListView
-        items = new ArrayList<LessonItem>(); //items to show in ListView to choose from 
+        items = new ArrayList<TraceableItem>(); //items to show in ListView to choose from 
         id = this.getIntent().getLongExtra("ID", -1);
         fromCollection = this.getIntent().getBooleanExtra("fromCollection", false);
         
@@ -59,7 +59,7 @@ public class BrowseWordsActivity extends ListActivity {
         
 	        List<Long> ids = dba.getAllWordIdsByOrder();//Qin
 	        for(long id : ids){
-	        	LessonItem word = dba.getWordById(id);
+	        	TraceableItem word = dba.getWordById(id);
 	        	word.setTagList(dba.getWordTags(id));
 	        	items.add(word);
 	        }
@@ -68,10 +68,10 @@ public class BrowseWordsActivity extends ListActivity {
         	Lesson les = dba.getLessonById(id);
             collectionName = les.getLessonName();
     		
-    		items = new ArrayList<LessonItem>();
+    		items = new ArrayList<TraceableItem>();
     		List<Long> ids = dba.getWordsFromLessonId(id);
 			for (long id : ids){
-				LessonItem word = dba.getWordById(id);
+				TraceableItem word = dba.getWordById(id);
 			    word.setTagList(dba.getWordTags(id));
 			    items.add(word);
 			}
@@ -93,7 +93,7 @@ public class BrowseWordsActivity extends ListActivity {
 	}  
 
 	//when character is clicked, it starts the display mode for that char
-	public void clickOnItem(LessonItem li){
+	public void clickOnItem(TraceableItem li){
 		Intent intent = new Intent();
 		Bundle bun = new Bundle();
 
@@ -124,7 +124,7 @@ public class BrowseWordsActivity extends ListActivity {
 	public boolean onContextItemSelected(MenuItem item) {
 	  AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 	  int menuItemIndex = item.getItemId();
-	  lw = (LessonWord)items.get(info.position);
+	  lw = (Word)items.get(info.position);
 	  Log.e("MenuIndex",Integer.toString(menuItemIndex));
 	  Log.e("ListIndex",Integer.toString(info.position));
 	  

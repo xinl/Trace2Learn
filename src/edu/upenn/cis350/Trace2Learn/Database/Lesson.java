@@ -6,7 +6,7 @@ import java.util.List;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-public class Lesson extends LessonItem {
+public class Lesson extends TraceableItem {
 	
 	private List<Long> _words;
 	private String name;
@@ -40,18 +40,18 @@ public class Lesson extends LessonItem {
 	 * Get the list of items that compose this lesson
 	 * @return the list of characters that compose this word
 	 */
-	public synchronized List<LessonWord> getWords()
+	public synchronized List<Word> getWords()
 	{
-		ArrayList<LessonWord> words = new ArrayList<LessonWord>(_words.size());
+		ArrayList<Word> words = new ArrayList<Word>(_words.size());
 		for(Long id : _words)
 		{
 			if(_db == null) 
 			{
-				words.add(new LessonWord());
+				words.add(new Word());
 			}
 			else
 			{
-				LessonWord word = _db.getWordById(id);
+				Word word = _db.getWordById(id);
 				words.add(word);
 			}
 

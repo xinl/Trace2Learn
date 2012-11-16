@@ -5,8 +5,8 @@ import edu.upenn.cis350.Trace2Learn.R;
 import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.ListView;
-import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
+import edu.upenn.cis350.Trace2Learn.Database.Word;
+import edu.upenn.cis350.Trace2Learn.Database.Character;
 
 
 public class DatabaseActivityTest extends ActivityInstrumentationTestCase2<MainMenuActivity>{

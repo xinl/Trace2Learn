@@ -16,7 +16,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.PointF;
 import android.util.Log;
-import edu.upenn.cis350.Trace2Learn.Database.LessonItem.ItemType;
+import edu.upenn.cis350.Trace2Learn.Database.TraceableItem.ItemType;
 
 public class DbAdapter {
 	//below is the schema for the database
@@ -379,7 +379,7 @@ public class DbAdapter {
      * @param c character to be modified to the database
      * @return true if change is pushed to DB.  False on error.
      */
-    public boolean modifyCharacter(LessonCharacter c)
+    public boolean modifyCharacter(Character c)
     {
     	mDb.beginTransaction();
     	long charId = c.getId();
@@ -987,7 +987,7 @@ public class DbAdapter {
      * @param c character to be added to the database
      * @return true if character is added to DB.  False on error.
      */
-    public boolean addCharacter(LessonCharacter c)
+    public boolean addCharacter(Character c)
     {
     	mDb.beginTransaction();
     	//add to CHAR_TABLE
@@ -1194,12 +1194,12 @@ public class DbAdapter {
      * @param id id of the LessonCharacter
      * @return The LessonCharacter if id exists, null otherwise.
      */
-    public LessonCharacter getCharacterById(long id)
+    public Character getCharacterById(long id)
     {
         Cursor mCursor =
             mDb.query(true, CHAR_TABLE, new String[] {CHAR_ID}, CHAR_ID + "=" + id, null,
                     null, null, null, null);
-        LessonCharacter c = new LessonCharacter();
+        Character c = new Character();
         //if the character doesn't exists
         if (mCursor == null) {
             return null;
@@ -1247,12 +1247,12 @@ public class DbAdapter {
      * @param id id of the LessonCharacter
      * @return The LessonCharacter if id exists, null otherwise.
      */
-    public LessonWord getWordById(long id)
+    public Word getWordById(long id)
     {
         Cursor mCursor =
             mDb.query(true, WORDS_TABLE, new String[] {WORD_ID}, WORD_ID + "=" + id, null,
                     null, null, null, null);
-        LessonWord w = new LessonWord();
+        Word w = new Word();
         //if the character doesn't exists
         if (mCursor == null) {
             return null;
@@ -1585,7 +1585,7 @@ public class DbAdapter {
      * @param w word to be added to the database
      * @return true if word is added to DB.  False on error.
      */
-    public boolean addWord(LessonWord w)
+    public boolean addWord(Word w)
     {
     	mDb.beginTransaction();
     	//add to WORDS_TABLE
@@ -2499,7 +2499,7 @@ public class DbAdapter {
      * @param i the LessonItem
      * @param v ContentValues
      */
-    private void initializePrivateTag(LessonItem i, ContentValues v)
+    private void initializePrivateTag(TraceableItem i, ContentValues v)
     {
     	if(i.getPrivateTag()!=null)
     		v.put("name",i.getPrivateTag());

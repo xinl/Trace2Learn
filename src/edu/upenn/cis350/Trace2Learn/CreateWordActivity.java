@@ -28,14 +28,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
 import edu.upenn.cis350.Trace2Learn.Database.Lesson;
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
-import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
+import edu.upenn.cis350.Trace2Learn.Database.Character;
+import edu.upenn.cis350.Trace2Learn.Database.TraceableItem;
+import edu.upenn.cis350.Trace2Learn.Database.Word;
 
 public class CreateWordActivity extends Activity implements Filterable {
 	
 	private DbAdapter dba;
-	private LessonWord newWord;
+	private Word newWord;
 	private ListView list, lessonList;
 	private ArrayList<Bitmap> currentChars;
 	private Gallery gallery;
@@ -51,7 +51,7 @@ public class CreateWordActivity extends Activity implements Filterable {
         super.onCreate(savedInstanceState);
         saved = false;
         numChars = 0;
-        newWord = new LessonWord();
+        newWord = new Word();
         currentChars = new ArrayList<Bitmap>();
         setContentView(R.layout.create_word);
         dba = new DbAdapter(this);
@@ -70,9 +70,9 @@ public class CreateWordActivity extends Activity implements Filterable {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
             	numChars++;
-                long charId = ((LessonCharacter)list.getItemAtPosition(position)).getId();
+                long charId = ((Character)list.getItemAtPosition(position)).getId();
                 newWord.addCharacter(charId);
-                LessonItem item = (LessonCharacter)list.getItemAtPosition(position);
+                TraceableItem item = (Character)list.getItemAtPosition(position);
                 Bitmap bitmap = BitmapFactory.buildBitmap(item, 64, 64);
                 currentChars.add(bitmap);
                 imgAdapter.update(currentChars);
@@ -89,9 +89,9 @@ public class CreateWordActivity extends Activity implements Filterable {
 
 	@Override
 	public void setCharList(List<Long> charIds) {
-		ArrayList<LessonItem> items = new ArrayList<LessonItem>();
+		ArrayList<TraceableItem> items = new ArrayList<TraceableItem>();
         for(long id : charIds){
-        	LessonItem character = dba.getCharacterById(id);
+        	TraceableItem character = dba.getCharacterById(id);
         	character.setTagList(dba.getCharacterTags(id));
         	items.add(character);
         }
@@ -186,7 +186,7 @@ public class CreateWordActivity extends Activity implements Filterable {
 	}
 	
 	//for testing purposes
-	public LessonWord getWord(){
+	public Word getWord(){
 		return newWord;
 	}
 	
