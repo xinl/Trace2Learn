@@ -1,9 +1,15 @@
 package edu.upenn.cis350.Trace2Learn;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonItem.ItemType;
+import edu.upenn.cis350.Trace2Learn.Database.TraceableItem;
+import edu.upenn.cis350.Trace2Learn.Database.TraceableItem.ItemType;
+import edu.upenn.cis350.Trace2Learn.Database.Character;
+import edu.upenn.cis350.Trace2Learn.Database.Word;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -23,16 +29,16 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class TagActivity extends Activity {
-
-	private final String PRIVATE_PREFIX = "Private: ";
 	
 	//Should be able to take BOTH character and word
 	
 	private DbAdapter mDbHelper;
 	
+	TraceableItem traceableItem;
+	
 	//Controls
 	private EditText editText;
-	private EditText editPrivateText;
+	private EditText editAttributeText;
 	private ListView lv;
 	private Button addTagButton;
 	
@@ -50,7 +56,7 @@ public class TagActivity extends Activity {
         setContentView(R.layout.tag); //tag.xml
 
         editText = (EditText) findViewById(R.id.edittext);
-        editPrivateText = (EditText) findViewById(R.id.editprivate);
+        editAttributeText = (EditText) findViewById(R.id.editattribute);
         lv = (ListView) findViewById(R.id.list);
         addTagButton = (Button) findViewById(R.id.add_tag_button);
         
@@ -67,20 +73,31 @@ public class TagActivity extends Activity {
         switch(type)
         {
         case CHARACTER:
-        	currentTags = mDbHelper.getCharacterTags(id);
+        	traceableItem = mDbHelper.getCharacter(id);
         	break;
         case WORD:
-        	currentTags = mDbHelper.getWordTags(id);
-        	break;
-        case LESSON:
-        	currentTags = mDbHelper.getLessonTags(id);
+        	traceableItem = mDbHelper.getWord(id);
         	break;
         default:
     		Log.e("Tag", "Unsupported Type");
+    		return;
         }
+        
+        currentTags = new ArrayList<String>();
 
-        //add private tag
-        currentTags.add(0, PRIVATE_PREFIX+mDbHelper.getPrivateTag(id, type));
+        //add attributes
+        
+		Map<String, Set<String>> attributes = traceableItem.getAttributes();
+		for (String key: attributes.keySet()) {
+			Set<String> values = attributes.get(key);
+			for(String value: values) {
+				currentTags.add(key + ": " + value);
+			}
+		}
+		
+		// add tags
+		currentTags.addAll(traceableItem.getTags());
+		
         
         //Populate the ListView
         arrAdapter = new ArrayAdapter<String>(this, 
@@ -100,18 +117,17 @@ public class TagActivity extends Activity {
         	@Override
         	public void onItemClick(AdapterView<?> adapter, View view, int position,
         			long this_id) {
-        		String privateTag = mDbHelper.getPrivateTag(id, type);
-        		String thisPrivateTag = "Private: " + privateTag;
         		String tag = (String) adapter.getItemAtPosition(position);
-        		if(!tag.equals(thisPrivateTag)) {
-        			AlertDialog dialog = (AlertDialog) onCreateDialog(tag);
-        			dialog.show();
-        		}
+    			AlertDialog dialog = (AlertDialog) onDeleteDialog(tag);
+    			dialog.show();
         	}});
 	}
 	
-	protected Dialog onCreateDialog(String _tag) {
-		final String tag = _tag;
+	protected Dialog onDeleteDialog(final String str) {
+		final String[] strs = str.split(":");
+		
+		final boolean isTag = (strs.length == 1);
+		final boolean isAttr = (strs.length == 2);
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage(R.string.delete_confirm);
@@ -122,16 +138,23 @@ public class TagActivity extends Activity {
 				switch(type)
 		        {
 		        case CHARACTER:
-		        	mDbHelper.deleteTag(id, "'"+tag+"'");
+		        	if (isTag) {
+			        	traceableItem.removeTag(strs[0]);
+		        	} else if (isAttr) {
+		        		traceableItem.removeAttribute(strs[0].trim(), strs[1].trim());
+		        	}
+		        	mDbHelper.updateCharacter((Character)traceableItem);
 		        	break;
 		        case WORD:
-		        	mDbHelper.deleteWordTag(id, "'"+tag+"'");
-		        	break;
-		        case LESSON:
-		        	mDbHelper.deleteLessonTag(id, "'"+tag+"'");
+		        	if (isTag) {
+			        	traceableItem.removeTag(strs[0]);
+		        	} else if (isAttr) {
+		        		traceableItem.removeAttribute(strs[0].trim(), strs[1].trim());
+		        	}
+		        	mDbHelper.updateWord((Word)traceableItem);
 		        	break;
 		        }
-				currentTags.remove(tag);
+				currentTags.remove(str);
 				arrAdapter.notifyDataSetChanged();
 			}
 		});
@@ -162,6 +185,12 @@ public class TagActivity extends Activity {
 			String input2 = input.toString().trim(); //This is the string of the tag you typed in
 			//Qin, Takuya, checking whether the input is duplicate or empty 
 			if (input2.equals("")) return;
+			
+			if (input2.contains(":")) {
+				Toast.makeText(this, "Tag cannot contain ':'. The Tag Not Added", 
+						Toast.LENGTH_LONG).show();
+				return;
+			}
 
 			for(String str: currentTags) {
 				if(str.equals(input2)){
@@ -174,13 +203,12 @@ public class TagActivity extends Activity {
 			switch(type)
 	        {
 	        case CHARACTER:
-	        	mDbHelper.createTags(id, input2);
+	        	traceableItem.addTag(input2);
+	        	mDbHelper.updateCharacter((Character)traceableItem);
 	        	break;
 	        case WORD:
-	        	mDbHelper.createWordTags(id, input2);
-	        	break;
-	        case LESSON:
-	        	mDbHelper.createLessonTags(id, input2);
+	        	traceableItem.addTag(input2);
+	        	mDbHelper.updateWord((Word)traceableItem);
 	        	break;
 	        default:
 	    		Log.e("Tag", "Unsupported Type");
@@ -198,28 +226,30 @@ public class TagActivity extends Activity {
     }
 	
 	public void onAddPrivateTagButtonClick(View view){
-		Editable input = editPrivateText.getText();
+		Editable input = editAttributeText.getText();
 		String input2 = input.toString().trim();
-		if (!input2.equals("")){
-		//Qin
-		if (type == ItemType.CHARACTER)
-		{
-			mDbHelper.updatePrivateTag(id, input2); //added it to db
+		String[] kvPair = input2.split(":");
+		for (int i = 0; i < kvPair.length; i++) {
+			kvPair[i] = kvPair[i].trim();
 		}
-		else if (type == ItemType.WORD)
-		{		
-			mDbHelper.updatePrivateWordTag(id, input2);	
+		if (kvPair.length != 2 || kvPair[0].length() == 0 || kvPair[1].length() == 0) {
+			Toast.makeText(this, "Invalid attribute format.", 
+					Toast.LENGTH_LONG).show();
+			return;
 		}
-		else if (type == ItemType.LESSON)
-		{		
-			mDbHelper.updatePrivateLessonTag(id, input2);	
+		
+		
+		if (type == ItemType.CHARACTER) {
+			traceableItem.addAttribute(kvPair[0], kvPair[1]);
+			mDbHelper.updateCharacter((Character)traceableItem);
+		} else if (type == ItemType.WORD) {		
+			traceableItem.addAttribute(kvPair[0], kvPair[1]);
+			mDbHelper.updateWord((Word)traceableItem);
 		}
-		if(currentTags.get(0).contains(PRIVATE_PREFIX))
-			currentTags.remove(0);
-		currentTags.add(0,PRIVATE_PREFIX+input2);
+		
+		currentTags.add(kvPair[0] + ": " + kvPair[1]);
 		arrAdapter.notifyDataSetChanged();
-		editPrivateText.setText("");
-		}
+		editAttributeText.setText("");
 	}
 	
 	@Override
