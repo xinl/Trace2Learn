@@ -77,6 +77,10 @@ public class Collection {
 		return ids;
 	}
     
+    public int size() {
+    	return words.size();
+    }
+    
     @Override
     public boolean equals(Object o) {
     	if (o == null) return false;

@@ -163,7 +163,7 @@ public class CreateWordActivity extends Activity implements Filterable {
 	
 	//adds the new word to the database
 	public void onSaveWordButtonClick(View view){
-		if(newWord.length() > 0 && dba.addWord(newWord)){
+		if(newWord.size() > 0 && dba.addWord(newWord)){
 			saved = true;
 			TextView word = (TextView)findViewById(R.id.characters);
 			word.setText("Successfully added!");

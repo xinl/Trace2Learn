@@ -26,7 +26,7 @@ public class Word extends TraceableItem {
     	this.characters.remove(location);
     }
     
-    public int length() {
+    public int size() {
     	return characters.size();
     }
     
