@@ -275,7 +275,7 @@ public class TagActivity extends Activity {
 			finish();
 			break;
 		case LESSON:
-			startActivity(new Intent(this, BrowseLessonsActivity.class));
+			startActivity(new Intent(this, BrowseCollectionsActivity.class));
 			finish();
 			break;
 		}

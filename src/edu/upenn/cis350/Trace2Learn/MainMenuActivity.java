@@ -70,7 +70,7 @@ public class MainMenuActivity extends ListActivity {
 						startActivity(i);
 					}
 					else{
-						Intent i = new Intent(c, BrowseLessonsActivity.class);
+						Intent i = new Intent(c, BrowseCollectionsActivity.class);
 						startActivity(i);
 					}
 				}
