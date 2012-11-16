@@ -62,7 +62,7 @@ public class BitmapFactory {
 	 */
 	public static Bitmap buildBitmap(TraceableItem item, int height) {
 		if(item instanceof Word) {
-			int width = ((Word)item).length()*height;
+			int width = ((Word)item).size()*height;
 			if(width == 0) width = height;
 			return buildBitmap(item, width, height);
 		}

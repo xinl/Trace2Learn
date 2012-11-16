@@ -31,7 +31,7 @@ public class BrowseCollectionsActivity extends ListActivity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.browse_lessons);
+        setContentView(R.layout.browse_collections);
         dba = new DbAdapter(this);
         dba.open(); //opening the connection to database        
         
@@ -80,7 +80,7 @@ public class BrowseCollectionsActivity extends ListActivity {
 	  Log.e("ListIndex",Integer.toString(info.position));
 
 	  //delete lesson
-	  if(menuItemIndex == 1){
+	  if(menuItemIndex == 0){
 		  boolean result = dba.deleteCollection(collection);
 		  Log.d("Result", "" + result);
 		  if(result == false){

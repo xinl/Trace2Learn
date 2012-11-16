@@ -35,7 +35,7 @@ public class CreateLessonActivity extends Activity {
         super.onCreate(savedInstanceState);
         numWords = 0;
         currentWords = new ArrayList<Bitmap>();
-        setContentView(R.layout.create_lesson);
+        setContentView(R.layout.browse_words);
         dba = new DbAdapter(this);
         dba.open();
         

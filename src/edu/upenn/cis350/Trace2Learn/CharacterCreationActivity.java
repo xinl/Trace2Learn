@@ -1,6 +1,5 @@
 package edu.upenn.cis350.Trace2Learn;
 
-import java.util.List;
 import java.util.Set;
 
 import edu.upenn.cis350.Trace2Learn.R.id;
