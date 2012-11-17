@@ -142,7 +142,7 @@ public class BrowseCharactersActivity extends ListActivity implements Filterable
 			  resetListView();
 			  return true;
 		  } else {
-			  showToast("Character could not be deleted.");
+			  showToast("Character cannot be deleted while it's a member of a word.");
 			  return false;
 		  }
 	  }

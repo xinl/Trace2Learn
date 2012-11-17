@@ -68,12 +68,12 @@ public class DbAdapter {
 
     // Table creation statements
     private static final String CREATE_ATTR_TYPE_TABLE =
-    		"CREATE TABLE " + ATTR_TYPE_TABLE + " (" +
+    		"CREATE TABLE IF NOT EXISTS " + ATTR_TYPE_TABLE + " (" +
             ATTR_TYPE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
     		ATTR_TYPE_NAME + " TEXT NOT NULL);";
     
     private static final String CREATE_ATTR_TABLE =
-    		"CREATE TABLE " + ATTR_TABLE + " (" +
+    		"CREATE TABLE IF NOT EXISTS " + ATTR_TABLE + " (" +
             ATTR_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
     		ATTR_TYPE + " INTEGER, " +
     		ATTR_TYPE_NAME + " TEXT NOT NULL, " +
@@ -81,13 +81,13 @@ public class DbAdapter {
     		ATTR_TYPE_TABLE + "(" + ATTR_TYPE_ID + "));";
     
     private static final String CREATE_CHAR_TABLE =
-    		"CREATE TABLE " + CHAR_TABLE + " (" +
+    		"CREATE TABLE IF NOT EXISTS " + CHAR_TABLE + " (" +
             CHAR_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
     		CHAR_ORDER + " INTEGER NOT NULL, " +
     		CHAR_STROKES + " BLOB);";
     
     private static final String CREATE_CHAR_ATTR_TABLE =
-    		"CREATE TABLE " + CHAR_ATTR_TABLE + " ( " +
+    		"CREATE TABLE IF NOT EXISTS " + CHAR_ATTR_TABLE + " ( " +
     		CHAR_ATTR_CHARID + " INTEGER NOT NULL, " +
     		CHAR_ATTR_ATTRID + " INTEGER NOT NULL, " +
     		"FOREIGN KEY (" + CHAR_ATTR_ATTRID + ") REFERENCES " +
@@ -98,12 +98,12 @@ public class DbAdapter {
     		CHAR_ATTR_ATTRID + "));";
 
     private static final String CREATE_WORD_TABLE = 
-    		"CREATE TABLE " + WORD_TABLE + " (" + WORD_ID +
+    		"CREATE TABLE IF NOT EXISTS " + WORD_TABLE + " (" + WORD_ID +
     		" INTEGER PRIMARY KEY AUTOINCREMENT, " +
     		WORD_ORDER + " INTEGER NOT NULL);";
     
     private static final String CREATE_WORD_ATTR_TABLE =
-    		"CREATE TABLE " + WORD_ATTR_TABLE + " ( " +
+    		"CREATE TABLE IF NOT EXISTS " + WORD_ATTR_TABLE + " ( " +
     		WORD_ATTR_WORDID + " INTEGER NOT NULL, " +
     		WORD_ATTR_ATTRID + " INTEGER NOT NULL, " +
     		"FOREIGN KEY (" + WORD_ATTR_ATTRID + ") REFERENCES " +
@@ -114,7 +114,7 @@ public class DbAdapter {
     		WORD_ATTR_ATTRID + "));";
     
     private static final String CREATE_WORD_CHAR_TABLE =
-    		"CREATE TABLE " + WORD_CHAR_TABLE + " ( " +
+    		"CREATE TABLE IF NOT EXISTS " + WORD_CHAR_TABLE + " ( " +
     		WORD_CHAR_WORDID + " INTEGER NOT NULL, " +
     		WORD_CHAR_CHARID + " INTEGER NOT NULL, " +
     		WORD_CHAR_ORDER + " INTEGER NOT NULL, " +
@@ -126,14 +126,14 @@ public class DbAdapter {
     		WORD_CHAR_CHARID + ", " + WORD_CHAR_ORDER + "));";
     
     private static final String CREATE_COLL_TABLE = 
-    		"CREATE TABLE " + COLL_TABLE + " (" + COLL_ID +
+    		"CREATE TABLE IF NOT EXISTS " + COLL_TABLE + " (" + COLL_ID +
     		" INTEGER PRIMARY KEY AUTOINCREMENT, " +
     		COLL_ORDER + " INTEGER NOT NULL, " +
     		COLL_NAME + " TEXT NOT NULL, " +
     		COLL_DESCRIPTION + " TEXT);";
     
     private static final String CREATE_COLL_WORD_TABLE =
-    		"CREATE TABLE " + COLL_WORD_TABLE + " ( " +
+    		"CREATE TABLE IF NOT EXISTS " + COLL_WORD_TABLE + " ( " +
     		COLL_WORD_COLLID + " INTEGER NOT NULL, " +
     		COLL_WORD_WORDID + " INTEGER NOT NULL, " +
     		COLL_WORD_ORDER + " INTEGER NOT NULL, " +
@@ -200,7 +200,11 @@ public class DbAdapter {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL(CREATE_CHAR_TABLE);
+            createTables(db);
+        }
+        
+        private void createTables(SQLiteDatabase db) {
+        	db.execSQL(CREATE_CHAR_TABLE);
             db.execSQL(CREATE_WORD_TABLE);
             db.execSQL(CREATE_ATTR_TYPE_TABLE);
             db.execSQL(CREATE_ATTR_TABLE);
@@ -285,7 +289,7 @@ public class DbAdapter {
     public void closeTest() {
     	if (isTest) {
     		mDbHelper.dropTables(mDb);   
-    		mDbHelper.onCreate(mDb);
+    		mDbHelper.createTables(mDb);
     	}
         mDbHelper.close();
     }
@@ -977,6 +981,7 @@ public class DbAdapter {
      * @return true if deletion was successful.
      */
     public boolean deleteCharacter(Character c) {
+    	if (isCharacterInWords(c)) return false;
     	mDb.beginTransaction();
     	int rowsDeleted = mDb.delete(CHAR_TABLE, CHAR_ID + "=" + c.getId(), null);
     	if (rowsDeleted != 1) {
@@ -984,8 +989,33 @@ public class DbAdapter {
     		Log.e(CHAR_TABLE, "Unable to delete char, " + c);
     		return false;
     	}
+    	mDb.delete(WORD_CHAR_TABLE, WORD_CHAR_CHARID + "=" + c.getId(), null);
     	mDb.setTransactionSuccessful();
     	mDb.endTransaction();
+    	return true;
+    }
+    
+    private boolean isCharacterInWords(Character c) {
+    	// String query =
+    	//		"SELECT " + WORD_CHAR_WORDID + " " +
+    	//		"FROM " + WORD_CHAR_TABLE + " " +
+    	//		"WHERE " + WORD_CHAR_CHARID + " = " + c.getId() + " " +
+    	//		"GROUP BY " + WORD_CHAR_WORDID + " " +
+    	//		"HAVING COUNT(DISTINCT " + WORD_CHAR_CHARID + ") > 1;";
+    	
+    	//Cursor cursor = mDb.rawQuery(query, null);
+    	Cursor cursor = mDb.query(WORD_CHAR_TABLE, null, WORD_CHAR_CHARID + " = " + c.getId(),
+    			null, null, null, null);
+    	if (cursor == null) {
+    		Log.e(WORD_CHAR_TABLE, "Could not execute query for words containing " + c);
+    		return true; //don't execute deletion
+    	}
+    	cursor.moveToFirst();
+    	if (cursor.getCount() == 0) {
+    		cursor.close();
+    		return false;
+    	}
+    	cursor.close();
     	return true;
     }
 
@@ -1444,29 +1474,30 @@ public class DbAdapter {
     	//get characters of word
     	cursor = mDb.query(WORD_CHAR_TABLE, null,
     			WORD_CHAR_WORDID + "=" + w.getId(), null, null, null, WORD_CHAR_ORDER);
-    	if (cursor != null) {
-    		cursor.moveToFirst();
+    	if (cursor == null || cursor.getCount() == 0) {
+    		Log.e(WORD_CHAR_TABLE, "Did not find characters for word " + w);
+    		deleteWord(w);
+    		return null;
     	}
-    	if (cursor != null && cursor.getCount() > 0) {
-    		int charIndex = cursor.getColumnIndexOrThrow(WORD_CHAR_CHARID);
-    		do {
-    			long charId = cursor.getLong(charIndex);
-    			Character c = null;
-    			if (shallow) {
-    				c = new Character();
-    				c.setId(charId);
-    			} else {
-    				c = getCharacter(charId);
-    			}
-    			if (c == null) {
-    				Log.e("WORD_CHAR_WORDID", "Could not find character with id " + charId);
-    				cursor.close();
-    				return null;
-    			} else {
-    				w.addCharacter(c);
-    			}
-    		} while (cursor.moveToNext());
-    	}
+    	cursor.moveToFirst();
+    	int charIndex = cursor.getColumnIndexOrThrow(WORD_CHAR_CHARID);
+    	do {
+    		long charId = cursor.getLong(charIndex);
+    		Character c = null;
+    		if (shallow) {
+    			c = new Character();
+    			c.setId(charId);
+    		} else {
+    			c = getCharacter(charId);
+    		}
+    		if (c == null) {
+    			Log.e("WORD_CHAR_WORDID", "Could not find character with id " + charId);
+    			cursor.close();
+    			return null;
+    		} else {
+    			w.addCharacter(c);
+    		}
+    	} while (cursor.moveToNext());
     	return w;
     }
     
@@ -1575,7 +1606,6 @@ public class DbAdapter {
     
     /**
      * Delete the word from the database.
-     * Cascading gets rid of attributes, link to characters.
      * @param w the word to be deleted.
      * @return true if deletion was successful.
      */
@@ -1587,6 +1617,8 @@ public class DbAdapter {
     		Log.e(WORD_TABLE, "Unable to delete word, " + w);
     		return false;
     	}
+    	mDb.delete(COLL_WORD_TABLE, COLL_WORD_WORDID + "=" + w.getId(), null);
+    	mDb.delete(WORD_CHAR_TABLE, WORD_CHAR_WORDID + "=" + w.getId(), null);
     	mDb.setTransactionSuccessful();
     	mDb.endTransaction();
     	return true;
