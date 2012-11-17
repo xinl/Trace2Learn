@@ -174,6 +174,7 @@ public class CreateWordActivity extends Activity implements Filterable {
 			TextView word = (TextView)findViewById(R.id.characters);
 			word.setText("Successfully added!");
 			initiateCollectionPopupWindow();
+			word.setText("");
 			return;
 		}
 		showToast("Word is empty");
@@ -181,16 +182,31 @@ public class CreateWordActivity extends Activity implements Filterable {
 	}
 	
 	//brings the user to the tag screen
-	public void onAddTagButtonClick(View view){
+	public void onEditTagButtonClick(View view){
 		if(!saved){
-			showToast("Save the word first");
+			showToast("Please save the word before adding tags");
 			return;
 		}
 		Intent i = new Intent(this, TagActivity.class);
 		i.putExtra("ID", newWord.getId());
 		i.putExtra("TYPE", TraceableItem.ItemType.WORD.toString());
+		i.putExtra("FROM", false);
 		startActivity(i);
 	}
+	
+	public void onCreateNewButtonClick(View view){//Qin
+	    	saved = false;
+	        numChars = 0;
+	        newWord = new Word();
+	        currentChars = new ArrayList<Bitmap>();
+	        
+	        imgAdapter = new ImageAdapter(this,currentChars);
+	        gallery = (Gallery)findViewById(R.id.gallery);
+	        gallery.setSpacing(0);
+	        gallery.setAdapter(imgAdapter);
+                //gallery.setSelection(0);
+	}
+	
 	
 	//for testing purposes
 	public Word getWord(){
