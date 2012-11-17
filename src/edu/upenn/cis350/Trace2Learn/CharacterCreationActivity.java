@@ -225,7 +225,7 @@ public class CharacterCreationActivity extends Activity {
 
 			i.putExtra("ID", id_to_pass);
 			i.putExtra("TYPE", character.getClass().getSimpleName().toUpperCase());
-
+			i.putExtra("FROM", false);//Qin
 			startActivity(i);
 		} else
 		{

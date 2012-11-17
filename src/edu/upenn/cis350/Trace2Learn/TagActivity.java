@@ -46,6 +46,7 @@ public class TagActivity extends Activity {
 	private long id;
 	private List<String> currentTags;
 	
+	boolean isFromBrowse;
 	ItemType type;
 	ArrayAdapter<String> arrAdapter;
 	
@@ -66,6 +67,7 @@ public class TagActivity extends Activity {
         //Grab the intent/extras. This should be called from CharacterCreation
         id = this.getIntent().getLongExtra("ID", -1); 
         type = ItemType.valueOf(getIntent().getStringExtra("TYPE"));
+        isFromBrowse = this.getIntent().getBooleanExtra("FROM", true);
         
         Log.e("ID",Long.toString(id));
         Log.e("TYPE",type.toString());
@@ -270,6 +272,7 @@ public class TagActivity extends Activity {
 	 */
 	@Override
 	public void onBackPressed() {
+	    if(isFromBrowse){
 		switch(type)
 		{
 		case CHARACTER:
@@ -285,5 +288,9 @@ public class TagActivity extends Activity {
 			finish();
 			break;
 		}
+	    }
+	    else{
+		super.onBackPressed();//Qin
+	    }
 	}
 }

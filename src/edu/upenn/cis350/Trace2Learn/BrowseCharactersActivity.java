@@ -104,6 +104,7 @@ public class BrowseCharactersActivity extends ListActivity implements Filterable
 			Intent i = new Intent(this, TagActivity.class);
 			i.putExtra("ID", lc.getId());
 			i.putExtra("TYPE", "CHARACTER");
+			i.putExtra("FROM", true);//Qin
 			startActivity(i);
 			finish();
 			return true;
