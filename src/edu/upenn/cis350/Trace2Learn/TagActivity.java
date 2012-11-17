@@ -238,7 +238,13 @@ public class TagActivity extends Activity {
 			return;
 		}
 		
-		
+		for(String str: currentTags) {
+			if(str.equals(kvPair[0]+": "+kvPair[1])){
+				Toast.makeText(this, "Duplicate key:value pairs. The Attribute Not Added", 
+						Toast.LENGTH_LONG).show();
+				return;
+			}
+		}
 		if (type == ItemType.CHARACTER) {
 			traceableItem.addAttribute(kvPair[0], kvPair[1]);
 			mDbHelper.updateCharacter((Character)traceableItem);
