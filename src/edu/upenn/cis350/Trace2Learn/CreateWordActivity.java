@@ -150,8 +150,15 @@ public class CreateWordActivity extends Activity implements Filterable {
 		Editable edit = editText.getText();
 		String name = edit.toString();
 		if(name.equals("")){
-			showToast("You must name the lesson!");
+			showToast("You must name the collection!");
 			return;
+		}
+		List<Collection> allCollections = dba.getAllCollections();
+		for(Collection existedcoll: allCollections){
+		    if(name.equals(existedcoll.getName())){
+			showToast("This collection is existed, please click on the existed collection lists or rename a new collection");
+			return;
+		    }
 		}
 		Collection coll = new Collection();
 		coll.setName(name);

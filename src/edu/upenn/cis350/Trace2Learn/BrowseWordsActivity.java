@@ -261,6 +261,13 @@ public class BrowseWordsActivity extends ListActivity {
 			showToast("You must name the collection!");
 			return;
 		}
+		List<Collection> allCollections = dba.getAllCollections();
+		for(Collection existedcoll: allCollections){
+		    if(name.equals(existedcoll.getName())){
+			showToast("This collection is existed, please click on the existed collection lists or rename a new collection");
+			return;
+		    }
+		}
 		Collection collection = new Collection();
 		collection.setName(name);
 		collection.addWord(lw);
