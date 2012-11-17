@@ -56,13 +56,6 @@ public class MainMenuActivity extends ListActivity {
 						startActivity(i);
 					
 					}
-					/*else if(clicked.equals(APPS[2]))
-					{
-	
-						Intent i = new Intent(c, CreateLessonActivity.class);
-						startActivity(i);
-					
-					}*/
 					else if(clicked.equals(APPS[2])){
 						Intent i = new Intent(c, BrowseCharactersActivity.class);
 						startActivity(i);

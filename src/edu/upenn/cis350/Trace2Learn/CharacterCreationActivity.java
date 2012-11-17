@@ -1,10 +1,12 @@
 package edu.upenn.cis350.Trace2Learn;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import edu.upenn.cis350.Trace2Learn.R.id;
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
 import edu.upenn.cis350.Trace2Learn.Database.Character;
+import edu.upenn.cis350.Trace2Learn.Database.Stroke;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -19,8 +21,8 @@ public class CharacterCreationActivity extends Activity {
 
 	private LinearLayout _characterViewSlot;
 	private CharacterCreationPane _creationPane;
-	private CharacterPlaybackPane _playbackPane;	
-	private CharacterTracePane _tracePane;
+	//private CharacterPlaybackPane _playbackPane;	//Qin
+	//private CharacterTracePane _tracePane;   //Qin
 	
 	private TextView _tagText;
 
@@ -31,7 +33,8 @@ public class CharacterCreationActivity extends Activity {
 	private long id_to_pass = -1;
 
 	public enum Mode {
-		CREATION, DISPLAY, ANIMATE, SAVE, INVALID, TRACE;
+	    	CREATION, SAVE, INVALID;
+		//CREATION, DISPLAY, ANIMATE, SAVE, INVALID, TRACE;
 	}
 
 	@Override
@@ -39,28 +42,26 @@ public class CharacterCreationActivity extends Activity {
 	{
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.test_char_display);
+		setContentView(R.layout.create_char);//Qin was test_char_display
 
 		_characterViewSlot =(LinearLayout)findViewById(id.character_view_slot);
 		_creationPane = new CharacterCreationPane(this);
-		_playbackPane = new CharacterPlaybackPane(this, false, 2);
-		_tracePane = new CharacterTracePane(this);
+		//_playbackPane = new CharacterPlaybackPane(this, false, 2); //Qin
+		//_tracePane = new CharacterTracePane(this);  //Qin
 
 		setCharacter(new Character());
-
 		_tagText = (TextView) this.findViewById(id.tag_list);
-
 		_dbHelper = new DbAdapter(this);
 		_dbHelper.open();
-
-		initializeMode();
-
+		setCharacterCreationPane(); //Qin add
+		//initializeMode();  //Qin
 	}
 
 	/**
 	 * Initialize the display mode, if the activity was started with intent to
 	 * display a character, that character should be displayed
 	 */
+	/*
 	private void initializeMode() 
 	{
 		Bundle bun = getIntent().getExtras();
@@ -79,10 +80,12 @@ public class CharacterCreationActivity extends Activity {
 			setCharacterCreationPane();
 		}
 	}
-
+	*/ //Qin
+	
 	/**
-	 * Switches the display mode to creation
+	 * Switch to creation mode
 	 */
+	
 	private synchronized void setCharacterCreationPane() 
 	{
 		if (_currentMode != Mode.CREATION) 
@@ -92,10 +95,11 @@ public class CharacterCreationActivity extends Activity {
 			_characterViewSlot.addView(_creationPane);
 		}
 	}
-
+	
 	/**
 	 * Switches the display mode to display
 	 */
+	/*
 	private synchronized void setCharacterDisplayPane()
 	{
 		_playbackPane.setAnimated(true);
@@ -108,10 +112,12 @@ public class CharacterCreationActivity extends Activity {
 			_characterViewSlot.addView(_playbackPane);
 		}
 	}
-
+	 */ //Qin
+	
 	/**
 	 * Switches the display mode to display
 	 */
+	/*
 	private synchronized void setCharacterTracePane()
 	{
 		_tracePane.clearPane();
@@ -124,6 +130,7 @@ public class CharacterCreationActivity extends Activity {
 			_characterViewSlot.addView(_tracePane);
 		}
 	}
+	*/ //Qin
 	
 	public void setContentView(View view)
 	{
@@ -133,8 +140,8 @@ public class CharacterCreationActivity extends Activity {
 	private void setCharacter(Character character)
 	{
 		_creationPane.setCharacter(character);
-		_playbackPane.setCharacter(character);
-		_tracePane.setTemplate(character);
+		//_playbackPane.setCharacter(character);   //Qin
+		//_tracePane.setTemplate(character);   //Qin
 	}
 
 	private void updateTags()
@@ -147,18 +154,13 @@ public class CharacterCreationActivity extends Activity {
 			setCharacter(character);
 		}
 	}
-
-	public void onClearButtonClick(View view)
-	{
-		_creationPane.clearPane();
-		_tracePane.clearPane();
-		_playbackPane.clearPane();
-	}
 	
-	public void onTraceButtonClick(View view)
+	/*public void onTraceButtonClick(View view)
 	{
 		setCharacterTracePane();
+		
 	}
+	*/
 	
 	@Override
 	public void onRestart()
@@ -182,10 +184,10 @@ public class CharacterCreationActivity extends Activity {
 		}
 	}
 
-	public void onCreateButtonClick(View view)
+	/*public void onCreateButtonClick(View view)
 	{
 		setCharacterCreationPane();
-	}
+	}*/ //Qin
 
 	public void onSaveButtonClick(View view)
 	{
@@ -201,13 +203,18 @@ public class CharacterCreationActivity extends Activity {
 			_dbHelper.updateCharacter(character);
 		Log.e("Adding to DB", Long.toString(character.getId()));
 		id_to_pass = character.getId();
-		//if(id >= 0)
-		//{
-			onTagButtonClick(view);
-		//}
+		onTagButtonClick(view);
 		updateTags();
 	}
 
+	public void onCreateNewButtonClick(View view) //redrqw this character
+	{
+	    	_creationPane.clearPane();  //Qin
+	    	this._tagText.setText("");
+		//_tracePane.clearPane();  //Qin
+		//_playbackPane.clearPane();  //Qin
+	}
+	
 	public void onTagButtonClick(View view) 
 	{
 		Character character = _creationPane.getCharacter();
@@ -222,16 +229,17 @@ public class CharacterCreationActivity extends Activity {
 			startActivity(i);
 		} else
 		{
-			_tagText.setText("Error: Save the character before adding tags");
+			showToast("Please save the character before adding tags");
 		}
 
 	}
 
-	public void onAnimateButtonClick(View view) 
+	/*public void onAnimateButtonClick(View view) 
 	{
 		Log.i("CLICK", "DISPLAY");
 		setCharacterDisplayPane();
-	}
+		
+	}*/  //Qin
 	
 	public void showToast(String msg){
 		Context context = getApplicationContext();
