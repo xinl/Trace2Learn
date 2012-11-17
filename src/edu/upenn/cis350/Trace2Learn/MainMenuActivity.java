@@ -19,7 +19,9 @@ public class MainMenuActivity extends ListActivity {
 			"Create Word",
 			"Browse All Characters",
 			"Browse All Words",
-			"Browse All Collections"
+			"Browse All Collections",
+			"Export Character Libraries",
+			"Import Character Libraries"
 		};
 
 	@Override
@@ -69,9 +71,16 @@ public class MainMenuActivity extends ListActivity {
 						Intent i = new Intent(c, BrowseWordsActivity.class);
 						startActivity(i);
 					}
-					else{
+					else if(clicked.equals(APPS[4])){
 						Intent i = new Intent(c, BrowseCollectionsActivity.class);
 						startActivity(i);
+					}
+					else if(clicked.equals(APPS[5])){
+						Intent i = new Intent(c, ExportCharacterActivity.class);
+						startActivity(i);
+					}
+					else {
+						//XXX
 					}
 				}
 			}
