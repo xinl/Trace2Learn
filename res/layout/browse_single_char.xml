@@ -5,7 +5,7 @@
     android:layout_height="fill_parent"
     android:gravity="bottom"
     android:orientation="vertical"
-    tools:ignore="HardcodedText" >
+    tools:ignore="HardcodedText,InefficientWeight" >
 
     <RelativeLayout
         android:id="@+id/view_slot"
@@ -29,26 +29,26 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:text="" />
-
+
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/save_button"
+            android:id="@+id/trace_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="onSaveButtonClick"
-            android:text="@string/save" />
+            android:onClick="onTraceButtonClick"
+            android:text="@string/practice" />
 
         <Button
-            android:id="@+id/edit_tag_button"
+            android:id="@+id/animate_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="onTagButtonClick"
-            android:text="Edit Tag" />
-
+            android:onClick="onAnimateButtonClick"
+            android:text="@string/animate" />
+
         <Button
             android:id="@+id/create_button"
             android:layout_width="wrap_content"

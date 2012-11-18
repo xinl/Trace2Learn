@@ -41,13 +41,16 @@ public class CharacterCreationActivity extends Activity {
 	{
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.test_char_display);
-
 		isCreate = this.getIntent().getBooleanExtra("ISCREATE",true);
+		
+		if(isCreate)
+		    setContentView(R.layout.create_char);
+		else
+		    setContentView(R.layout.browse_single_char);
 		//test
 		//if(!isCreate)
 		//showToast("isCreate is false");
-		if(!isCreate){
+		/*if(!isCreate){
 		    //findViewById(R.id.create_button).setVisibility(View.INVISIBLE);
 		    findViewById(R.id.tag_button).setVisibility(View.INVISIBLE);
 		    findViewById(R.id.save_button).setVisibility(View.INVISIBLE);
@@ -56,6 +59,7 @@ public class CharacterCreationActivity extends Activity {
 		    findViewById(R.id.trace_button).setVisibility(View.INVISIBLE);
 		    findViewById(R.id.animate_button).setVisibility(View.INVISIBLE);
 		}
+		*/
 		_characterViewSlot =(LinearLayout)findViewById(id.character_view_slot);
 		_creationPane = new CharacterCreationPane(this);
 		_playbackPane = new CharacterPlaybackPane(this, false, 2); 
