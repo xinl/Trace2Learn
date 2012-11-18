@@ -113,17 +113,17 @@ public class DbAdapter_WordTest extends AndroidTestCase {
 		db.addWord(word2);
 		
 		List<Word> all = db.getAllWords();
-		assertEquals(word1, all.get(3));
-		assertEquals(word2, all.get(4));
+		assertEquals(word1, all.get(0));
+		assertEquals(word2, all.get(1));
 		
-		word1.setOrder(5);
-		word2.setOrder(4);
+		word1.setOrder(2);
+		word2.setOrder(1);
 		
 		db.updateWord(word1);
 		db.updateWord(word2);
 		
 		all = db.getAllWords();
-		assertEquals(word2, all.get(3));
-		assertEquals(word1, all.get(4));
+		assertEquals(word2, all.get(0));
+		assertEquals(word1, all.get(1));
 	}
 }

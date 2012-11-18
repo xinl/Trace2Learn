@@ -10,7 +10,7 @@ import edu.upenn.cis350.Trace2Learn.Database.Word;
 public class DbAdapter_IntegrationAcrossItems extends AndroidTestCase {
 	DbAdapter db;
 	Character a, b, c;
-	Word word1, word2;
+	Word word1, word2, word3;
 	Collection coll;
 	
 	@Override
@@ -55,8 +55,13 @@ public class DbAdapter_IntegrationAcrossItems extends AndroidTestCase {
 		word2.addCharacter(b);
 		word2.addTag("ab");
 		
+		word3 = new Word();
+		word3.addCharacter(c);
+		word3.addTag("c");
+		
 		db.addWord(word1);
 		db.addWord(word2);
+		db.addWord(word3);
 		
 		coll = new Collection();
 		coll.setName("Collection 1");
@@ -76,14 +81,11 @@ public class DbAdapter_IntegrationAcrossItems extends AndroidTestCase {
 		assertFalse(db.deleteCharacter(c));
 		
 		assertTrue(db.deleteWord(word1));
-		
-		Word cWord = db.getWord(c.getId());
-		assertNotNull(cWord);
-		assertTrue(db.deleteWord(cWord));
+		assertTrue(db.deleteWord(word3));
 		
 		assertTrue(db.deleteCharacter(c));
 		
-		assertNull(db.getWord(c.getId()));
+		assertNull(db.getCharacter(c.getId()));
 		
 		Collection newColl = db.getCollection(coll.getId());
 		assertFalse(coll.equals(newColl));
