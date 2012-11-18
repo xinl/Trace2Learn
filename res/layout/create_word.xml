@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:ignore="HardcodedText,InefficientWeight" >
+    tools:ignore="HardcodedText" >
 
     <TextView
         android:id="@+id/instructions"
@@ -49,13 +49,13 @@
             android:layout_height="wrap_content"
             android:onClick="onEditTagButtonClick"
             android:text="Edit Tag" />
-
+
         <Button
             android:id="@+id/create_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onCreateNewButtonClick"
-            android:text="Clear" />
+            android:text="Create New" />
 
     </LinearLayout>
 
