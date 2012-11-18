@@ -48,7 +48,7 @@ public class CharacterCreationActivity extends Activity {
 		//if(!isCreate)
 		//showToast("isCreate is false");
 		if(!isCreate){
-		    findViewById(R.id.create_button).setVisibility(View.INVISIBLE);
+		    //findViewById(R.id.create_button).setVisibility(View.INVISIBLE);
 		    findViewById(R.id.tag_button).setVisibility(View.INVISIBLE);
 		    findViewById(R.id.save_button).setVisibility(View.INVISIBLE);
 		}
@@ -220,11 +220,18 @@ public class CharacterCreationActivity extends Activity {
 
 	public void onCreateNewButtonClick(View view) //redrqw this character
 	{
+	    if(isCreate){
 	    	_creationPane.clearPane();  //Qin
 	    	this._tagText.setText("");
 		_tracePane.clearPane();  //Qin
 		_playbackPane.clearPane();  //Qin
 		id_to_pass = -1;
+	    }
+	    else{
+		//_creationPane.clearPane();
+		_tracePane.clearPane(); 
+		_playbackPane.clearPane();
+	    }
 	}
 	
 	public void onTagButtonClick(View view) 
