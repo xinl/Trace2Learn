@@ -27,7 +27,7 @@
         <activity android:name="BrowseWordsActivity"></activity>
         <activity android:name=".BrowseCollectionsActivity"></activity>
         <activity android:name="PhrasePracticeActivity"></activity>
-        <activity android:name="ExportCharacterActivity"></activity>
+        <activity android:name=".ExportCharacterActivity"></activity>
     </application>
 
 </manifest>
