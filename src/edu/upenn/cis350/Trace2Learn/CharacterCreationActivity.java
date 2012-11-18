@@ -21,8 +21,8 @@ public class CharacterCreationActivity extends Activity {
 
 	private LinearLayout _characterViewSlot;
 	private CharacterCreationPane _creationPane;
-	//private CharacterPlaybackPane _playbackPane;	//Qin
-	//private CharacterTracePane _tracePane;   //Qin
+	private CharacterPlaybackPane _playbackPane;	
+	private CharacterTracePane _tracePane;   
 	
 	private TextView _tagText;
 
@@ -31,10 +31,11 @@ public class CharacterCreationActivity extends Activity {
 	private Mode _currentMode = Mode.INVALID;
 
 	private long id_to_pass = -1;
+	
+	boolean isCreate = true;
 
 	public enum Mode {
-	    	CREATION, SAVE, INVALID;
-		//CREATION, DISPLAY, ANIMATE, SAVE, INVALID, TRACE;
+	    	CREATION, DISPLAY, ANIMATE, SAVE, INVALID, TRACE;
 	}
 
 	@Override
@@ -42,26 +43,38 @@ public class CharacterCreationActivity extends Activity {
 	{
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.create_char);//Qin was test_char_display
+		setContentView(R.layout.test_char_display);
 
+		isCreate = this.getIntent().getBooleanExtra("ISCREATE",true);
+		//test
+		//if(!isCreate)
+		//showToast("isCreate is false");
+		if(!isCreate){
+		    findViewById(R.id.create_button).setVisibility(View.INVISIBLE);
+		    findViewById(R.id.tag_button).setVisibility(View.INVISIBLE);
+		    findViewById(R.id.save_button).setVisibility(View.INVISIBLE);
+		}
+		else{
+		    findViewById(R.id.trace_button).setVisibility(View.INVISIBLE);
+		    findViewById(R.id.animate_button).setVisibility(View.INVISIBLE);
+		}
 		_characterViewSlot =(LinearLayout)findViewById(id.character_view_slot);
 		_creationPane = new CharacterCreationPane(this);
-		//_playbackPane = new CharacterPlaybackPane(this, false, 2); //Qin
-		//_tracePane = new CharacterTracePane(this);  //Qin
+		_playbackPane = new CharacterPlaybackPane(this, false, 2); 
+		_tracePane = new CharacterTracePane(this);  
 
 		setCharacter(new Character());
 		_tagText = (TextView) this.findViewById(id.tag_list);
 		_dbHelper = new DbAdapter(this);
 		_dbHelper.open();
-		setCharacterCreationPane(); //Qin add
-		//initializeMode();  //Qin
+		initializeMode();  
 	}
 
 	/**
 	 * Initialize the display mode, if the activity was started with intent to
 	 * display a character, that character should be displayed
 	 */
-	/*
+	
 	private void initializeMode() 
 	{
 		Bundle bun = getIntent().getExtras();
@@ -80,7 +93,7 @@ public class CharacterCreationActivity extends Activity {
 			setCharacterCreationPane();
 		}
 	}
-	*/ //Qin
+	
 	
 	/**
 	 * Switch to creation mode
@@ -99,7 +112,7 @@ public class CharacterCreationActivity extends Activity {
 	/**
 	 * Switches the display mode to display
 	 */
-	/*
+	
 	private synchronized void setCharacterDisplayPane()
 	{
 		_playbackPane.setAnimated(true);
@@ -112,12 +125,12 @@ public class CharacterCreationActivity extends Activity {
 			_characterViewSlot.addView(_playbackPane);
 		}
 	}
-	 */ //Qin
+	
 	
 	/**
 	 * Switches the display mode to display
 	 */
-	/*
+	
 	private synchronized void setCharacterTracePane()
 	{
 		_tracePane.clearPane();
@@ -130,7 +143,7 @@ public class CharacterCreationActivity extends Activity {
 			_characterViewSlot.addView(_tracePane);
 		}
 	}
-	*/ //Qin
+	
 	
 	public void setContentView(View view)
 	{
@@ -140,8 +153,8 @@ public class CharacterCreationActivity extends Activity {
 	private void setCharacter(Character character)
 	{
 		_creationPane.setCharacter(character);
-		//_playbackPane.setCharacter(character);   //Qin
-		//_tracePane.setTemplate(character);   //Qin
+		_playbackPane.setCharacter(character);   
+		_tracePane.setTemplate(character);   
 	}
 
 	private void updateTags()
@@ -155,12 +168,12 @@ public class CharacterCreationActivity extends Activity {
 		}
 	}
 	
-	/*public void onTraceButtonClick(View view)
+	public void onTraceButtonClick(View view)
 	{
 		setCharacterTracePane();
 		
 	}
-	*/
+	
 	
 	@Override
 	public void onRestart()
@@ -184,10 +197,10 @@ public class CharacterCreationActivity extends Activity {
 		}
 	}
 
-	/*public void onCreateButtonClick(View view)
+	public void onCreateButtonClick(View view)
 	{
 		setCharacterCreationPane();
-	}*/ //Qin
+	}
 
 	public void onSaveButtonClick(View view)
 	{
@@ -211,8 +224,9 @@ public class CharacterCreationActivity extends Activity {
 	{
 	    	_creationPane.clearPane();  //Qin
 	    	this._tagText.setText("");
-		//_tracePane.clearPane();  //Qin
-		//_playbackPane.clearPane();  //Qin
+		_tracePane.clearPane();  //Qin
+		_playbackPane.clearPane();  //Qin
+		id_to_pass = -1;
 	}
 	
 	public void onTagButtonClick(View view) 
@@ -234,12 +248,12 @@ public class CharacterCreationActivity extends Activity {
 
 	}
 
-	/*public void onAnimateButtonClick(View view) 
+	public void onAnimateButtonClick(View view) 
 	{
 		Log.i("CLICK", "DISPLAY");
 		setCharacterDisplayPane();
 		
-	}*/  //Qin
+	}
 	
 	public void showToast(String msg){
 		Context context = getApplicationContext();

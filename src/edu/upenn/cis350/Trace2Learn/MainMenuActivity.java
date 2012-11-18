@@ -53,6 +53,7 @@ public class MainMenuActivity extends ListActivity {
 					{
 	
 						Intent i = new Intent(c, CreateWordActivity.class);
+						i.putExtra("ISCREATE", true);
 						startActivity(i);
 					
 					}
