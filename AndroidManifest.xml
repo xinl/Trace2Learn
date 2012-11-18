@@ -19,14 +19,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="CharacterCreationActivity"></activity>
-        <activity android:name="CreateWordActivity"></activity>
-        <activity android:name="CreateLessonActivity"></activity>
-        <activity android:name="TagActivity"></activity>
-        <activity android:name="BrowseCharactersActivity"></activity>
-        <activity android:name="BrowseWordsActivity"></activity>
+        <activity android:name=".CharacterCreationActivity"></activity>
+        <activity android:name=".CreateWordActivity"></activity>
+        <activity android:name=".CreateLessonActivity"></activity>
+        <activity android:name=".TagActivity"></activity>
+        <activity android:name=".BrowseCharactersActivity"></activity>
+        <activity android:name=".BrowseWordsActivity"></activity>
         <activity android:name=".BrowseCollectionsActivity"></activity>
-        <activity android:name="PhrasePracticeActivity"></activity>
+        <activity android:name=".PhrasePracticeActivity"></activity>
         <activity android:name=".ExportCharacterActivity"></activity>
     </application>
 
