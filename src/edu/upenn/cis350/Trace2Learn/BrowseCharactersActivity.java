@@ -144,7 +144,7 @@ public class BrowseCharactersActivity extends ListActivity implements Filterable
 			  resetListView();
 			  return true;
 		  } else {
-			  showToast("Character cannot be deleted while it's a member of a word.");
+			  showToast("Cannot delete character that is used in a word.");
 			  return false;
 		  }
 	  }

@@ -258,13 +258,13 @@ public class BrowseWordsActivity extends ListActivity {
 		Editable edit = editText.getText();
 		String name = edit.toString();
 		if(name.equals("")){
-			showToast("You must name the collection!");
+			showToast("Please name the collection.");
 			return;
 		}
 		List<Collection> allCollections = dba.getAllCollections();
 		for(Collection existedcoll: allCollections){
 		    if(name.equals(existedcoll.getName())){
-			showToast("This collection is existed, please click on the existed collection lists or rename a new collection");
+			showToast(name + " already exists. Please choose a different name.");
 			return;
 		    }
 		}

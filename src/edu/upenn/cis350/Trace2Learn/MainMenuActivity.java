@@ -20,8 +20,8 @@ public class MainMenuActivity extends ListActivity {
 			"Browse All Characters",
 			"Browse All Words",
 			"Browse All Collections",
-			"Export Character Libraries",
-			"Import Character Libraries"
+			"Export Character Library",
+			"Import Character Library"
 		};
 
 	@Override

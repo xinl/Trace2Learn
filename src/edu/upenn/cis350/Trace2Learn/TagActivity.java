@@ -107,13 +107,7 @@ public class TagActivity extends Activity {
         arrAdapter.notifyDataSetChanged();
        
         lv.setAdapter(arrAdapter);
-        
-        /*final String [] items = new String[]{"boo","hey","wga","Item4"};
-        
-        ArrayAdapter ad = new ArrayAdapter(this,android.R.layout.simple_list_item_multiple_choice,items);
-        lv.setAdapter(ad);*/
         lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-
         lv.setOnItemClickListener(new OnItemClickListener(){
 
         	@Override
@@ -189,14 +183,14 @@ public class TagActivity extends Activity {
 			if (input2.equals("")) return;
 			
 			if (input2.contains(":")) {
-				Toast.makeText(this, "Tag cannot contain ':'. The Tag Not Added", 
+				Toast.makeText(this, "Tag cannot contain ':'.", 
 						Toast.LENGTH_LONG).show();
 				return;
 			}
 
 			for(String str: currentTags) {
 				if(str.equals(input2)){
-					Toast.makeText(this, "Duplicate tag. The Tag Not Added", 
+					Toast.makeText(this, "Cannot add duplicate tag.", 
 							Toast.LENGTH_LONG).show();
 					return;
 				}
@@ -242,7 +236,7 @@ public class TagActivity extends Activity {
 		
 		for(String str: currentTags) {
 			if(str.equals(kvPair[0]+": "+kvPair[1])){
-				Toast.makeText(this, "Duplicate key:value pairs. The Attribute Not Added", 
+				Toast.makeText(this, "Cannot add duplicate key:value pair.", 
 						Toast.LENGTH_LONG).show();
 				return;
 			}

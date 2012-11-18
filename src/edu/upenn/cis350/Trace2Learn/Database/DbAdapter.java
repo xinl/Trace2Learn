@@ -755,19 +755,6 @@ public class DbAdapter {
     		return false;
     	}
     	
-    	// add char as word.
-    	Word word = new Word();
-    	word.addCharacter(c);
-    	word.setAttributes(c.getAttributes());
-    	word.setTags(c.getTags());
-    	boolean success = addWord(word);
-    	if (! success) {
-    		//if error
-    		Log.e(CHAR_TABLE, "Cannot add char, " + c + ", as word in " + WORD_TABLE + ".");
-    		mDb.endTransaction();
-    		return false;
-    	}
-    	
     	//add attributes;
     	if (! c.getTags().isEmpty()) {
     		c.addAttributes(ATTR_TYPE_TAG, c.getTags());
