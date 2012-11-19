@@ -1,10 +1,9 @@
 package edu.upenn.cis350.Trace2Learn;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.Lesson;
+import edu.upenn.cis350.Trace2Learn.Database.Collection;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -21,11 +20,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class BrowseLessonsActivity extends ListActivity {
+public class BrowseCollectionsActivity extends ListActivity {
 
-	private Lesson le;
 	private DbAdapter dba; 
-	private ArrayList<Lesson> items;
+	private ArrayList<Collection> items;
 	ArrayAdapter<String> arrAdapter;
 
 	final Context c = this;
@@ -33,19 +31,14 @@ public class BrowseLessonsActivity extends ListActivity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.browse_lessons);
+        setContentView(R.layout.browse_collections);
         dba = new DbAdapter(this);
         dba.open(); //opening the connection to database        
         
-        items = new ArrayList<Lesson>(); //items to show in ListView to choose from 
-        List<Long> ids = dba.getAllLessonIds();
-        for(long id : ids){
-        	Lesson le = dba.getLessonById(id);
-        	le.setTagList(dba.getLessonTags(id));
-        	items.add(le);
-        }
+        items = new ArrayList<Collection>(dba.getAllCollections()); //items to show in ListView to choose from 
+        
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LessonListAdapter la = new LessonListAdapter(this,items,vi);
+        CollectionListAdapter la = new CollectionListAdapter(this,items,vi);
         setListAdapter(la);
         registerForContextMenu(getListView());
     }
@@ -59,7 +52,7 @@ public class BrowseLessonsActivity extends ListActivity {
 
 	//when character is clicked, it starts the display mode for that char
 	public void clickOnItem(int position){
-		Lesson le = ((Lesson)items.get(position));
+		Collection le = ((Collection)items.get(position));
 		Intent i = new Intent(this, BrowseWordsActivity.class);
 		i.putExtra("ID", le.getId());
 //		i.putExtra("lessonIndex", position + 1);
@@ -72,7 +65,7 @@ public class BrowseLessonsActivity extends ListActivity {
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 	    menu.setHeaderTitle("Options");
-	    String[] menuItems = {"Edit Tags", "Delete"};
+	    String[] menuItems = {"Delete"};
 	    for (int i = 0; i<menuItems.length; i++) {
 	      menu.add(Menu.NONE, i, i, menuItems[i]);
 	    }
@@ -82,24 +75,15 @@ public class BrowseLessonsActivity extends ListActivity {
 	public boolean onContextItemSelected(MenuItem item) {
 	  AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 	  int menuItemIndex = item.getItemId();
-	  le = (Lesson)items.get(info.position);
+	  Collection collection = (Collection)items.get(info.position);
 	  Log.e("MenuIndex",Integer.toString(menuItemIndex));
 	  Log.e("ListIndex",Integer.toString(info.position));
 
 	  //delete lesson
 	  if(menuItemIndex == 0){
-		  Intent i = new Intent(this, TagActivity.class);
-		  i.putExtra("ID", le.getId());
-		  i.putExtra("TYPE", "LESSON");
-		  startActivity(i);
-		  finish(); 
-		  return true;
-		  
-	  } else if(menuItemIndex == 1){
-		  long id = le.getId();
-		  long result = dba.deleteLesson(id);
-		  Log.e("Result",Long.toString(result));
-		  if(result < 0){
+		  boolean result = dba.deleteCollection(collection);
+		  Log.d("Result", "" + result);
+		  if(result == false){
 			  showToast("Could not delete the lesson");
 			  return false;
 		  }

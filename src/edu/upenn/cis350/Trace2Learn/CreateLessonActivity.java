@@ -11,14 +11,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Gallery;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
-
+import edu.upenn.cis350.Trace2Learn.Database.Collection;
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.Lesson;
-import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
-import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
+import edu.upenn.cis350.Trace2Learn.Database.TraceableItem;
+import edu.upenn.cis350.Trace2Learn.Database.Word;
 
 public class CreateLessonActivity extends Activity {
 	
@@ -26,7 +25,7 @@ public class CreateLessonActivity extends Activity {
 	private ListView list; //list of words to display in listview
 	private Gallery gallery; 
 	private ImageAdapter imgAdapter;
-	private Lesson newLesson; 
+	private Collection newCollection; 
 	private ArrayList<Bitmap> currentWords;
 	private int numWords;
 
@@ -35,7 +34,7 @@ public class CreateLessonActivity extends Activity {
         super.onCreate(savedInstanceState);
         numWords = 0;
         currentWords = new ArrayList<Bitmap>();
-        setContentView(R.layout.create_lesson);
+        setContentView(R.layout.browse_words);
         dba = new DbAdapter(this);
         dba.open();
         
@@ -48,29 +47,26 @@ public class CreateLessonActivity extends Activity {
     	
         //list = (ListView)findViewById(R.id.wordlist);
      
-        newLesson = new Lesson();
+        newCollection = new Collection();
         
         //Set up the ListView
-        ArrayList<LessonItem> items = new ArrayList<LessonItem>(); //items to show in ListView to choose from 
-        List<Long> ids = dba.getAllWordIds();
-        for(long id : ids){
-        	LessonItem word = dba.getWordById(id);
-        	word.setTagList(dba.getCharacterTags(id));
-        	items.add(word);
+        ArrayList<TraceableItem> items = new ArrayList<TraceableItem>(); //items to show in ListView to choose from 
+        List<Word> words = dba.getAllWords();
+        for(Word w : words){
+        	items.add(w);
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        list.setAdapter(new LessonItemListAdapter(this, items, vi));
+        list.setAdapter(new TraceableListAdapter(this, items, vi));
 
         list.setOnItemClickListener(new OnItemClickListener() {    
             public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
             	numWords++;
                 Log.e("Position",Long.toString(position));
                 Log.e("Type",list.getItemAtPosition(position).getClass().getName());
-                long wordId = ((LessonWord)list.getItemAtPosition(position)).getId();
-                Log.e("Id",Long.toString(wordId));
-                newLesson.addWord(wordId);
-                LessonItem item = (LessonWord)list.getItemAtPosition(position);
-                Bitmap bitmap = BitmapFactory.buildBitmap(item, 64, 64);
+                Word w = ((Word)list.getItemAtPosition(position));
+                Log.e("Word", w.toString());
+                newCollection.addWord(w);
+                Bitmap bitmap = BitmapFactory.buildBitmap(w, 64, 64);
                 currentWords.add(bitmap);
                 imgAdapter.update(currentWords);
                 imgAdapter.notifyDataSetChanged();

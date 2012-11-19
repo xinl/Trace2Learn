@@ -1,18 +1,18 @@
 package edu.upenn.cis350.Trace2Learn;
 
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
+import edu.upenn.cis350.Trace2Learn.Database.Character;
 import android.content.Context;
 import android.graphics.Canvas;
 
 public class CharacterDisplayPane extends CharacterViewPane {
 
-	protected LessonCharacter _character;
+	protected Character _character;
 	
 	public CharacterDisplayPane(Context context) {
 		super(context);
 	}
 	
-	public void setCharacter(LessonCharacter character)
+	public void setCharacter(Character character)
 	{
 		_character = character;
 	}

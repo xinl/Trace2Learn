@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.Lesson;
-import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
-import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
+import edu.upenn.cis350.Trace2Learn.Database.Collection;
+import edu.upenn.cis350.Trace2Learn.Database.TraceableItem;
+import edu.upenn.cis350.Trace2Learn.Database.Word;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -33,11 +32,11 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class BrowseWordsActivity extends ListActivity {
 	private DbAdapter dba; 
-	private ListView lessonList; //list of words to display in listview
-	private ArrayList<LessonItem> items;
+	private ListView collectionList; //list of words to display in listview
+	private List<TraceableItem> items;
 	private View layout;
 	private PopupWindow window;
-	private LessonWord lw;
+	private Word lw;
 	private long id;
 	private boolean fromCollection; 
 	private String collectionName = "";
@@ -45,42 +44,36 @@ public class BrowseWordsActivity extends ListActivity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_lesson);
+        setContentView(R.layout.browse_words);
         dba = new DbAdapter(this);
         dba.open();
         
         //Set up the ListView
-        items = new ArrayList<LessonItem>(); //items to show in ListView to choose from 
+        items = new ArrayList<TraceableItem>(); //items to show in ListView to choose from 
         id = this.getIntent().getLongExtra("ID", -1);
         fromCollection = this.getIntent().getBooleanExtra("fromCollection", false);
         
         //id=1;
         if(id==-1){
         
-	        List<Long> ids = dba.getAllWordIdsByOrder();//Qin
-	        for(long id : ids){
-	        	LessonItem word = dba.getWordById(id);
-	        	word.setTagList(dba.getWordTags(id));
-	        	items.add(word);
-	        }
+	        List<Word> words = dba.getAllWords();
+        	for (Word w : words) {
+        		items.add(w);
+        	}
         }
         else{
-        	Lesson les = dba.getLessonById(id);
-            collectionName = les.getLessonName();
+        	Collection les = dba.getCollection(id);
+            collectionName = les.getName();
     		
-    		items = new ArrayList<LessonItem>();
-    		List<Long> ids = dba.getWordsFromLessonId(id);
-			for (long id : ids){
-				LessonItem word = dba.getWordById(id);
-			    word.setTagList(dba.getWordTags(id));
-			    items.add(word);
+			for (Word w : les.getWords()) {
+				items.add(w);
 			}
 
             TextView title = (TextView)findViewById(R.id.instructions);
-    		title.setText("Browsing " + collectionName + " (" + ids.size() + " words)");
+    		title.setText("Browsing " + collectionName + " (" + les.size() + " words)");
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        setListAdapter(new LessonItemListAdapter(this, items, vi));
+        setListAdapter(new TraceableListAdapter(this, items, vi));
 
         registerForContextMenu(getListView());
     }
@@ -93,7 +86,7 @@ public class BrowseWordsActivity extends ListActivity {
 	}  
 
 	//when character is clicked, it starts the display mode for that char
-	public void clickOnItem(LessonItem li){
+	public void clickOnItem(TraceableItem li){
 		Intent intent = new Intent();
 		Bundle bun = new Bundle();
 
@@ -124,7 +117,7 @@ public class BrowseWordsActivity extends ListActivity {
 	public boolean onContextItemSelected(MenuItem item) {
 	  AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 	  int menuItemIndex = item.getItemId();
-	  lw = (LessonWord)items.get(info.position);
+	  lw = (Word)items.get(info.position);
 	  Log.e("MenuIndex",Integer.toString(menuItemIndex));
 	  Log.e("ListIndex",Integer.toString(info.position));
 	  
@@ -144,53 +137,62 @@ public class BrowseWordsActivity extends ListActivity {
 	  }
 	  //Qin move up
 	  else if(menuItemIndex==2){
-	      long id = lw.getId();
-	      long result = dba.moveupWord(id);//swap two rows' order
-	      Log.e("Result" , Long.toString(result));
-	      if(result<0){
-		  showToast("Word can't be moved up");
-		  return false;
-	      }
-	      else{
-		  showToast("Successfully moved up");
-		  startActivity(getIntent());
-		  finish();
-		  return true;
-	      }
+		  if(info.position == 0) {
+				showToast("Word can't be moved up");
+				return false;
+			}
+			else {
+				Word above = (Word)items.get(info.position - 1);
+				swapPositions(lw, above, info.position, info.position - 1);
+
+				showToast("Successfully moved up");
+				return true;
+			}
 	  }
 	  //Qin move down
 	  else if(menuItemIndex==3){
-	      long id = lw.getId();
-	      long result = dba.movedownWord(id);//swap two rows' order
-	      Log.e("Result" , Long.toString(result));
-	      if(result<0){
-		  showToast("Word can't be moved down");
-		  return false;
-	      }
-	      else{
-		  showToast("Successfully moved down");
-		  startActivity(getIntent());
-		  finish();
-		  return true;
-	      }
+		  if(info.position == items.size() - 1){
+				showToast("Word can't be moved down");
+				return false;
+			}
+			else {
+				Word above = (Word)items.get(info.position + 1);
+				swapPositions(lw, above, info.position, info.position + 1);
+				showToast("Successfully moved down");
+				return true;
+			}
 	  }
 	  //delete
 	  else if(menuItemIndex==4){
-		  long id = lw.getId();
-		  long result = dba.deleteWord(id);
-		  Log.e("Result",Long.toString(result));
-		  if(result<0){
-			  showToast("Could not delete the word");
-			  return false;
-		  }
-		  else{
+		  if (dba.deleteWord(lw)) {
 			  showToast("Successfully deleted");
-			  startActivity(getIntent()); 
-			  finish();
+			  items.remove(info.position);
+			  resetListView();
 			  return true;
+		  } else {
+			  showToast("Word could not be deleted.");
+			  return false;
 		  }
 	  }
 	  return false;
+	}
+	
+	public void resetListView() {
+		LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        setListAdapter(new TraceableListAdapter(this, items, vi));
+	}
+	
+	private void swapPositions(Word w1, Word w2, int position1, int position2) {
+		  long temp = w2.getOrder();
+	      w2.setOrder(w1.getOrder());
+	      w1.setOrder(temp);
+	      dba.updateWord(w1);
+	      dba.updateWord(w2);
+	      
+	      items.set(position1, w2);
+	      items.set(position2, w1);
+	      
+	      resetListView();
 	}
 	
 	public void showToast(String msg){
@@ -213,23 +215,23 @@ public class BrowseWordsActivity extends ListActivity {
 	        layout = inflater.inflate(R.layout.add_to_collection_popup,(ViewGroup) findViewById(R.id.popup_layout));
 	        layout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
 	        // create a 300px width and 470px height PopupWindow
-	        List<String> allLessons = dba.getAllLessonNames();
-	        Log.e("numLessons",Integer.toString(allLessons.size()));
-	        lessonList = (ListView)layout.findViewById(R.id.collectionlist);
-	        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,allLessons); 
-	        lessonList.setAdapter(adapter);
+	        List<Collection> collections = dba.getAllCollections();
+	        collectionList = (ListView)layout.findViewById(R.id.collectionlist);
+	        CollectionListAdapter adapter = new CollectionListAdapter(this, collections, inflater); 
+	        collectionList.setAdapter(adapter);
 	        window = new PopupWindow(layout, (int)(width * 0.8), (int)(height * 0.8), true);
 	        
 	        // display the popup in the center
 	        window.showAtLocation(findViewById(android.R.id.content), Gravity.CENTER, 0, 0);
 	
-	        lessonList.setOnItemClickListener(new OnItemClickListener() {
+	        collectionList.setOnItemClickListener(new OnItemClickListener() {
 	            
 	            public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
-	               String name = ((String)lessonList.getItemAtPosition(position));
-	               Log.e("name",name);
-	               long success = dba.addWordToLesson(name, lw.getId());
-	               Log.e("adding word",Long.toString(success));
+	               Collection collection = ((Collection)collectionList.getItemAtPosition(position));
+	               Log.e("name",collection.getName());
+	               collection.addWord(lw);
+	               boolean success = dba.updateCollection(collection);
+	               Log.e("adding word", "" + success);
 	               showToast("Successfully Added");
 	               window.dismiss();
 	            }
@@ -256,13 +258,20 @@ public class BrowseWordsActivity extends ListActivity {
 		Editable edit = editText.getText();
 		String name = edit.toString();
 		if(name.equals("")){
-			showToast("You must name the lesson!");
+			showToast("Please name the collection.");
 			return;
 		}
-		Lesson lesson = new Lesson();
-		lesson.setPrivateTag(name);
-		lesson.addWord(lw.getId());
-		dba.addLesson(lesson);
+		List<Collection> allCollections = dba.getAllCollections();
+		for(Collection existedcoll: allCollections){
+		    if(name.equals(existedcoll.getName())){
+			showToast(name + " already exists. Please choose a different name.");
+			return;
+		    }
+		}
+		Collection collection = new Collection();
+		collection.setName(name);
+		collection.addWord(lw);
+		dba.addCollection(collection);
 		showToast("Successfully Created");
 		window.dismiss();
 	}

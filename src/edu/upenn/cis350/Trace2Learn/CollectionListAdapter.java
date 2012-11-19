@@ -3,7 +3,7 @@ package edu.upenn.cis350.Trace2Learn;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.upenn.cis350.Trace2Learn.Database.Lesson;
+import edu.upenn.cis350.Trace2Learn.Database.Collection;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,16 +12,16 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class LessonListAdapter extends ArrayAdapter<Lesson> {
+public class CollectionListAdapter extends ArrayAdapter<Collection> {
 
-	private ArrayList<Lesson> _items;
+	private ArrayList<Collection> _items;
 	
 	private LayoutInflater _vi;
 	
-	public LessonListAdapter( Context context, List<Lesson> objects, LayoutInflater vi) 
+	public CollectionListAdapter( Context context, List<Collection> objects, LayoutInflater vi) 
 	{
 		super(context, 0, objects);
-		_items = new ArrayList<Lesson>(objects);
+		_items = new ArrayList<Collection>(objects);
 		_vi = vi;
 	}
 	
@@ -37,9 +37,9 @@ public class LessonListAdapter extends ArrayAdapter<Lesson> {
 		if (v == null) {
 			v = _vi.inflate(R.layout.main_menu, null);
 		}
-		Lesson item = _items.get(position);
+		Collection item = _items.get(position);
 		TextView text = (TextView)v.findViewById(R.id.main_text);
-		text.setText(item.getLessonName());
+		text.setText(item.getName());
 		
 		return v;
 	}

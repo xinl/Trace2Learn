@@ -1,6 +1,6 @@
 package edu.upenn.cis350.Trace2Learn;
 
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
+import edu.upenn.cis350.Trace2Learn.Database.Character;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.os.Handler;
@@ -40,7 +40,7 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 		this(context, false);
 	}
 	
-	public void setCharacter(LessonCharacter character)
+	public void setCharacter(Character character)
 	{
 		super.setCharacter(character);
 		resetPlayback();
@@ -146,8 +146,8 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 	public void stepPlayback()
 	{
 		_currentStroke++;
-		if(_currentStroke > _character.getNumStrokes())
-			_currentStroke = _character.getNumStrokes();
+		if(_currentStroke > _character.getNumberOfStrokes())
+			_currentStroke = _character.getNumberOfStrokes();
 	}
 	
 	/**
@@ -162,9 +162,9 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 		{
 			_currentStroke = 0;
 		}
-		else if(stroke > _character.getNumStrokes())
+		else if(stroke > _character.getNumberOfStrokes())
 		{
-			_currentStroke = _character.getNumStrokes();
+			_currentStroke = _character.getNumberOfStrokes();
 		}
 		else
 		{
