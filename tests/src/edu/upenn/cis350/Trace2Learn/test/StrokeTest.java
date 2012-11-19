@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.graphics.PointF;
-import android.graphics.Path;
 import android.test.AndroidTestCase;
-import edu.upenn.cis350.Trace2Learn.Database.*;
+import edu.upenn.cis350.Trace2Learn.Database.Stroke;
 
 public class StrokeTest extends AndroidTestCase {
 
@@ -22,7 +21,6 @@ public class StrokeTest extends AndroidTestCase {
 		List<PointF> points = s.getAllPoints();
 		assertEquals("Number of samples in list is wrong",0,points.size());
 		
-		Path p = new Path();
 		assertTrue("Path should be empty from stroke with no points",s.toPath().isEmpty());
 	}
 	

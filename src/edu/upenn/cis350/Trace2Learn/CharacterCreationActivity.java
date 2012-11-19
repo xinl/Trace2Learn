@@ -1,12 +1,7 @@
 package edu.upenn.cis350.Trace2Learn;
 
-import java.util.ArrayList;
 import java.util.Set;
 
-import edu.upenn.cis350.Trace2Learn.R.id;
-import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.Character;
-import edu.upenn.cis350.Trace2Learn.Database.Stroke;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +11,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import edu.upenn.cis350.Trace2Learn.R.id;
+import edu.upenn.cis350.Trace2Learn.Database.Character;
+import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
 
 public class CharacterCreationActivity extends Activity {
 
