@@ -66,9 +66,10 @@ public class CreateWordActivity extends Activity implements Filterable {
 
         //when a char is clicked, it is added to the new word and added to the gallery
         list.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
-            	numChars++;
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
+            if(!saved){	
+        	numChars++;
                 Character c = (Character)list.getItemAtPosition(position);
                 newWord.addCharacter(c);
                 Bitmap bitmap = BitmapFactory.buildBitmap(c, 64, 64);
@@ -76,6 +77,10 @@ public class CreateWordActivity extends Activity implements Filterable {
                 imgAdapter.update(currentChars);
                 imgAdapter.notifyDataSetChanged();
                 gallery.setSelection(numChars/2);
+            }
+            else{
+        	showToast("Please press Clear to create a new word");
+            }
             }
         });
         
@@ -169,16 +174,20 @@ public class CreateWordActivity extends Activity implements Filterable {
 	
 	//adds the new word to the database
 	public void onSaveWordButtonClick(View view){
+	    if(!saved){
 		if(newWord.size() > 0 && dba.addWord(newWord)){
 			saved = true;
-			TextView word = (TextView)findViewById(R.id.characters);
-			word.setText("Successfully added!");
+			//TextView word = (TextView)findViewById(R.id.characters);
+			showToast("Successfully saved!");
 			initiateCollectionPopupWindow();
-			word.setText("");
 			return;
 		}
 		showToast("Word is empty");
 		//return to home screen
+	    }
+	    else{
+		showToast("You have saved");
+	    }
 	}
 	
 	//brings the user to the tag screen
@@ -194,7 +203,7 @@ public class CreateWordActivity extends Activity implements Filterable {
 		startActivity(i);
 	}
 	
-	public void onCreateNewButtonClick(View view){//Qin
+	public void onCreateNewButtonClick(View view){
 	    	saved = false;
 	        numChars = 0;
 	        newWord = new Word();
