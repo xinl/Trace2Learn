@@ -130,17 +130,29 @@ public class ExportCharacterActivity extends Activity {
 		});
 		return builder.create();
 	}
+	
 	public void onExportButtonClick(View view) {
 		if(!(view == exportButton)) return;
 		Editable input = editExportText.getText();
 		editExportText.setText("");
-		String fileName = input.toString();
+		String fileName = input.toString().trim();
+		boolean xmlIncluded = false;
 		
-		if(fileName.trim().equals("")) {
+		//File Validation
+		if(fileName.equals("")) {
 			Toast.makeText(thisContext, "Invalid Input", Toast.LENGTH_LONG).show();
 			return;
 		}
-		fileName = fileName + ".xml";
+		else if(fileName.contains(" ")) {
+			Toast.makeText(thisContext, "No space allowed in the file namme", 
+					Toast.LENGTH_LONG).show();
+			return;
+		}
+		else if(fileName.contains(".xml")) {
+			xmlIncluded = true;
+		}
+		
+		if(!xmlIncluded) fileName = fileName + ".xml";
 		
 		File file = new File(folderPath + "/" + fileName);
 		if(file.exists()) {
@@ -155,17 +167,21 @@ public class ExportCharacterActivity extends Activity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		//Print the contents of the file for the debugging purpose
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(file));
 			String text;
 			while((text = in.readLine()) != null)
 				System.out.println(text); 
 			in.close();
+			System.out.println("file size:" + file.length());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 
+		
 		Toast.makeText(thisContext, "file successfully exported", 
 				Toast.LENGTH_LONG).show();
 		fileList.add(fileName);
