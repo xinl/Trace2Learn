@@ -41,20 +41,13 @@
             android:layout_height="wrap_content"
             android:onClick="onSaveButtonClick"
             android:text="@string/save" />
-
-        <Button
-            android:id="@+id/edit_tag_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onTagButtonClick"
-            android:text="Edit Tag" />
 
         <Button
             android:id="@+id/create_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onCreateNewButtonClick"
-            android:text="Clear" />
+            android:text="Clear Stroke" />
 
     </LinearLayout>
 

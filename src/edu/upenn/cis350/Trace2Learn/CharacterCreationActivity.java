@@ -238,6 +238,7 @@ public class CharacterCreationActivity extends Activity {
 	    }
 	}
 	
+	
 	public void onTagButtonClick(View view) 
 	{
 		Character character = _creationPane.getCharacter();
@@ -256,6 +257,7 @@ public class CharacterCreationActivity extends Activity {
 		}
 
 	}
+	
 
 	public void onAnimateButtonClick(View view) 
 	{

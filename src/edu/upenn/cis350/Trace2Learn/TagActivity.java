@@ -254,6 +254,12 @@ public class TagActivity extends Activity {
 		editAttributeText.setText("");
 	}
 	
+	public void onFinishClick(View view){
+	    Intent intent = new Intent(TagActivity.this, MainMenuActivity.class);
+	    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	    startActivity(intent);
+	}
+	
 	@Override
 	public void onDestroy() {
 		mDbHelper.close();
@@ -284,7 +290,7 @@ public class TagActivity extends Activity {
 		}
 	    }
 	    else{
-		super.onBackPressed();//Qin
+		super.onBackPressed();
 	    }
 	}
 }
