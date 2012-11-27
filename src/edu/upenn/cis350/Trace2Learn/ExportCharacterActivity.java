@@ -140,15 +140,15 @@ public class ExportCharacterActivity extends Activity {
 		
 		//File Validation
 		if(fileName.equals("")) {
-			Toast.makeText(thisContext, "Invalid Input", Toast.LENGTH_LONG).show();
+			Toast.makeText(thisContext, "Export file must have a name", Toast.LENGTH_LONG).show();
 			return;
 		}
 		else if(fileName.contains(" ")) {
-			Toast.makeText(thisContext, "No space allowed in the file namme", 
+			Toast.makeText(thisContext, "No spaces allowed in the file name", 
 					Toast.LENGTH_LONG).show();
 			return;
 		}
-		else if(fileName.contains(".xml")) {
+		else if(fileName.endsWith(".xml")) {
 			xmlIncluded = true;
 		}
 		
