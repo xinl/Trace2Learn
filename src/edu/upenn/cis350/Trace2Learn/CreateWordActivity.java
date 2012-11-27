@@ -22,7 +22,6 @@ import android.widget.Gallery;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
 import edu.upenn.cis350.Trace2Learn.Database.Character;
 import edu.upenn.cis350.Trace2Learn.Database.Collection;
@@ -161,7 +160,7 @@ public class CreateWordActivity extends Activity implements Filterable {
 		List<Collection> allCollections = dba.getAllCollections();
 		for(Collection existedcoll: allCollections){
 		    if(name.equals(existedcoll.getName())){
-			showToast("This collection is existed, please click on the existed collection lists or rename a new collection");
+			showToast("A collection with that name already exists.");
 			return;
 		    }
 		}
@@ -175,18 +174,18 @@ public class CreateWordActivity extends Activity implements Filterable {
 	//adds the new word to the database
 	public void onSaveWordButtonClick(View view){
 	    if(!saved){
-		if(newWord.size() > 0 && dba.addWord(newWord)){
-			saved = true;
-			//TextView word = (TextView)findViewById(R.id.characters);
-			showToast("Successfully saved!");
-			initiateCollectionPopupWindow();
-			return;
-		}
-		showToast("Word is empty");
-		//return to home screen
+	    	if(newWord.size() > 0 && dba.addWord(newWord)){
+	    		saved = true;
+	    		//TextView word = (TextView)findViewById(R.id.characters);
+	    		showToast("Successfully saved!");
+	    		initiateCollectionPopupWindow();
+	    		return;
+	    	}
+	    	showToast("Word is empty");
+	    	//return to home screen
 	    }
 	    else{
-		showToast("You have saved");
+	    	showToast("Word already saved.");
 	    }
 	}
 	
