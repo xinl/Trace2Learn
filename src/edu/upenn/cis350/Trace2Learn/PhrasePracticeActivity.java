@@ -39,7 +39,7 @@ public class PhrasePracticeActivity extends Activity {
 	private int currentCharacterIndex = -1;
 	private int currentWordIndex = -1;
 	private long currentCollectionID = -1;
-	private long currentWordID = -1;
+	private Word currentWord = null;
 	
 	private String currentCollectionName = "";
 	
@@ -99,13 +99,14 @@ public class PhrasePracticeActivity extends Activity {
 		});
 
 		tagTextView = (TextView) this.findViewById(id.tag_list);
+		tagTextView.setTextSize(18.0F);
 		infoTextView = (TextView) this.findViewById(id.info_text);
 
 		dbAdapter = new DbAdapter(this);
 		dbAdapter.open();
 		
 		currentCollectionID = this.getIntent().getLongExtra("collectionId", -1);
-		currentWordID = this.getIntent().getLongExtra("wordId", -1); //TODO: add error check
+		Long currentWordID = this.getIntent().getLongExtra("wordId", -1); //TODO: add error check
 		
 		if (currentCollectionID != -1) {
 			currentCollectionName = this.getIntent().getStringExtra("collectionName");
@@ -129,9 +130,8 @@ public class PhrasePracticeActivity extends Activity {
 	{
 		currentWordIndex = position;
 		long wordId = wordIDs.get(position);
-		currentWordID = wordId;
-		Word word = dbAdapter.getWord(wordId);
-		setCharacterList(word.getCharacterIds());
+		currentWord = dbAdapter.getWord(wordId);
+		setCharacterList(currentWord.getCharacterIds());
 		setSelectedCharacter(0);
 		if (currentMode == Mode.TRACE) {
 			setDisplayPane();
@@ -149,7 +149,6 @@ public class PhrasePracticeActivity extends Activity {
 		currentCharacterIndex = position;
 		animator.setDisplayedChild(position);
 		tracePanes.get(position).clearPane();
-		updateTags();
 		if (currentMode == Mode.TRACE) {
 			setDisplayPane();
 			setCharacterTracePane();
@@ -238,14 +237,9 @@ public class PhrasePracticeActivity extends Activity {
 		super.setContentView(view);
 	}
 
-	private void updateTags()
-	{
-		if (characters.size() > 0)
-		{
-			int ind = animator.getDisplayedChild();
-			Set<String> tags = characters.get(ind).getTags();
-			this.tagTextView.setText(tagsToString(tags));
-		}
+	private void updateTags() {
+		Set<String> tags = currentWord.getTags();
+		this.tagTextView.setText(tagsToString(tags));
 	}
 
 	public void onClearButtonClick(View view)
