@@ -99,7 +99,6 @@ public class PhrasePracticeActivity extends Activity {
 		});
 
 		tagTextView = (TextView) this.findViewById(id.tag_list);
-		tagTextView.setTextSize(18.0F);
 		infoTextView = (TextView) this.findViewById(id.info_text);
 
 		dbAdapter = new DbAdapter(this);
