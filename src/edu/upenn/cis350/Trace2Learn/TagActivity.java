@@ -11,7 +11,6 @@ import edu.upenn.cis350.Trace2Learn.Database.TraceableItem.ItemType;
 import edu.upenn.cis350.Trace2Learn.Database.Character;
 import edu.upenn.cis350.Trace2Learn.Database.Word;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -23,12 +22,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 
-public class TagActivity extends Activity {
+public class TagActivity extends FragmentActivity implements NewTagDialogFragment.NewTagDialogListener {
 	
 	//Should be able to take BOTH character and word
 	
@@ -40,7 +40,7 @@ public class TagActivity extends Activity {
 	private EditText editText;
 	private EditText editAttributeText;
 	private ListView lv;
-	private Button addTagButton;
+//	private Button addTagButton;
 	
 	//Variables
 	private long id;
@@ -59,7 +59,7 @@ public class TagActivity extends Activity {
         editText = (EditText) findViewById(R.id.edittext);
         editAttributeText = (EditText) findViewById(R.id.editattribute);
         lv = (ListView) findViewById(R.id.list);
-        addTagButton = (Button) findViewById(R.id.add_tag_button);
+//        addTagButton = (Button) findViewById(R.id.add_tag_button);
         
         mDbHelper = new DbAdapter(this);
         mDbHelper.open();
@@ -170,55 +170,10 @@ public class TagActivity extends Activity {
 	 * be at the bottom of the list view.
 	 * @param view
 	 */
-	public void onAddTagButtonClick (View view)
+	public void onNewTagButtonClick(View view)
     {
-		if (view == addTagButton)
-		{
-			Editable input = editText.getText();
-			//Set edit text back to nothing
-			editText.setText("");
-			
-			String input2 = input.toString().trim(); //This is the string of the tag you typed in
-			//Qin, Takuya, checking whether the input is duplicate or empty 
-			if (input2.equals("")) return;
-			
-			if (input2.contains(":")) {
-				Toast.makeText(this, "Tag cannot contain ':'.", 
-						Toast.LENGTH_LONG).show();
-				return;
-			}
-
-			for(String str: currentTags) {
-				if(str.equals(input2)){
-					Toast.makeText(this, "Cannot add duplicate tag.", 
-							Toast.LENGTH_LONG).show();
-					return;
-				}
-			}
-			
-			switch(type)
-	        {
-	        case CHARACTER:
-	        	traceableItem.addTag(input2);
-	        	mDbHelper.updateCharacter((Character)traceableItem);
-	        	break;
-	        case WORD:
-	        	traceableItem.addTag(input2);
-	        	mDbHelper.updateWord((Word)traceableItem);
-	        	break;
-	        default:
-	    		Log.e("Tag", "Unsupported Type");
-	        }
-			
-			//update the listview --> update the entire view
-			//Refactor this, because refreshing the view is inefficient
-			
-			currentTags.add(input2);
-			//currentTags.clear();
-			//currentTags = mDbHelper.getTags(id);
-	        arrAdapter.notifyDataSetChanged();
-		}
-		
+		DialogFragment newFragment = new NewTagDialogFragment();
+	    newFragment.show(getSupportFragmentManager(), "missiles");
     }
 	
 	public void onAddAttributeClick(View view){
@@ -293,4 +248,49 @@ public class TagActivity extends Activity {
 		super.onBackPressed();
 	    }
 	}
+
+	@Override
+	public void onNewTagDialogPositiveClick(String tag) {
+		tag = tag.trim(); //This is the string of the tag you typed in
+		if (tag.equals("")) return;
+		
+		if (tag.contains(":")) {
+			Toast.makeText(this, "Tag cannot contain ':'.", 
+					Toast.LENGTH_LONG).show();
+			return;
+		}
+
+		for(String str: currentTags) {
+			if(str.equals(tag)){
+				Toast.makeText(this, "Cannot add duplicate tag.", 
+						Toast.LENGTH_LONG).show();
+				return;
+			}
+		}
+		
+		switch(type)
+        {
+        case CHARACTER:
+        	traceableItem.addTag(tag);
+        	mDbHelper.updateCharacter((Character)traceableItem);
+        	break;
+        case WORD:
+        	traceableItem.addTag(tag);
+        	mDbHelper.updateWord((Word)traceableItem);
+        	break;
+        default:
+    		Log.e("Tag", "Unsupported Type");
+        }
+		
+		//update the listview --> update the entire view
+		//Refactor this, because refreshing the view is inefficient
+		
+		currentTags.add(tag);
+		//currentTags.clear();
+		//currentTags = mDbHelper.getTags(id);
+        arrAdapter.notifyDataSetChanged();
+		
+	}
+	
+	
 }

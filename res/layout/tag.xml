@@ -42,29 +42,32 @@
             android:onClick="onAddAttributeClick"
             android:text="@string/add" />
     </LinearLayout>
-    
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/addtag_header" />
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
-
-        <EditText
-            android:id="@+id/edittext"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
+
         <Button
-            android:id="@+id/add_tag_button"
+            android:id="@+id/new_tag_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="onAddTagButtonClick"
-            android:text="@string/add" />
+            android:onClick="onNewTagButtonClick"
+            android:text="New Tag" />
+
+        <Button
+            android:id="@+id/new_attr_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Attribute" />
+
+        <Button
+            android:id="@+id/finish_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onFinishClick"
+            android:text="Done" />
+
     </LinearLayout>
 
     <TextView
@@ -73,13 +76,5 @@
         android:layout_height="wrap_content"
         android:text="@string/delete"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <Button
-        android:id="@+id/finish_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:onClick="onFinishClick"
-        android:text="Finish" />
 
 </LinearLayout>
