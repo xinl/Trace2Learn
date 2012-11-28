@@ -16,7 +16,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,7 +27,7 @@ import android.widget.Toast;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 
-public class TagActivity extends FragmentActivity implements NewTagDialogFragment.NewTagDialogListener {
+public class TagActivity extends FragmentActivity implements NewTagDialogFragment.NewTagDialogListener, NewAttrDialogFragment.NewAttrDialogListener {
 	
 	//Should be able to take BOTH character and word
 	
@@ -37,10 +36,7 @@ public class TagActivity extends FragmentActivity implements NewTagDialogFragmen
 	TraceableItem traceableItem;
 	
 	//Controls
-	private EditText editText;
-	private EditText editAttributeText;
 	private ListView lv;
-//	private Button addTagButton;
 	
 	//Variables
 	private long id;
@@ -56,8 +52,6 @@ public class TagActivity extends FragmentActivity implements NewTagDialogFragmen
         
         setContentView(R.layout.tag); //tag.xml
 
-        editText = (EditText) findViewById(R.id.edittext);
-        editAttributeText = (EditText) findViewById(R.id.editattribute);
         lv = (ListView) findViewById(R.id.list);
 //        addTagButton = (Button) findViewById(R.id.add_tag_button);
         
@@ -173,40 +167,12 @@ public class TagActivity extends FragmentActivity implements NewTagDialogFragmen
 	public void onNewTagButtonClick(View view)
     {
 		DialogFragment newFragment = new NewTagDialogFragment();
-	    newFragment.show(getSupportFragmentManager(), "missiles");
+	    newFragment.show(getSupportFragmentManager(), "new_tag");
     }
 	
-	public void onAddAttributeClick(View view){
-		Editable input = editAttributeText.getText();
-		String input2 = input.toString().trim();
-		String[] kvPair = input2.split(":");
-		for (int i = 0; i < kvPair.length; i++) {
-			kvPair[i] = kvPair[i].trim();
-		}
-		if (kvPair.length != 2 || kvPair[0].length() == 0 || kvPair[1].length() == 0) {
-			Toast.makeText(this, "Invalid attribute format.", 
-					Toast.LENGTH_LONG).show();
-			return;
-		}
-		
-		for(String str: currentTags) {
-			if(str.equals(kvPair[0]+": "+kvPair[1])){
-				Toast.makeText(this, "Cannot add duplicate key:value pair.", 
-						Toast.LENGTH_LONG).show();
-				return;
-			}
-		}
-		if (type == ItemType.CHARACTER) {
-			traceableItem.addAttribute(kvPair[0], kvPair[1]);
-			mDbHelper.updateCharacter((Character)traceableItem);
-		} else if (type == ItemType.WORD) {		
-			traceableItem.addAttribute(kvPair[0], kvPair[1]);
-			mDbHelper.updateWord((Word)traceableItem);
-		}
-		
-		currentTags.add(kvPair[0] + ": " + kvPair[1]);
-		arrAdapter.notifyDataSetChanged();
-		editAttributeText.setText("");
+	public void onNewAttrButtonClick(View view){
+		DialogFragment newFragment = new NewAttrDialogFragment();
+	    newFragment.show(getSupportFragmentManager(), "new_attr");
 	}
 	
 	public void onFinishClick(View view){
@@ -250,7 +216,8 @@ public class TagActivity extends FragmentActivity implements NewTagDialogFragmen
 	}
 
 	@Override
-	public void onNewTagDialogPositiveClick(String tag) {
+	public void onNewTagDialogPositiveClick(DialogFragment dialog) {
+		String tag = ((EditText)dialog.getDialog().findViewById(R.id.tag_text)).getText().toString();
 		tag = tag.trim(); //This is the string of the tag you typed in
 		if (tag.equals("")) return;
 		
@@ -290,6 +257,36 @@ public class TagActivity extends FragmentActivity implements NewTagDialogFragmen
 		//currentTags = mDbHelper.getTags(id);
         arrAdapter.notifyDataSetChanged();
 		
+	}
+	
+	@Override
+	public void onNewAttrDialogPositiveClick(DialogFragment dialog) {
+		String key = ((EditText)dialog.getDialog().findViewById(R.id.attr_key)).getText().toString().trim();
+		String value = ((EditText)dialog.getDialog().findViewById(R.id.attr_value)).getText().toString().trim();
+		
+		if (key.length() == 0 || value.length() == 0) {
+			Toast.makeText(this, "Invalid attribute format.", 
+					Toast.LENGTH_LONG).show();
+			return;
+		}
+		
+		for(String str: currentTags) {
+			if(str.equals(key + ": " + value)){
+				Toast.makeText(this, "Cannot add duplicate key:value pair.", 
+						Toast.LENGTH_LONG).show();
+				return;
+			}
+		}
+		if (type == ItemType.CHARACTER) {
+			traceableItem.addAttribute(key, value);
+			mDbHelper.updateCharacter((Character)traceableItem);
+		} else if (type == ItemType.WORD) {		
+			traceableItem.addAttribute(key, value);
+			mDbHelper.updateWord((Word)traceableItem);
+		}
+		
+		currentTags.add(key + ": " + value);
+		arrAdapter.notifyDataSetChanged();
 	}
 	
 	
