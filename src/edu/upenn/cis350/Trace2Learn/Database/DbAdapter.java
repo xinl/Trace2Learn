@@ -672,6 +672,27 @@ public class DbAdapter {
     }
     
     /**
+     * Get all attribute type names in the database
+     * @return a list of all attribute type names.
+     */
+    public List<String> getAllAttributeKeys() {
+    	List<String> keys = new ArrayList<String>();
+    	Cursor cursor = mDb.query(ATTR_TYPE_TABLE, new String[] {ATTR_TYPE_NAME},
+    			null, null, null, null, null);
+    	if (cursor == null) return null;
+    	cursor.moveToFirst();
+    	if (cursor.getCount() == 0) return keys;
+    	do {
+    		String key = cursor.getString(cursor.getColumnIndexOrThrow(ATTR_TYPE_NAME));
+    		if (!key.equals(ATTR_TYPE_TAG)) {
+    			keys.add(key);
+    		}
+    	} while (cursor.moveToNext());
+    	cursor.close();
+    	return keys;
+    }
+    
+    /**
      * Get all characters in the database
      * @return returns the characters, ordered by order.
      */

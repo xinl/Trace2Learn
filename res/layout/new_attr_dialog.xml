@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:text="@string/key" />
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/attr_key"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
         android:ellipsize="end" >
 
         <requestFocus />
-    </EditText>
+    </AutoCompleteTextView>
 
     <TextView
         android:layout_width="wrap_content"

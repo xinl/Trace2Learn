@@ -42,9 +42,12 @@ public class TagActivity extends FragmentActivity implements NewTagDialogFragmen
 	private long id;
 	private List<String> currentTags;
 	
-	boolean isFromBrowse;
-	ItemType type;
-	ArrayAdapter<String> arrAdapter;
+	private boolean isFromBrowse;
+	private ItemType type;
+	private ArrayAdapter<String> arrAdapter;
+	
+	private ArrayAdapter<String> attrKeyAutoCompleteAdapter;
+
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -111,6 +114,11 @@ public class TagActivity extends FragmentActivity implements NewTagDialogFragmen
     			AlertDialog dialog = (AlertDialog) onDeleteDialog(tag);
     			dialog.show();
         	}});
+        
+        List<String> attrKeys = mDbHelper.getAllAttributeKeys();
+        attrKeyAutoCompleteAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, attrKeys);
+        
+        setTitle(getTitle() + " È " + getResources().getString(R.string.tag_header));
 	}
 	
 	protected Dialog onDeleteDialog(final String str) {
@@ -312,6 +320,13 @@ public class TagActivity extends FragmentActivity implements NewTagDialogFragmen
 		
 		currentTags.add(key + ": " + value);
 		arrAdapter.notifyDataSetChanged();
+		
+		attrKeyAutoCompleteAdapter.add(key);
+		attrKeyAutoCompleteAdapter.notifyDataSetChanged();
+	}
+
+	public ArrayAdapter<String> getAttrKeyAutoCompleteAdapter() {
+		return attrKeyAutoCompleteAdapter;
 	}
 	
 	

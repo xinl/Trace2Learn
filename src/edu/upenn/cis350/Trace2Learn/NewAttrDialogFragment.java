@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AutoCompleteTextView;
 
 public class NewAttrDialogFragment extends DialogFragment {
 	
@@ -14,9 +16,14 @@ public class NewAttrDialogFragment extends DialogFragment {
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 	    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 	    LayoutInflater inflater = getActivity().getLayoutInflater();
+	    View view = inflater.inflate(R.layout.new_attr_dialog, null);
+	    
+	    AutoCompleteTextView attrKeyTextEdit = (AutoCompleteTextView)(view.findViewById(R.id.attr_key));
+	    attrKeyTextEdit.setAdapter(((TagActivity)getActivity()).getAttrKeyAutoCompleteAdapter());
+	    
 	    // Inflate and set the layout for the dialog
 	    // Pass null as the parent view because its going in the dialog layout
-	    builder.setView(inflater.inflate(R.layout.new_attr_dialog, null)).setTitle(R.string.new_attr)
+	    builder.setView(view).setTitle(R.string.new_attr)
 	    // Add action buttons
 	           .setPositiveButton(R.string.create, new DialogInterface.OnClickListener() {
 	               @Override
@@ -29,6 +36,7 @@ public class NewAttrDialogFragment extends DialogFragment {
 	                   NewAttrDialogFragment.this.getDialog().cancel();
 	               }
 	           });
+//	    attrKeyTextEdit = (AutoCompleteTextView)(dialog.findViewById(R.id.attr_key));
 	    return builder.create();
 	}
     
