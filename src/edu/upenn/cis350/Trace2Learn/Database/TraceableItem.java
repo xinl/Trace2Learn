@@ -137,7 +137,7 @@ public abstract class TraceableItem {
 		Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setDither(true);
-        paint.setColor(0xFFFF0000);
+        paint.setColor(0xFFCC0000);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStrokeCap(Paint.Cap.ROUND);

@@ -42,7 +42,7 @@ public class BitmapFactory {
 	public static Bitmap buildBitmap(TraceableItem item, int width, int height) {
 		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        canvas.drawColor(Color.BLUE);
+        canvas.drawColor(Color.LTGRAY);
         item.draw(canvas);
         return bitmap;
 	}

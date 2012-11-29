@@ -40,7 +40,7 @@ public class CharacterTracePane extends CharacterCreationPane {
 	public CharacterTracePane(Context context) {
 		super(context);
 		_style = new Paint();
-		_style.setColor(Color.BLUE);
+		_style.setColor(Color.GRAY);
 		_style.setAntiAlias(true);
 		_style.setDither(true);
 		_style.setStyle(Paint.Style.STROKE);

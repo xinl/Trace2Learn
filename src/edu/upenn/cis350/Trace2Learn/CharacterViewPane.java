@@ -19,7 +19,7 @@ public abstract class CharacterViewPane extends View {
 
 	protected Paint _paint;
 	
-	protected int _backgroundColor = Color.GRAY;
+	protected int _backgroundColor = Color.LTGRAY;
 	
 	public CharacterViewPane(Context context) {
 		super(context);
