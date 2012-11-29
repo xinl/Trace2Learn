@@ -19,7 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="CharacterCreationActivity"></activity>
+        <activity android:name=".CreateCharacterActivity"></activity>
         <activity android:name="CreateWordActivity"></activity>
         <activity android:name="CreateLessonActivity"></activity>
         <activity android:name="TagActivity" android:configChanges="keyboardHidden|orientation"></activity>

@@ -79,7 +79,7 @@ public class BrowseCharactersActivity extends ListActivity implements Filterable
 		bun.putString("mode", "display");
 		bun.putLong("charId", li.getId());
 
-		intent.setClass(this, CharacterCreationActivity.class);
+		intent.setClass(this, CreateCharacterActivity.class);
 		intent.putExtras(bun);
 		intent.putExtra("ISCREATE", false);
 		startActivity(intent);

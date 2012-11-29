@@ -46,7 +46,7 @@ public class MainMenuActivity extends ListActivity {
 					CharSequence clicked = ((TextView) view).getText();
 					if(clicked.equals(APPS[0]))
 					{
-						Intent i = new Intent().setClass(c, CharacterCreationActivity.class);
+						Intent i = new Intent().setClass(c, CreateCharacterActivity.class);
 						startActivity(i);
 					}
 					else if(clicked.equals(APPS[1]))
