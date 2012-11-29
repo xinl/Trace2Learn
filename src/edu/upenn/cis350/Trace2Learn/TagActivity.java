@@ -157,13 +157,6 @@ public class TagActivity extends FragmentActivity implements NewTagDialogFragmen
 		return builder.create();
 	}
 	
-	/**
-	 * When you want to add a tag to a character/word,
-	 * just add to database and then update the list view
-	 * to refect that the tag has been added. The tag should 
-	 * be at the bottom of the list view.
-	 * @param view
-	 */
 	public void onNewTagButtonClick(View view)
     {
 		DialogFragment newFragment = new NewTagDialogFragment();
@@ -175,7 +168,35 @@ public class TagActivity extends FragmentActivity implements NewTagDialogFragmen
 	    newFragment.show(getSupportFragmentManager(), "new_attr");
 	}
 	
+	protected void createFinishConfirmDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(R.string.tag_finish_confirm);
+		builder.setCancelable(false);
+		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {		
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				finishActivity();
+			}
+		});
+		builder.setNegativeButton("No", new DialogInterface.OnClickListener() {		
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();
+			}
+		});
+		builder.create().show();
+	}
+	
 	public void onFinishClick(View view){
+		if (currentTags.size() == 0) {
+			createFinishConfirmDialog();
+			return;
+		} else {
+			finishActivity();
+		}
+	}
+	
+	public void finishActivity() {
 		if(isFromBrowse){
 			onBackPressed();
 		} else {

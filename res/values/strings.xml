@@ -42,5 +42,6 @@
 	<string name="new_attr">New Atrribute</string>
 	<string name="key">Key</string>
 	<string name="value">Value</string>
+	<string name="tag_finish_confirm">Proceed with no tag or attribute?</string>
 	
 </resources>
