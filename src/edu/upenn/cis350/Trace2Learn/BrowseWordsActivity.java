@@ -59,7 +59,7 @@ public class BrowseWordsActivity extends ListActivity {
         	for (Word w : words) {
         		items.add(w);
         	}
-        	setTitle(getTitle() + " È All words");
+        	setTitle(getTitle() + " È All Words");
         }
         else{
         	Collection les = dba.getCollection(id);

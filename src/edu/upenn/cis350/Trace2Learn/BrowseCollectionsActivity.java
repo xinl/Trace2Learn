@@ -41,7 +41,7 @@ public class BrowseCollectionsActivity extends ListActivity {
         CollectionListAdapter la = new CollectionListAdapter(this,items,vi);
         setListAdapter(la);
         registerForContextMenu(getListView());
-        setTitle(getTitle() + " È All collections");
+        setTitle(getTitle() + " È All Collections");
     }
 
 	@Override  
