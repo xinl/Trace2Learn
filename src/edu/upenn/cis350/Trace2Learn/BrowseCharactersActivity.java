@@ -32,11 +32,14 @@ public class BrowseCharactersActivity extends ListActivity implements Filterable
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browse_chars);
+        
         dba = new DbAdapter(this);
         dba.open();
         
         setCharList(dba.getAllCharacters());
         registerForContextMenu(getListView());
+        
+        setTitle(getTitle() + " È All characters");
         
         Button b = new FilterButton(this);
         LinearLayout layout = (LinearLayout) findViewById(R.id.button_panel);

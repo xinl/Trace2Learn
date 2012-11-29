@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-
+
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -11,7 +11,7 @@
         android:textColor="#00ccff"
         android:textSize="25sp"
         android:textStyle="bold" />
-
+
     <ListView
         android:id="@+id/list"
         android:layout_width="fill_parent"
@@ -20,40 +20,38 @@
 
     </ListView>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
+
         <Button
             android:id="@+id/new_tag_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onNewTagButtonClick"
+            android:layout_alignParentLeft="true"
             android:text="New Tag" />
-
+
         <Button
             android:id="@+id/new_attr_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onNewAttrButtonClick"
+            android:layout_toRightOf="@+id/new_tag_button"
             android:text="New Attribute" />
-
+
         <Button
             android:id="@+id/finish_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:onClick="onFinishClick"
             android:text="Done" />
 
-    </LinearLayout>
-
+    </RelativeLayout>
+
+
     <TextView
         android:id="@+id/textView2"
         android:layout_width="fill_parent"

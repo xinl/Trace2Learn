@@ -26,7 +26,6 @@ import android.widget.ViewAnimator;
 public class PhrasePracticeActivity extends Activity {
 		
 	private TextView tagTextView;
-	private TextView infoTextView;
 
 	private DbAdapter dbAdapter;
 
@@ -99,7 +98,7 @@ public class PhrasePracticeActivity extends Activity {
 		});
 
 		tagTextView = (TextView) this.findViewById(id.tag_list);
-		infoTextView = (TextView) this.findViewById(id.info_text);
+		tagTextView.setTextSize(18.0F);
 
 		dbAdapter = new DbAdapter(this);
 		dbAdapter.open();
@@ -139,7 +138,7 @@ public class PhrasePracticeActivity extends Activity {
 			setDisplayPane();
 		}
 		if (currentCollectionID != -1) {
-			infoTextView.setText(currentCollectionName + " - " + (position + 1) + " of " + wordIDs.size());
+			setTitle(getTitle() + " » " + currentCollectionName + " - " + (position + 1) + " of " + wordIDs.size());
 		}
 		updateTags();
 	}

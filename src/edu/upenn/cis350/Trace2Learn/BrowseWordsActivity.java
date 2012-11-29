@@ -26,7 +26,6 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -60,6 +59,7 @@ public class BrowseWordsActivity extends ListActivity {
         	for (Word w : words) {
         		items.add(w);
         	}
+        	setTitle(getTitle() + " È All words");
         }
         else{
         	Collection les = dba.getCollection(id);
@@ -69,8 +69,7 @@ public class BrowseWordsActivity extends ListActivity {
 				items.add(w);
 			}
 
-            TextView title = (TextView)findViewById(R.id.instructions);
-    		title.setText("Browsing " + collectionName + " (" + les.size() + " words)");
+    		setTitle(getTitle() + " È " + collectionName + " (" + les.size() + " words)");
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         setListAdapter(new TraceableListAdapter(this, items, vi));

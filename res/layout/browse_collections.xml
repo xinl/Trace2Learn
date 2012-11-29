@@ -3,12 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
-     <TextView android:id="@+id/instructions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Click and hold on a collection for more options"
-            />
+    
+     <TextView
+         android:id="@+id/instructions"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="Press and hold on a collection for more options" />
     
     <ListView
         android:id="@android:id/list"
