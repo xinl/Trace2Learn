@@ -273,6 +273,27 @@ public class DbAdapter {
     }
     
     /**
+     * Get all attribute type names in the database
+     * @return a list of all attribute type names.
+     */
+    public List<String> getAllAttributeKeys() {
+    	List<String> keys = new ArrayList<String>();
+    	Cursor cursor = mDb.query(ATTR_TYPE_TABLE, new String[] {ATTR_TYPE_NAME},
+    			null, null, null, null, null);
+    	if (cursor == null) return null;
+    	cursor.moveToFirst();
+    	if (cursor.getCount() == 0) return keys;
+    	do {
+    		String key = cursor.getString(cursor.getColumnIndexOrThrow(ATTR_TYPE_NAME));
+    		if (!key.equals(ATTR_TYPE_TAG)) {
+    			keys.add(key);
+    		}
+    	} while (cursor.moveToNext());
+    	cursor.close();
+    	return keys;
+    }
+    
+    /**
      * Add an attribute type, or return id of existing attribute.
      * @param type name of attribute type
      * @return row of attribute type in database.
@@ -562,9 +583,7 @@ public class DbAdapter {
      * @return true if character is added to DB.  False on error.
      */
     public boolean addCharacter(Character c) {
-    	if (c.getId() != -1) {
-    		throw new IllegalArgumentException("Character must be new!");
-    	} else if (c.getStrokes() == null || c.getStrokes().size() == 0) {
+    	if (c.getStrokes() == null || c.getStrokes().size() == 0) {
     		throw new IllegalArgumentException("Character must contain strokes!");
     	}
     	
@@ -573,6 +592,7 @@ public class DbAdapter {
     	ContentValues charValues = new ContentValues();
     	charValues.put(CHAR_ORDER, c.getOrder());
     	charValues.put(CHAR_STROKES, Stroke.encodeStrokesData(c.getStrokes()));
+    	if (c.getId() != -1) charValues.put(CHAR_ID, c.getId());
     	
     	long id = mDb.insert(CHAR_TABLE, null, charValues);
     	if (id == -1) {
@@ -669,27 +689,6 @@ public class DbAdapter {
     	}
     	if (attrCursor != null) attrCursor.close();
     	return c;
-    }
-    
-    /**
-     * Get all attribute type names in the database
-     * @return a list of all attribute type names.
-     */
-    public List<String> getAllAttributeKeys() {
-    	List<String> keys = new ArrayList<String>();
-    	Cursor cursor = mDb.query(ATTR_TYPE_TABLE, new String[] {ATTR_TYPE_NAME},
-    			null, null, null, null, null);
-    	if (cursor == null) return null;
-    	cursor.moveToFirst();
-    	if (cursor.getCount() == 0) return keys;
-    	do {
-    		String key = cursor.getString(cursor.getColumnIndexOrThrow(ATTR_TYPE_NAME));
-    		if (!key.equals(ATTR_TYPE_TAG)) {
-    			keys.add(key);
-    		}
-    	} while (cursor.moveToNext());
-    	cursor.close();
-    	return keys;
     }
     
     /**
@@ -873,15 +872,14 @@ public class DbAdapter {
      * @return true if worded is added db. false if error occurs.
      */
     public boolean addWord(Word w) {
-    	if (w.getId() != -1) {
-    		throw new IllegalArgumentException("Word must be new!");
-    	} else if (w.getCharacters() == null || w.getCharacters().size() == 0) {
+    	if (w.getCharacters() == null || w.getCharacters().size() == 0) {
     		throw new IllegalArgumentException("Word must contain characters!");
     	}
     	
     	mDb.beginTransaction();
     	ContentValues wordValues = new ContentValues();
     	wordValues.put(WORD_ORDER, w.getOrder());
+    	if (w.getId() != -1) wordValues.put(WORD_ID, w.getId());
     	long id = mDb.insert(WORD_TABLE, null, wordValues);
     	if (id == -1){
     		//if error
@@ -1169,9 +1167,7 @@ public class DbAdapter {
      * @return true if collection is added. false if error occurs.
      */
     public boolean addCollection(Collection c) {
-    	if (c.getId() != -1) {
-    		throw new IllegalArgumentException("Collection must be new!");
-    	} else if (c.getWords() == null || c.getWords().size() == 0) {
+        if (c.getWords() == null || c.getWords().size() == 0) {
     		throw new IllegalArgumentException("Collection must contain characters!");
     	} else if (c.getName() ==  null) {
     		throw new IllegalArgumentException("Collection must have a name!");
@@ -1182,6 +1178,7 @@ public class DbAdapter {
     	collValues.put(COLL_ORDER, c.getOrder());
     	collValues.put(COLL_NAME, c.getName());
     	collValues.put(COLL_DESCRIPTION, c.getDescription());
+    	if (c.getId() != -1) collValues.put(COLL_ID, c.getId());
     	long id = mDb.insert(COLL_TABLE, null, collValues);
     	if (id == -1){
     		Log.e(COLL_TABLE, "Cannot add new collection to table " + c);

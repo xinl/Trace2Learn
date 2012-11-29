@@ -235,4 +235,23 @@ public class DbAdapter_CharacterTest extends AndroidTestCase {
 		assertEquals(b, all.get(0));
 		assertEquals(a, all.get(1));
 	}
+	
+	public void testAddCharacterWithId() {
+		Character d = new Character();
+		Stroke s = new Stroke(11, 14);
+		s.addPoint(7, 9);
+		s.addPoint(0.12F, 0.5F);
+		d.addStroke(s);
+		s = new Stroke(.05F, .72F);
+		s.addPoint(19, 32);
+		d.addStroke(s);
+		
+		d.setId(17);
+		db.updateCharacter(d);
+		
+		assertEquals(17, d.getId());
+		
+		Character newD = db.getCharacter(d.getId());
+		assertEquals(d, newD);
+	}
 }
