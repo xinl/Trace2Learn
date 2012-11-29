@@ -176,9 +176,13 @@ public class TagActivity extends FragmentActivity implements NewTagDialogFragmen
 	}
 	
 	public void onFinishClick(View view){
-	    Intent intent = new Intent(TagActivity.this, MainMenuActivity.class);
-	    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	    startActivity(intent);
+		if(isFromBrowse){
+			onBackPressed();
+		} else {
+			Intent intent = new Intent(TagActivity.this, MainMenuActivity.class);
+		    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		    startActivity(intent);
+		}
 	}
 	
 	@Override
@@ -194,24 +198,24 @@ public class TagActivity extends FragmentActivity implements NewTagDialogFragmen
 	@Override
 	public void onBackPressed() {
 	    if(isFromBrowse){
-		switch(type)
-		{
-		case CHARACTER:
-			startActivity(new Intent(this, BrowseCharactersActivity.class));
-			finish();
-			break;
-		case WORD:
-			startActivity(new Intent(this, BrowseWordsActivity.class));
-			finish();
-			break;
-		case LESSON:
-			startActivity(new Intent(this, BrowseCollectionsActivity.class));
-			finish();
-			break;
-		}
+			switch(type)
+			{
+			case CHARACTER:
+				startActivity(new Intent(this, BrowseCharactersActivity.class));
+				finish();
+				break;
+			case WORD:
+				startActivity(new Intent(this, BrowseWordsActivity.class));
+				finish();
+				break;
+			case LESSON:
+				startActivity(new Intent(this, BrowseCollectionsActivity.class));
+				finish();
+				break;
+			}
 	    }
 	    else{
-		super.onBackPressed();
+	    	super.onBackPressed();
 	    }
 	}
 
