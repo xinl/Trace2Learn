@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -54,7 +55,7 @@ public class ImageAdapter extends BaseAdapter {
         imageView.setLayoutParams(new Gallery.LayoutParams(64, 64));
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         //imageView.setBackgroundResource(mGalleryItemBackground);
-
+        imageView.setBackgroundColor(Color.LTGRAY);
         return imageView;
     }
 }
