@@ -23,10 +23,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import edu.upenn.cis350.Trace2Learn.Database.Base64EncodeDecode;
-import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.Stroke;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -35,14 +31,17 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.Editable;
+import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
+import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
+import edu.upenn.cis350.Trace2Learn.Database.Stroke;
 
 public class ExportCharacterActivity extends Activity {
 
@@ -250,7 +249,7 @@ public class ExportCharacterActivity extends Activity {
 			//strokes
 			Element strokes = doc.createElement("strokes");
 			byte[] byteStroke = Stroke.encodeStrokesData(thisCharacter.getStrokes());
-			String encodedStroke = Base64EncodeDecode.encode(byteStroke);
+			String encodedStroke = Base64.encodeToString(byteStroke, Base64.DEFAULT);
 			strokes.appendChild(doc.createTextNode(encodedStroke));
 			character.appendChild(strokes);
 			

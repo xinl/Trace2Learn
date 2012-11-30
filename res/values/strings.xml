@@ -43,5 +43,8 @@
 	<string name="key">Key</string>
 	<string name="value">Value</string>
 	<string name="tag_finish_confirm">Proceed with no tag or attribute?</string>
+	<string name="import_description">Select a file from the list above to import it.</string>
+	<string name="importXml_confirm">Importing this file may overwrite existing characters. Continue?</string>
+	<string name="importCharacters">Import Character Library</string>
 	
 </resources>

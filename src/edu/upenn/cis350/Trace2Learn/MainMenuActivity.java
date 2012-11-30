@@ -73,6 +73,10 @@ public class MainMenuActivity extends ListActivity {
 						Intent i = new Intent(c, ExportCharacterActivity.class);
 						startActivity(i);
 					}
+					else if(clicked.equals(APPS[6])){
+						Intent i = new Intent(c, ImportCharacterActivity.class);
+						startActivity(i);
+					}
 					else {
 						//XXX
 					}
