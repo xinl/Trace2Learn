@@ -70,7 +70,8 @@ public class MainMenuActivity extends ListActivity {
 						startActivity(i);
 					}
 					else if(clicked.equals(APPS[5])){
-						Intent i = new Intent(c, ExportCharacterActivity.class);
+						Intent i = new Intent(c, ExportActivity.class);
+						i.putExtra("ID", -1);
 						startActivity(i);
 					}
 					else if(clicked.equals(APPS[6])){

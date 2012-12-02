@@ -55,7 +55,7 @@ public class ImportCharacterActivity extends Activity {
 
 		lv = (ListView) findViewById(R.id.importList);
 
-		subFolder = "/Trace2Learn";
+		subFolder = "/Trace2Learn/Character";
 		extStorageDirectory = Environment.getExternalStorageDirectory().toString();
 		folderPath = new File(extStorageDirectory + subFolder);
 		if(!folderPath.exists()) {

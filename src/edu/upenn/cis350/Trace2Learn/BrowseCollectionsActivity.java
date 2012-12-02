@@ -66,7 +66,7 @@ public class BrowseCollectionsActivity extends ListActivity {
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 	    menu.setHeaderTitle("Options");
-	    String[] menuItems = {"Delete"};
+	    String[] menuItems = {"Delete", "Export this collection"};
 	    for (int i = 0; i<menuItems.length; i++) {
 	      menu.add(Menu.NONE, i, i, menuItems[i]);
 	    }
@@ -94,6 +94,10 @@ public class BrowseCollectionsActivity extends ListActivity {
 			  finish();
 			  return true;
 		  }
+	  } else if(menuItemIndex == 1){
+			Intent i = new Intent(this, ExportActivity.class);
+			i.putExtra("ID", collection.getId());
+			startActivity(i);
 	  }
 	  return false;
 	}
