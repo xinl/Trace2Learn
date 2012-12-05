@@ -1035,6 +1035,8 @@ public class DbAdapter {
     			w.addCharacter(c);
     		}
     	} while (cursor.moveToNext());
+    	if (cursor != null) cursor.close();
+    	
     	return w;
     }
     
@@ -1300,6 +1302,7 @@ public class DbAdapter {
     				c.addWord(w);
     			}
     		} while (cursor.moveToNext());
+    		cursor.close();
     	}
     	return c;
     }
