@@ -14,8 +14,8 @@
     <ListView
         android:id="@+id/exportList"
         android:layout_width="wrap_content"
-        android:layout_height="323dp"
-        android:layout_weight="0.68" >
+        android:layout_height="0dip"
+        android:layout_weight="1" >
     </ListView>
 
     <TextView
@@ -30,17 +30,16 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
-
         <EditText
             android:id="@+id/editExport"
-            android:layout_width="253dp"
-            android:layout_height="wrap_content" />
-
-
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="textNoSuggestions" />
 
         <Button
             android:id="@+id/export_button"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onExportButtonClick"
             android:text="@string/export" />
