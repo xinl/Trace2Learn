@@ -71,7 +71,7 @@ public class ExportActivity extends Activity {
 		dba = new DbAdapter(this);
         dba.open();
         
-        collectionId = this.getIntent().getLongExtra("ID", -1);
+        collectionId = this.getIntent().getLongExtra("ID", -1L);
         if(collectionId == -1) collectionMode = false;
         else collectionMode = true;
         
