@@ -47,5 +47,8 @@
 	<string name="import_description">Select a file to import.</string>
 	<string name="importXml_confirm">Importing this file may overwrite existing data. Continue?</string>
 	<string name="importCharacters">Import Character Library</string>
+	<string name="done_button">Done</string>
+	<string name="new_tag_button">New Tag</string>
+	<string name="new_attr_button">New Attribute</string>
 	
 </resources>

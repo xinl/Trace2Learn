@@ -7,7 +7,7 @@
     <ListView
         android:id="@+id/list"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="0dip"
         android:layout_weight="1" >
 
     </ListView>
@@ -21,17 +21,17 @@
             android:id="@+id/new_tag_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="onNewTagButtonClick"
             android:layout_alignParentLeft="true"
-            android:text="New Tag" />
+            android:onClick="onNewTagButtonClick"
+            android:text="@string/new_tag_button" />
 
         <Button
             android:id="@+id/new_attr_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="onNewAttrButtonClick"
             android:layout_toRightOf="@+id/new_tag_button"
-            android:text="New Attribute" />
+            android:onClick="onNewAttrButtonClick"
+            android:text="@string/new_attr_button" />
 
         <Button
             android:id="@+id/finish_button"
@@ -39,10 +39,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:onClick="onFinishClick"
-            android:text="Done" />
+            android:text="@string/done_button" />
 
     </RelativeLayout>
-
 
     <TextView
         android:id="@+id/textView2"
