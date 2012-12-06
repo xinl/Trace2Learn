@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.text.Editable;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -91,7 +92,7 @@ public class ExportActivity extends Activity {
 		extStorageDirectory = Environment.getExternalStorageDirectory().toString();
 		folderPath = new File(extStorageDirectory + subFolder);
 		if(!folderPath.exists()) {
-			folderPath.mkdir();
+			folderPath.mkdirs();
 		}
 		
 		File[] listOfFiles = folderPath.listFiles();
@@ -177,7 +178,7 @@ public class ExportActivity extends Activity {
 					Toast.LENGTH_LONG).show();
 			return;
 		}
-
+		
 		exportToXML(file);
 		try {
 			file.createNewFile();
@@ -190,9 +191,9 @@ public class ExportActivity extends Activity {
 			BufferedReader in = new BufferedReader(new FileReader(file));
 			String text;
 			while((text = in.readLine()) != null)
-				System.out.println(text); 
+				Log.i("XML content", text);
 			in.close();
-			System.out.println("file size:" + file.length());
+			Log.i("file size:", "" + file.length());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -218,11 +219,11 @@ public class ExportActivity extends Activity {
 			listOfCharacters = new ArrayList<Character>();
 			collection = dba.getCollection(collectionId);
 			listOfWords = collection.getWords();
-			System.out.println("word list size:" + listOfWords.size());
+			Log.i("word list size:", "" + listOfWords.size());
 			//populate the list of chars
 			for(Word word: listOfWords) {
 				List<Character> listOfChars = word.getCharacters();
-				System.out.println("char list size:" + listOfChars.size());
+				Log.i("char list size:", "" + listOfChars.size());
 				for(int i = 0; i < listOfChars.size(); i++) {
 					Character character = listOfChars.get(i);
 					if(!listOfCharacters.contains(character)) {

@@ -59,7 +59,7 @@ public class ImportCharacterActivity extends Activity {
 		extStorageDirectory = Environment.getExternalStorageDirectory().toString();
 		folderPath = new File(extStorageDirectory + subFolder);
 		if(!folderPath.exists()) {
-			folderPath.mkdir();
+			folderPath.mkdirs();
 		}
 
 		File[] files = folderPath.listFiles();
