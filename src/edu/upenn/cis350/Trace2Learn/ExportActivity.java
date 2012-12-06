@@ -325,7 +325,7 @@ public class ExportActivity extends Activity {
 	 */
 	private void convertCharacterToXML(Document doc, Character thisChar,
 			Element characters) {
-		Element character = doc.createElement("Character");
+		Element character = doc.createElement("character");
 		
 		//Character attribute
 		Long idValue = Long.valueOf(thisChar.getId());

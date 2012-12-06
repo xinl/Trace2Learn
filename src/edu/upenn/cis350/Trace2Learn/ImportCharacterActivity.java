@@ -130,7 +130,7 @@ public class ImportCharacterActivity extends Activity {
 		Document doc = dBuilder.parse(xmlFile);
 		doc.getDocumentElement().normalize();
 		
-		NodeList characterNodes = doc.getElementsByTagName("Character");
+		NodeList characterNodes = doc.getElementsByTagName("character");
 		List<Character> characters = new ArrayList<Character>();
 		for (int i = 0; i < characterNodes.getLength(); i++) {
 			Element element = (Element) characterNodes.item(i);
