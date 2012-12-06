@@ -162,27 +162,6 @@ public class ImportActivity extends Activity {
 	}
 	
 	/**
-	 * Creates a list of characters represented by the xmlFile.
-	 * @param xmlFile file containing information about characters.
-	 * @return a list of characters based on the file.
-	 * @throws Exception if the file could not be parsed.
-	 */
-	static List<Character> importCharacters(File xmlFile) throws Exception {
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		Document doc = dBuilder.parse(xmlFile);
-		doc.getDocumentElement().normalize();
-		
-		NodeList characterNodes = doc.getElementsByTagName("Character");
-		List<Character> characters = new ArrayList<Character>();
-		for (int i = 0; i < characterNodes.getLength(); i++) {
-			Element element = (Element) characterNodes.item(i);
-			characters.add(createCharacter(element));
-		}
-		return characters;
-	}
-	
-	/**
 	 * Create a single character item
 	 * @param character an element in an xml document representing a character
 	 * @return the character based on the xml
