@@ -172,14 +172,6 @@ public class CreateCharacterActivity extends Activity {
 	{
 		setCharacterTracePane();
 	}
-	
-	
-	@Override
-	public void onRestart()
-	{
-		super.onRestart();
-		updateTags();
-	}
 
 	/**
 	 * Convert the tags to string that can be displayed under the character
