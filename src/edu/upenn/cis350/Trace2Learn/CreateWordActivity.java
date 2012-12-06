@@ -134,6 +134,7 @@ public class CreateWordActivity extends Activity implements Filterable {
 	               dba.updateCollection(coll);
 	               window.dismiss();
 	            }
+	            
 	        });
 	        
 	        

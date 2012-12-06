@@ -1,11 +1,13 @@
 package edu.upenn.cis350.Trace2Learn;
 
+import java.util.Map;
 import java.util.Set;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -21,17 +23,16 @@ public class CreateCharacterActivity extends Activity {
 	private CharacterCreationPane creationPane;
 	private CharacterPlaybackPane playbackPane;	
 	private CharacterTracePane tracePane;   
-	
 	private TextView tagText;
-
+	private TextView attributeText;
 	private DbAdapter dbHelper;
-
 	private Mode currentMode = Mode.INVALID;
-
 	private long idToPassOn = -1;
-	
 	boolean isCreate = true;
 
+	/**
+	 * Different modes for create character and browse each character
+	 */
 	public enum Mode {
 	    	CREATION, DISPLAY, ANIMATE, SAVE, INVALID, TRACE;
 	}
@@ -47,19 +48,7 @@ public class CreateCharacterActivity extends Activity {
 		    setContentView(R.layout.create_char);
 		else
 		    setContentView(R.layout.browse_single_char);
-		//test
-		//if(!isCreate)
-		//showToast("isCreate is false");
-		/*if(!isCreate){
-		    //findViewById(R.id.create_button).setVisibility(View.INVISIBLE);
-		    findViewById(R.id.tag_button).setVisibility(View.INVISIBLE);
-		    findViewById(R.id.save_button).setVisibility(View.INVISIBLE);
-		}
-		else{
-		    findViewById(R.id.trace_button).setVisibility(View.INVISIBLE);
-		    findViewById(R.id.animate_button).setVisibility(View.INVISIBLE);
-		}
-		*/
+
 		characterViewSlot =(LinearLayout)findViewById(id.character_view_slot);
 		creationPane = new CharacterCreationPane(this);
 		playbackPane = new CharacterPlaybackPane(this, false, 2); 
@@ -67,6 +56,7 @@ public class CreateCharacterActivity extends Activity {
 
 		setCharacter(new Character());
 		tagText = (TextView) this.findViewById(id.tag_list);
+		attributeText = (TextView) this.findViewById(id.attribute_list);
 		dbHelper = new DbAdapter(this);
 		dbHelper.open();
 		initializeMode();
@@ -78,7 +68,6 @@ public class CreateCharacterActivity extends Activity {
 	 * Initialize the display mode, if the activity was started with intent to
 	 * display a character, that character should be displayed
 	 */
-	
 	private void initializeMode() 
 	{
 		Bundle bun = getIntent().getExtras();
@@ -102,7 +91,6 @@ public class CreateCharacterActivity extends Activity {
 	/**
 	 * Switch to creation mode
 	 */
-	
 	private synchronized void setCharacterCreationPane() 
 	{
 		if (currentMode != Mode.CREATION) 
@@ -114,9 +102,8 @@ public class CreateCharacterActivity extends Activity {
 	}
 	
 	/**
-	 * Switches the display mode to display
+	 * Switch to display mode
 	 */
-	
 	private synchronized void setCharacterDisplayPane()
 	{
 		playbackPane.setAnimated(true);
@@ -132,9 +119,8 @@ public class CreateCharacterActivity extends Activity {
 	
 	
 	/**
-	 * Switches the display mode to display
+	 * Switch to trace mode
 	 */
-	
 	private synchronized void setCharacterTracePane()
 	{
 		tracePane.clearPane();
@@ -148,12 +134,12 @@ public class CreateCharacterActivity extends Activity {
 		}
 	}
 	
-	
+/*
 	public void setContentView(View view)
 	{
 		super.setContentView(view);
 	}
-
+*/
 	private void setCharacter(Character character)
 	{
 		creationPane.setCharacter(character);
@@ -161,21 +147,30 @@ public class CreateCharacterActivity extends Activity {
 		tracePane.setTemplate(character);   
 	}
 
+	/**
+	 * Update the tags under the character
+	 */
 	private void updateTags()
 	{
 		if (idToPassOn >= 0)
 		{
 			Character character = dbHelper.getCharacter(idToPassOn);
 			Set<String> tags = character.getTags();
+			Map<String, Set<String>> attributes = character.getAttributes();
+			this.tagText.setMovementMethod(new ScrollingMovementMethod());
 			this.tagText.setText(tagsToString(tags));
+			this.attributeText.setMovementMethod(new ScrollingMovementMethod());
+			this.attributeText.setText(attributesToString(attributes));
 			setCharacter(character);
 		}
 	}
 	
+	/**
+	 * Used for browse each character. Press the practice button to trace the character
+	 */
 	public void onTraceButtonClick(View view)
 	{
 		setCharacterTracePane();
-		
 	}
 	
 	
@@ -186,26 +181,53 @@ public class CreateCharacterActivity extends Activity {
 		updateTags();
 	}
 
+	/**
+	 * Convert the tags to string that can be displayed under the character
+	 */
 	private String tagsToString(Set<String> tags)
 	{
 		StringBuffer buf = new StringBuffer();
-		for (String str : tags)
+		buf.append("Tags: ");
+		for (String tag : tags)
 		{
-			buf.append(str + ", ");
+			buf.append(tag + ", ");
 		}
 		if (buf.length() >= 2){
-		    return buf.substring(0, buf.length() -2);
+		    return buf.substring(0, buf.length() - 2);
 		}
 		else {
 		    return buf.toString();
 		}
 	}
-
-	public void onCreateButtonClick(View view)
+	
+	/**
+	 * Convert the attributes to string that can be displayed above the character
+	 */
+	private String attributesToString(Map<String, Set<String>> attributes)
 	{
-		setCharacterCreationPane();
+	    StringBuffer buf = new StringBuffer();
+	    Set<String> keys = attributes.keySet();
+	    for(String key: keys)
+	    {
+		buf.append(key+": ");
+		Set<String> values = attributes.get(key);
+		int i = 0;
+		for(String value:values)
+		{
+		    i++;
+		    if(i!=values.size())
+			buf.append(value+", ");
+		    else
+			buf.append(value);
+		}
+		buf.append("\n");
+	    }
+	return buf.toString();
 	}
 
+	/**
+	 * Used for create character. Press the save button to save the character.
+	 */
 	public void onSaveButtonClick(View view)
 	{
 		Character character = creationPane.getCharacter();
@@ -220,28 +242,34 @@ public class CreateCharacterActivity extends Activity {
 			dbHelper.updateCharacter(character);
 		Log.e("Adding to DB", Long.toString(character.getId()));
 		idToPassOn = character.getId();
-		onTagButtonClick(view);
-		updateTags();
+		editTag(view);
 	}
 
-	public void onCreateNewButtonClick(View view) //redrqw this character
+	/**
+	 * When used for create character: Press the clear stroke button to clear the stroke
+	 * When used for browse each character: Press the clear button to retrace the character
+	 */
+	
+	public void onClearButtonClick(View view) 
 	{
 	    if(isCreate){
-	    	creationPane.clearPane();  //Qin
+	    	creationPane.clearPane();  
 	    	this.tagText.setText("");
-		tracePane.clearPane();  //Qin
-		playbackPane.clearPane();  //Qin
+		tracePane.clearPane();  
+		playbackPane.clearPane(); 
 		idToPassOn = -1;
 	    }
 	    else{
-		//_creationPane.clearPane();
+		
 		tracePane.clearPane(); 
 		playbackPane.clearPane();
 	    }
 	}
 	
-	
-	public void onTagButtonClick(View view) 
+	/**
+	 * Used for create character. Go to the tag activity.
+	 */
+	public void editTag(View view) 
 	{
 		Character character = creationPane.getCharacter();
 		if (idToPassOn >= 0) 
@@ -251,7 +279,7 @@ public class CreateCharacterActivity extends Activity {
 
 			i.putExtra("ID", idToPassOn);
 			i.putExtra("TYPE", character.getClass().getSimpleName().toUpperCase());
-			i.putExtra("FROM", false);//Qin
+			i.putExtra("FROM", false);
 			startActivity(i);
 		} else
 		{
@@ -260,7 +288,9 @@ public class CreateCharacterActivity extends Activity {
 
 	}
 	
-
+	/**
+	 * Used for browse each character. Press the playback button to replay the character.
+	 */
 	public void onAnimateButtonClick(View view) 
 	{
 		Log.i("CLICK", "DISPLAY");

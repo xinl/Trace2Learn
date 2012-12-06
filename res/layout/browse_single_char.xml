@@ -21,17 +21,34 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:orientation="vertical" />
-    </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tag_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/character_view_slot"
+            android:ellipsize="marquee"
+            android:gravity="center_horizontal"
+            android:maxLines="10"
+            android:scrollbars="vertical"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/attribute_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/character_view_slot"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:ellipsize="marquee"
+            android:gravity="center_horizontal"
+            android:maxLines="10"
+            android:scrollbars="vertical"
+            android:textSize="22sp" />
 
-    <TextView
-        android:id="@+id/tag_list"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:ellipsize="marquee"
-        android:gravity="center_horizontal"
-        android:maxLines="1"
-        android:text=""
-        android:textSize="24sp" />
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -56,7 +73,7 @@
             android:id="@+id/create_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="onCreateNewButtonClick"
+            android:onClick="onClearButtonClick"
             android:text="Clear" />
 
     </LinearLayout>
