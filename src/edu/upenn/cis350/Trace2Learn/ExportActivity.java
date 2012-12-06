@@ -282,8 +282,10 @@ public class ExportActivity extends Activity {
 			//description
 			Element description = doc.createElement("description");
 			String descrp = collection.getDescription();
-			if(!(descrp == null)) description.appendChild(
-					doc.createTextNode(collection.getDescription()));
+			if (descrp == null) {
+				descrp = "";
+			}
+			description.appendChild(doc.createTextNode(descrp));
 			collectionEle.appendChild(description);
 			
 			//word ids
