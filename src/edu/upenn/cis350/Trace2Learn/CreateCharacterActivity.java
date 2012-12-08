@@ -44,10 +44,13 @@ public class CreateCharacterActivity extends Activity {
 
 		isCreate = this.getIntent().getBooleanExtra("ISCREATE",true);
 		
-		if(isCreate)
+		if(isCreate) {
 		    setContentView(R.layout.create_char);
-		else
+			setTitle(getTitle() + " » Create Character");
+		} else {
 		    setContentView(R.layout.browse_single_char);
+		    setTitle(getTitle() + " » View Character");
+		}
 
 		characterViewSlot =(LinearLayout)findViewById(id.character_view_slot);
 		creationPane = new CharacterCreationPane(this);
@@ -60,8 +63,6 @@ public class CreateCharacterActivity extends Activity {
 		dbHelper = new DbAdapter(this);
 		dbHelper.open();
 		initializeMode();
-		
-		setTitle(getTitle() + " � Create Character");
 	}
 
 	/**
