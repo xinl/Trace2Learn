@@ -14,11 +14,13 @@ import edu.upenn.cis350.Trace2Learn.R.id;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +30,8 @@ public class PhrasePracticeActivity extends Activity {
 		
 	private TextView tagTextView;
 	private TextView attrTextView;
+	private Button traceButton;
+	private Button displayButton;
 
 	private DbAdapter dbAdapter;
 
@@ -101,6 +105,9 @@ public class PhrasePracticeActivity extends Activity {
 
 		tagTextView = (TextView) this.findViewById(id.tag_list);
 		attrTextView = (TextView) this.findViewById(id.attribute_list);
+		
+		traceButton = (Button) this.findViewById(id.trace_button);
+		displayButton = (Button) this.findViewById(id.display_button);
 
 		dbAdapter = new DbAdapter(this);
 		dbAdapter.open();
@@ -209,6 +216,9 @@ public class PhrasePracticeActivity extends Activity {
 			}
 			animator.setDisplayedChild(curInd);
 			currentMode = Mode.DISPLAY;
+
+			traceButton.setTypeface(null, Typeface.NORMAL);
+			displayButton.setTypeface(null, Typeface.BOLD);
 		}
 		SquareLayout sl = (SquareLayout)animator.getChildAt(curInd);
 		CharacterPlaybackPane playbackPane;
@@ -231,7 +241,12 @@ public class PhrasePracticeActivity extends Activity {
 			}
 			animator.setDisplayedChild(curInd);
 			currentMode = Mode.TRACE;
+			
+			traceButton.setTypeface(null, Typeface.BOLD);
+			displayButton.setTypeface(null, Typeface.NORMAL);
 		}
+		int child = animator.getDisplayedChild();
+		this.tracePanes.get(child).clearPane();
 	}
 	
 	public void setContentView(View view)
@@ -245,23 +260,16 @@ public class PhrasePracticeActivity extends Activity {
 		this.tagTextView.setText(tagsToString(tags));
 		this.attrTextView.setText(attributesToString(attrs));
 	}
-
-	public void onClearButtonClick(View view)
-	{
-		int child = animator.getDisplayedChild();
-		this.tracePanes.get(child).clearPane();
-	}
 	
 	public void onTraceButtonClick(View view)
 	{
 		setCharacterTracePane();
 	}
 	
-	@Override
-	public void onRestart()
+
+	public void onDisplayButtonClick(View view) 
 	{
-		super.onRestart();
-		updateTags();
+		setDisplayPane();
 	}
 
 	private String tagsToString(Set<String> tags)
@@ -300,12 +308,6 @@ public class PhrasePracticeActivity extends Activity {
     		buf.append("\n");
 	    }
 	    return buf.toString();
-	}
-
-	public void onAnimateButtonClick(View view) 
-	{
-		Log.i("CLICK", "DISPLAY");
-		setDisplayPane();
 	}
 	
 	public void showToast(String msg){

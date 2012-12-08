@@ -59,18 +59,12 @@
             android:text="@string/practice" />
 
         <Button
-            android:id="@+id/animate_button"
+            android:id="@+id/display_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="onAnimateButtonClick"
+            android:onClick="onDisplayButtonClick"
             android:text="@string/animate" />
 
-        <Button
-            android:id="@+id/clear_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onClearButtonClick"
-            android:text="@string/clear" />
     </LinearLayout>
 
 </LinearLayout>
