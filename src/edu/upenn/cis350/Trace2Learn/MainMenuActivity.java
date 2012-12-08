@@ -21,7 +21,6 @@ public class MainMenuActivity extends ListActivity {
 			"Browse All Words",
 			"Browse All Collections",
 			"Export Character Library",
-			"Import Character Library",
 			"Import Collection"
 		};
 
@@ -76,10 +75,6 @@ public class MainMenuActivity extends ListActivity {
 						startActivity(i);
 					}
 					else if(clicked.equals(APPS[6])){
-						Intent i = new Intent(c, ImportCharacterActivity.class);
-						startActivity(i);
-					}
-					else if(clicked.equals(APPS[7])){
 						Intent i = new Intent(c, ImportActivity.class);
 						startActivity(i);
 					}
