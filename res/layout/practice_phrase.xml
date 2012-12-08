@@ -2,67 +2,75 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:gravity="bottom"
     android:orientation="vertical" >
 
-    	<Gallery xmlns:android="http://schemas.android.com/apk/res/android" 
-		    android:id="@+id/gallery"
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"/>
+    <Gallery
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/gallery"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
 
-    	<ViewAnimator
-    	    android:id="@+id/view_slot"
-    	    android:layout_width="fill_parent"
-    	    android:layout_height="0dip"
-    	    android:layout_gravity="center"
-    	    android:layout_weight="1" >
+    <ViewAnimator
+        android:id="@+id/view_slot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" >
 
-	   	    <edu.upenn.cis350.Trace2Learn.SquareLayout
-	   	        xmlns:android="http://schemas.android.com/apk/res/android"
-	   	        android:id="@+id/character_view_slot"
-	   	        android:layout_width="fill_parent"
-	   	        android:layout_height="fill_parent"
-	   	        android:gravity="center"
-	   	        android:orientation="vertical" />
+        <edu.upenn.cis350.Trace2Learn.SquareLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/character_view_slot"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" />
+    </ViewAnimator>
 
-   	    </ViewAnimator>
+    <TextView
+        android:id="@+id/attribute_list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:ellipsize="marquee"
+        android:gravity="center"
+        android:maxLines="10"
+        android:scrollbars="vertical"
+        android:textSize="24sp" />
 
-	    <TextView
-	        android:id="@+id/tag_list"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:gravity="center_horizontal"
-	        android:ellipsize="marquee"
-	        android:maxLines="1"
-	        android:text=""
-	        android:textSize="24sp" />
-	    
-	    <LinearLayout
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:orientation="horizontal">
-		    
-			<Button
-		        android:id="@+id/trace_button"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:onClick="onTraceButtonClick"
-		        android:text="@string/practice" />
-			
-			<Button
-			    android:id="@+id/animate_button"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    android:onClick="onAnimateButtonClick"
-			    android:text="@string/animate"/>
-			
-			<Button
-			    android:id="@+id/clear_button"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    android:onClick="onClearButtonClick"
-			    android:text="@string/clear"/>
-			
-	    </LinearLayout>
+    <TextView
+        android:id="@+id/tag_list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:ellipsize="marquee"
+        android:gravity="center"
+        android:maxLines="10"
+        android:scrollbars="vertical"
+        android:textSize="24sp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/trace_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onTraceButtonClick"
+            android:text="@string/practice" />
+
+        <Button
+            android:id="@+id/animate_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onAnimateButtonClick"
+            android:text="@string/animate" />
+
+        <Button
+            android:id="@+id/clear_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onClearButtonClick"
+            android:text="@string/clear" />
+    </LinearLayout>
 
 </LinearLayout>

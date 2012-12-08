@@ -2,6 +2,7 @@ package edu.upenn.cis350.Trace2Learn;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import edu.upenn.cis350.Trace2Learn.CharacterTracePane.OnTraceCompleteListener;
@@ -26,6 +27,7 @@ import android.widget.ViewAnimator;
 public class PhrasePracticeActivity extends Activity {
 		
 	private TextView tagTextView;
+	private TextView attrTextView;
 
 	private DbAdapter dbAdapter;
 
@@ -98,7 +100,7 @@ public class PhrasePracticeActivity extends Activity {
 		});
 
 		tagTextView = (TextView) this.findViewById(id.tag_list);
-		tagTextView.setTextSize(18.0F);
+		attrTextView = (TextView) this.findViewById(id.attribute_list);
 
 		dbAdapter = new DbAdapter(this);
 		dbAdapter.open();
@@ -239,7 +241,9 @@ public class PhrasePracticeActivity extends Activity {
 
 	private void updateTags() {
 		Set<String> tags = currentWord.getTags();
+		Map<String, Set<String>> attrs = currentWord.getAttributes();
 		this.tagTextView.setText(tagsToString(tags));
+		this.attrTextView.setText(attributesToString(attrs));
 	}
 
 	public void onClearButtonClick(View view)
@@ -262,16 +266,40 @@ public class PhrasePracticeActivity extends Activity {
 
 	private String tagsToString(Set<String> tags)
 	{
+		if (tags.size() == 0) {
+			return "";
+		}
 		StringBuffer buf = new StringBuffer();
-		for (String str : tags)
+		buf.append("Tags: ");
+		for (String tag : tags)
 		{
-			buf.append(str + ", ");
+			buf.append(tag + ", ");
 		}
-		if (buf.length() >= 2) {
-			return buf.substring(0, buf.length() - 2);
-		} else {
-			return buf.toString();
+		if (buf.length() >= 2){
+		    return buf.substring(0, buf.length() - 2);
 		}
+		else {
+		    return buf.toString();
+		}
+	}
+	
+	private String attributesToString(Map<String, Set<String>> attributes) {
+	    StringBuffer buf = new StringBuffer();
+	    Set<String> keys = attributes.keySet();
+	    for(String key: keys) {
+	    	buf.append(key+": ");
+	    	Set<String> values = attributes.get(key);
+	    	int i = 0;
+    		for(String value:values) {
+    			i++;
+    			if(i!=values.size())
+    				buf.append(value+", ");
+    			else
+    				buf.append(value);
+    		}
+    		buf.append("\n");
+	    }
+	    return buf.toString();
 	}
 
 	public void onAnimateButtonClick(View view) 
