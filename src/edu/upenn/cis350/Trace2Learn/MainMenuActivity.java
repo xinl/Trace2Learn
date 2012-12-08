@@ -21,7 +21,7 @@ public class MainMenuActivity extends ListActivity {
 			"Browse All Words",
 			"Browse All Collections",
 			"Export Character Library",
-			"Import Collection"
+			"Import"
 		};
 
 	@Override
