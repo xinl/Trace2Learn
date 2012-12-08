@@ -37,7 +37,8 @@ public class ImportActivity extends Activity {
 
 	private DbAdapter dba;
 	private ArrayAdapter<String> arrAdapter;
-	private ArrayList<String> fileList = new ArrayList<String>();
+	private List<File> fileList;
+	private List<String> fileNameList = new ArrayList<String>();
 	private String subFolder, extStorageDirectory;
 	private File folderPath;
 	private Context thisContext;
@@ -57,21 +58,20 @@ public class ImportActivity extends Activity {
 
 		lv = (ListView) findViewById(R.id.importList);
 
-		subFolder = "/Trace2Learn/Collection";
+		subFolder = "/Trace2Learn";
 		extStorageDirectory = Environment.getExternalStorageDirectory().toString();
 		folderPath = new File(extStorageDirectory + subFolder);
 		if(!folderPath.exists()) {
 			folderPath.mkdirs();
 		}
-
-		File[] files = folderPath.listFiles();
-		for(File f: files) {
-			String[] tempArray = f.toString().split("/");
-			fileList.add(tempArray[tempArray.length - 1]);
+		
+		fileList = listFileRecursively(folderPath);
+		for (File file : fileList) {
+			fileNameList.add(file.getName());
 		}
 
 		arrAdapter = new ArrayAdapter<String>(thisContext, 
-				android.R.layout.simple_list_item_1, fileList);
+				android.R.layout.simple_list_item_1, fileNameList);
 		arrAdapter.notifyDataSetChanged();
 
 		lv.setAdapter(arrAdapter);
@@ -96,8 +96,7 @@ public class ImportActivity extends Activity {
 		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {		
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				String fileName = fileList.get(index);
-				File importFile = new File(folderPath + "/" + fileName);
+				File importFile = fileList.get(index);
 				try {
 					importXML(importFile);
 					Toast.makeText(thisContext, "Import successful.", 
@@ -281,5 +280,18 @@ public class ImportActivity extends Activity {
 	public void onDestroy() {
 		dba.close();
 		super.onDestroy();
+	}
+	
+	private List<File> listFileRecursively(File root) {
+		List<File> fileList = new ArrayList<File>();
+		File[] files = root.listFiles();
+		for (File file : files) {
+			if (file.isDirectory()) {
+				fileList.addAll(listFileRecursively(file));
+			} else {
+				fileList.add(file);
+			}
+		}
+		return fileList;
 	}
 }
