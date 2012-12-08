@@ -158,11 +158,10 @@ public class PhrasePracticeActivity extends Activity {
 		currentCharacterIndex = position;
 		animator.setDisplayedChild(position);
 		tracePanes.get(position).clearPane();
-		if (currentMode == Mode.TRACE) {
+		if (currentMode == Mode.DISPLAY) {
 			setDisplayPane();
-			setCharacterTracePane();
 		} else {
-			setDisplayPane();
+			setCharacterTracePane();
 		}
 	}
 
