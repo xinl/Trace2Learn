@@ -18,9 +18,10 @@
 
 	        <EditText
 	            android:id="@+id/newcollection"
-	            android:layout_width="wrap_content"
+	            android:layout_width="0dip"
 	            android:layout_height="wrap_content"
-	            android:layout_weight="1" />
+	            android:layout_weight="1"
+	            android:inputType="text" />
 	        
     		<Button
 		        android:id="@+id/new_collection_button"
@@ -29,25 +30,26 @@
 		        android:onClick="onNewCollectionButtonClick"
 		        android:text="Create New" />
 			</LinearLayout>
+
     
-    <TextView android:id="@+id/instructions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Click on a collection to add this word to it"
-            />
+    <TextView
+        android:id="@+id/instructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Or select a collection to add this word to" />
     
     <ListView
         android:id="@+id/collectionlist"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1.0" >
+        android:layout_height="0dip"
+        android:layout_weight="1" >
     </ListView>
-			
+    
 	 <Button
-        android:id="@+id/skip_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onSkipButtonClick"
-        android:text="Skip Adding to Collection" />
+	     android:id="@+id/skip_button"
+	     android:layout_width="wrap_content"
+	     android:layout_height="wrap_content"
+	     android:onClick="onSkipButtonClick"
+	     android:text="@string/done_button" />
 
 </LinearLayout>
