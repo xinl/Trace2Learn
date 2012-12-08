@@ -138,11 +138,6 @@ public class CreateWordActivity extends Activity implements Filterable {
 	        });
 	        
 	        
-	        /*mResultText = (TextView) layout.findViewById(R.id.server_status_text);
-	        Button cancelButton = (Button) layout.findViewById(R.id.end_data_send_button);
-	        makeBlack(cancelButton);
-	        cancelButton.setOnClickListener(cancel_button_click_listener);*/
-	 
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
@@ -205,17 +200,17 @@ public class CreateWordActivity extends Activity implements Filterable {
 		startActivity(i);
 	}
 	
-	public void onCreateNewButtonClick(View view){
-	    	saved = false;
+	public void onClearWordButtonClick(View view){
+
+	        saved = false;
 	        numChars = 0;
 	        newWord = new Word();
 	        currentChars = new ArrayList<Bitmap>();
 	        
 	        imgAdapter = new ImageAdapter(this,currentChars);
 	        gallery = (Gallery)findViewById(R.id.gallery);
-	        gallery.setSpacing(0);
+	        gallery.setSpacing(0);	        
 	        gallery.setAdapter(imgAdapter);
-                //gallery.setSelection(0);
 	}
 	
 	
