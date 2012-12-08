@@ -179,6 +179,9 @@ public class CreateCharacterActivity extends Activity {
 	 */
 	private String tagsToString(Set<String> tags)
 	{
+		if (tags.size() == 0) {
+			return "";
+		}
 		StringBuffer buf = new StringBuffer();
 		buf.append("Tags: ");
 		for (String tag : tags)
