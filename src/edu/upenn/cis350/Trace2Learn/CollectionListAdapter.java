@@ -39,7 +39,7 @@ public class CollectionListAdapter extends ArrayAdapter<Collection> {
 		}
 		Collection item = _items.get(position);
 		TextView text = (TextView)v.findViewById(R.id.main_text);
-		text.setText(item.getName());
+		text.setText(item.getName() + ": " + item.size() + " words");
 		
 		return v;
 	}
