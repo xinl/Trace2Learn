@@ -6,202 +6,184 @@ import android.graphics.Canvas;
 import android.os.Handler;
 
 /**
- * @author Ryan
- * This class displays a character which is animated stroke by stroke.
+ * @author Ryan This class displays a character which is animated stroke by stroke.
  */
-public class CharacterPlaybackPane extends CharacterDisplayPane {
+public class CharacterPlaybackPane extends CharacterViewPane {
 
-	protected int _currentStroke = 0;
-	protected boolean _animated;
-	protected long _lastTick;
-	protected float _animationLength;
-	
-	protected Thread _refreshTimer;
-	protected Handler _handler;
-	
+	protected Character character;
+	protected int currentStroke = 0;
+	protected boolean animated;
+	protected long lastTick;
+	protected float animationLength;
+
+	protected Thread refreshTimer;
+	protected Handler handler;
+
 	private float _elapsedTime;
-	
-	public CharacterPlaybackPane(Context context, boolean animated, float animationLength)
-	{
+
+	public CharacterPlaybackPane(Context context, boolean animated, float animationLength) {
 		super(context);
 		resetPlayback();
-		_animated = animated;
-		_animationLength = animationLength;
-		
-		_handler = new Handler();
-		
+		this.animated = animated;
+		this.animationLength = animationLength;
+
+		handler = new Handler();
+
 	}
-	public CharacterPlaybackPane(Context context, boolean animated)
-	{
+
+	public CharacterPlaybackPane(Context context, boolean animated) {
 		this(context, false, 60);
 	}
-	
+
 	public CharacterPlaybackPane(Context context) {
 		this(context, false);
 	}
-	
-	public void setCharacter(Character character)
-	{
-		super.setCharacter(character);
+
+	public void setCharacter(Character character) {
+		this.character = character;
 		resetPlayback();
 	}
-	
+
+	public void clearPane() {
+		character = null;
+	}
+
 	/**
 	 * Builds and starts the animation timer
 	 */
-	public void startTimer()
-	{
-		if(_refreshTimer == null)
-		{
-			_refreshTimer = new Thread()
-			{
+	public void startTimer() {
+		if (refreshTimer == null) {
+			refreshTimer = new Thread() {
 				Runnable _update = new Runnable() {
 					public void run() {
 						invalidate();
 					}
 				};
-				
-				public void run()
-				{
-					while(_animated && _elapsedTime < _animationLength)
-					{
-						_handler.post(_update);
+
+				public void run() {
+					while (animated && _elapsedTime < animationLength) {
+						handler.post(_update);
 						try {
 							Thread.sleep(20);
 						} catch (InterruptedException e) {
 							break;
 						}
 					}
-					_refreshTimer = null;
+					refreshTimer = null;
 				}
 			};
-			_refreshTimer.start();
+			refreshTimer.start();
 		}
 	}
-	
+
 	/**
 	 * If the timer is running, stop the timer
 	 */
-	public void stopTimer()
-	{
-		if(_refreshTimer != null)
-		{
-			_refreshTimer.interrupt();
+	public void stopTimer() {
+		if (refreshTimer != null) {
+			refreshTimer.interrupt();
 			try {
-				_refreshTimer.join();
+				refreshTimer.join();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			_refreshTimer = null;
+			refreshTimer = null;
 		}
 	}
-	
+
 	/**
 	 * Toggles whether or not the character should be drawn stroke by stroke
-	 * @param animate whether the character should be animated
+	 * 
+	 * @param animate
+	 *            whether the character should be animated
 	 */
-	public void setAnimated(boolean animate)
-	{
+	public void setAnimated(boolean animate) {
 		resetPlayback();
-		_animated = animate;
-		if(_animated)
-		{
+		animated = animate;
+		if (animated) {
 			startTimer();
-		}
-		else 
-		{
+		} else {
 			stopTimer();
 		}
 	}
-	
+
 	/**
 	 * Toggles whether or not the character should be drawn stroke by stroke
-	 * @param animate whether the character should be animated
-	 * @param length the duration of the animation
+	 * 
+	 * @param animate
+	 *            whether the character should be animated
+	 * @param length
+	 *            the duration of the animation
 	 */
-	public void setAnimated(boolean animate, float length)
-	{
+	public void setAnimated(boolean animate, float length) {
 		setAnimated(animate);
 		setAnimationLength(length);
 	}
-	
-	public void setAnimationLength(float length)
-	{
-		if(length > 0) _animationLength = length;
+
+	public void setAnimationLength(float length) {
+		if (length > 0)
+			animationLength = length;
 	}
-	
+
 	/**
 	 * Resets playback to the first stroke (nothing shown).
 	 */
-	public void resetPlayback()
-	{
-		_currentStroke = 0;
-		_lastTick = System.currentTimeMillis();
+	public void resetPlayback() {
+		currentStroke = 0;
+		lastTick = System.currentTimeMillis();
 		_elapsedTime = 0;
 	}
-	
+
 	/**
 	 * Adds the next stroke to the screen.
 	 */
-	public void stepPlayback()
-	{
-		_currentStroke++;
-		if(_currentStroke > _character.getNumberOfStrokes())
-			_currentStroke = _character.getNumberOfStrokes();
+	public void stepPlayback() {
+		currentStroke++;
+		if (currentStroke > character.getNumberOfStrokes())
+			currentStroke = character.getNumberOfStrokes();
 	}
-	
+
 	/**
-	 * Sets the current stroke to be drawn. The value will be clamped to the
-	 * actual number of strokes.
-	 * @param stroke - the number of strokes that should be drawn
+	 * Sets the current stroke to be drawn. The value will be clamped to the actual number of strokes.
+	 * 
+	 * @param stroke
+	 *            - the number of strokes that should be drawn
 	 * @return the actual stroke the view is set to.
 	 */
-	public int setCurrentStroke(int stroke)
-	{
-		if(_character==null || stroke < 0)
-		{
-			_currentStroke = 0;
+	public int setCurrentStroke(int stroke) {
+		if (character == null || stroke < 0) {
+			currentStroke = 0;
+		} else if (stroke > character.getNumberOfStrokes()) {
+			currentStroke = character.getNumberOfStrokes();
+		} else {
+			currentStroke = stroke;
 		}
-		else if(stroke > _character.getNumberOfStrokes())
-		{
-			_currentStroke = _character.getNumberOfStrokes();
-		}
-		else
-		{
-			_currentStroke = stroke;
-		}
-		
-		return _currentStroke;
+
+		return currentStroke;
 	}
-	
-	protected void animateTick()
-	{
-		long ticks = System.currentTimeMillis() - _lastTick;
-		_elapsedTime += ticks/1000F;
-		_lastTick = System.currentTimeMillis();
+
+	protected void animateTick() {
+		long ticks = System.currentTimeMillis() - lastTick;
+		_elapsedTime += ticks / 1000F;
+		lastTick = System.currentTimeMillis();
 	}
-	
+
 	@Override
-	public void onDraw(Canvas canvas)
-	{
+	public void onDraw(Canvas canvas) {
 		animateTick();
-		
-		float time = _elapsedTime/_animationLength;
-		
+
+		float time = _elapsedTime / animationLength;
+
 		canvas.drawColor(_backgroundColor);
-		
-		if(_character != null)
-		{
-			if(_animated)
-			{
-				_character.draw(canvas, time);
+
+		if (character != null) {
+			if (animated) {
+				character.draw(canvas, time);
+			} else {
+				character.draw(canvas);
 			}
-			else
-			{
-				_character.draw(canvas);
-			}
-			
+
 		}
 	}
-	
+
 }

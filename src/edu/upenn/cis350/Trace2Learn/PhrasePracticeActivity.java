@@ -51,7 +51,7 @@ public class PhrasePracticeActivity extends Activity {
 	private ArrayList<SquareLayout> displayLayouts;
 	private ArrayList<SquareLayout> traceLayouts;
 	
-	private ArrayList<CharacterDisplayPane> displayPanes;
+	private ArrayList<CharacterPlaybackPane> displayPanes;
 	private ArrayList<CharacterTracePane> tracePanes;
 	
 	private ThumbnailAdapter imgAdapter;
@@ -86,7 +86,7 @@ public class PhrasePracticeActivity extends Activity {
 		displayLayouts = new ArrayList<SquareLayout>();
 		traceLayouts = new ArrayList<SquareLayout>();
 		
-		displayPanes = new ArrayList<CharacterDisplayPane>();
+		displayPanes = new ArrayList<CharacterPlaybackPane>();
 		tracePanes = new ArrayList<CharacterTracePane>();
 		
 		
