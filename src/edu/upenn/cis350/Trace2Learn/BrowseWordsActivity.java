@@ -23,13 +23,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class BrowseWordsActivity extends ListActivity {
+public class BrowseWordsActivity extends ListActivity implements Filterable {
 	private DbAdapter dba; 
 	private ListView collectionList; //list of words to display in listview
 	private List<TraceableItem> items;
@@ -59,7 +61,10 @@ public class BrowseWordsActivity extends ListActivity {
         	for (Word w : words) {
         		items.add(w);
         	}
-        	setTitle(getTitle() + " È All Words");
+        	setTitle(getTitle() + " ï¿½ All Words");
+        	Button b = new FilterButton(this);
+            LinearLayout layout = (LinearLayout) findViewById(R.id.button_panel);
+            layout.addView(b);
         }
         else{
         	Collection les = dba.getCollection(id);
@@ -69,13 +74,24 @@ public class BrowseWordsActivity extends ListActivity {
 				items.add(w);
 			}
 
-    		setTitle(getTitle() + " È " + collectionName + " (" + les.size() + " words)");
+    		setTitle(getTitle() + " ï¿½ " + collectionName + " (" + les.size() + " words)");
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         setListAdapter(new TraceableListAdapter(this, items, vi));
 
         registerForContextMenu(getListView());
     }
+	
+	@Override
+	public void filterView(String filter) {
+		List<Word> words = dba.getWordsByAttribute(filter);
+		items.clear();
+		for (Word w : words) {
+			items.add(w);
+		}
+		LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        setListAdapter(new TraceableListAdapter(this, items, vi));
+	}
 
 	
 	@Override  

@@ -736,9 +736,9 @@ public class DbAdapter {
                             " AND ";
                        
         if (attr.length() < 3) {
-        	query += "upper(" + ATTR_NAME + ") = '" + attr + "' ";
+        	query += "upper(A." + ATTR_NAME + ") = '" + attr + "' ";
         } else {
-        	query += "upper(" + ATTR_NAME + ") LIKE '%" + attr + "%' ";
+        	query += "upper(A." + ATTR_NAME + ") LIKE '%" + attr + "%' ";
         }
         
         query += "ORDER BY C." + CHAR_ORDER + ";"; 
@@ -1065,6 +1065,56 @@ public class DbAdapter {
     	} while (cursor.moveToNext());
     	cursor.close();
     	return words;
+    }
+    
+    /**
+     * Retrieve words associated with a partial attribute string
+     * @param attr the name of an attribute or part of an attribute
+     * @return words associated with attr
+     */
+    public List<Word> getWordsByAttribute(String attr) {
+        attr = attr.trim().toUpperCase(locale);
+        if (attr.length() == 0) return getAllWords();
+        //return only exact matches if the tag is two or less characters
+        String query = "SELECT W." + WORD_ID + " AS " + WORD_ID + " " +
+                       "FROM " + WORD_TABLE + " W, " + ATTR_TABLE + " A, " +
+        		                 WORD_ATTR_TABLE + " L " +
+                       "WHERE W." + WORD_ID + " = " + "L." + WORD_ATTR_WORDID +
+                            " AND " + "A." + ATTR_ID + " = " + "L." + WORD_ATTR_ATTRID +
+                            " AND ";
+                       
+        if (attr.length() < 3) {
+        	query += "upper(A." + ATTR_NAME + ") = '" + attr + "' ";
+        } else {
+        	query += "upper(A." + ATTR_NAME + ") LIKE '%" + attr + "%' ";
+        }
+        
+        query += "ORDER BY W." + WORD_ORDER + ";"; 
+        
+        Cursor cursor = mDb.rawQuery(query, null);
+        if (cursor == null) {
+        	Log.e(WORD_TABLE, "Could not process query " + query);
+        	return null;
+        }
+        cursor.moveToFirst();
+        List<Word> words = new ArrayList<Word>();
+        if (cursor.getCount() == 0) {
+        	cursor.close();
+        	return words;
+        }
+		do{
+			long id = cursor.getLong(cursor.getColumnIndexOrThrow(WORD_ID));
+			Word w = getWord(id);
+			if (w == null) {
+				Log.e(WORD_TABLE, "Could not retrieve word with id " + id);
+				return null;
+			}
+			words.add(w);
+		}
+		while (cursor.moveToNext());
+        cursor.close();
+        
+        return words;
     }
     
     /**
