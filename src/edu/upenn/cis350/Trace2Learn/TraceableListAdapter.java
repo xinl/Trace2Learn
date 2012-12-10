@@ -73,7 +73,7 @@ public class TraceableListAdapter extends ArrayAdapter<TraceableItem> {
 		String s = "";
 		if(sb.length()>0){
 			s = sb.substring(2);
-			Log.e("Printing Tags",s);
+			// Log.e("Printing Tags",s);
 		}
 		text2.setText(s);
 		return v;

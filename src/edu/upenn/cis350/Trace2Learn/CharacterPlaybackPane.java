@@ -8,7 +8,7 @@ import android.os.Handler;
 /**
  * @author Ryan This class displays a character which is animated stroke by stroke.
  */
-public class CharacterPlaybackPane extends CharacterViewPane {
+public class CharacterPlaybackPane extends CharacterPane {
 
 	protected Character character;
 	protected int currentStroke = 0;
@@ -19,7 +19,7 @@ public class CharacterPlaybackPane extends CharacterViewPane {
 	protected Thread refreshTimer;
 	protected Handler handler;
 
-	private float _elapsedTime;
+	private float elapsedTime;
 
 	public CharacterPlaybackPane(Context context, boolean animated, float animationLength) {
 		super(context);
@@ -54,15 +54,15 @@ public class CharacterPlaybackPane extends CharacterViewPane {
 	public void startTimer() {
 		if (refreshTimer == null) {
 			refreshTimer = new Thread() {
-				Runnable _update = new Runnable() {
+				Runnable update = new Runnable() {
 					public void run() {
 						invalidate();
 					}
 				};
 
 				public void run() {
-					while (animated && _elapsedTime < animationLength) {
-						handler.post(_update);
+					while (animated && elapsedTime < animationLength) {
+						handler.post(update);
 						try {
 							Thread.sleep(20);
 						} catch (InterruptedException e) {
@@ -131,7 +131,7 @@ public class CharacterPlaybackPane extends CharacterViewPane {
 	public void resetPlayback() {
 		currentStroke = 0;
 		lastTick = System.currentTimeMillis();
-		_elapsedTime = 0;
+		elapsedTime = 0;
 	}
 
 	/**
@@ -164,7 +164,7 @@ public class CharacterPlaybackPane extends CharacterViewPane {
 
 	protected void animateTick() {
 		long ticks = System.currentTimeMillis() - lastTick;
-		_elapsedTime += ticks / 1000F;
+		elapsedTime += ticks / 1000F;
 		lastTick = System.currentTimeMillis();
 	}
 
@@ -172,9 +172,9 @@ public class CharacterPlaybackPane extends CharacterViewPane {
 	public void onDraw(Canvas canvas) {
 		animateTick();
 
-		float time = _elapsedTime / animationLength;
+		float time = elapsedTime / animationLength;
 
-		canvas.drawColor(_backgroundColor);
+		canvas.drawColor(backgroundColor);
 
 		if (character != null) {
 			if (animated) {

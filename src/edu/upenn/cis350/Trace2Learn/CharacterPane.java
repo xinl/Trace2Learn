@@ -1,6 +1,3 @@
-/**
- * 
- */
 package edu.upenn.cis350.Trace2Learn;
 
 import edu.upenn.cis350.Trace2Learn.Database.Character;
@@ -15,22 +12,21 @@ import android.view.View;
  * @author Ryan
  *
  */
-public abstract class CharacterViewPane extends View {
+public abstract class CharacterPane extends View {
 
-	protected Paint _paint;
+	protected Paint paint;
 	
-	protected int _backgroundColor = Color.LTGRAY;
+	protected int backgroundColor = Color.LTGRAY;
 	
-	public CharacterViewPane(Context context) {
+	public CharacterPane(Context context) {
 		super(context);
-		_paint = new Paint();
-		_paint.setAntiAlias(true);
-		_paint.setDither(true);
-		_paint.setColor(0xFFFF0000);
-		_paint.setStyle(Paint.Style.STROKE);
-		_paint.setStrokeJoin(Paint.Join.ROUND);
-		_paint.setStrokeCap(Paint.Cap.ROUND);
-		_paint.setStrokeWidth(12);
+		paint = new Paint();
+		paint.setAntiAlias(true);
+		paint.setColor(0xFFFF0000);
+		paint.setStyle(Paint.Style.STROKE);
+		paint.setStrokeJoin(Paint.Join.ROUND);
+		paint.setStrokeCap(Paint.Cap.ROUND);
+		paint.setStrokeWidth(12);
 	}
 
 	/**
@@ -40,7 +36,7 @@ public abstract class CharacterViewPane extends View {
 	 */
 	protected void drawStroke(Canvas canvas, Stroke stroke)
 	{
-		canvas.drawPath(stroke.toPath(), _paint);
+		canvas.drawPath(stroke.toPath(), paint);
 	}
 	
 	/**
@@ -51,11 +47,6 @@ public abstract class CharacterViewPane extends View {
 	protected void drawCharacter(Canvas canvas, Character character)
 	{
 		character.draw(canvas);
-		/*List<Stroke> strokes = character.getStrokes();
-		for(Stroke s : strokes)
-		{
-			drawStroke(canvas, s);
-		}*/
 	}
 	
 	public abstract void clearPane();

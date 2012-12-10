@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.util.Log;
 
 public class Character extends TraceableItem {
     
@@ -62,8 +61,8 @@ public class Character extends TraceableItem {
 	public void draw(Canvas canvas, Paint paint, float left,
 			float top, float width, float height) {
 		Matrix matrix = new Matrix();
-		Log.i("DRAW", "Scale: " + width + " " + height);
-		Log.i("DRAW", "Strokes: " + strokes.size());
+		// Log.i("DRAW", "Scale: " + width + " " + height);
+		// Log.i("DRAW", "Strokes: " + strokes.size());
 		matrix.postScale(width, height);
 		matrix.postTranslate(left,  top);
 		List<Stroke> strokes = getStrokes();
@@ -90,9 +89,9 @@ public class Character extends TraceableItem {
 	public void draw(Canvas canvas, Paint paint, float left,
 			float top, float width, float height, float time) {
 		Matrix matrix = new Matrix();
-		Log.i("DRAW", "Scale: " + width + " " + height);
-		Log.i("DRAW", "Strokes: " + strokes.size());
-		Log.i("DRAW", "Time: " + time);
+		// Log.i("DRAW", "Scale: " + width + " " + height);
+		// Log.i("DRAW", "Strokes: " + strokes.size());
+		// Log.i("DRAW", "Time: " + time);
 		matrix.postScale(width, height);
 		matrix.postTranslate(left,  top);
 		
