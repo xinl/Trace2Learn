@@ -302,24 +302,6 @@ public class PhrasePracticeActivity extends Activity {
 		return buf.toString();
 	}
 	
-	private String attributesToString(Map<String, Set<String>> attributes) {
-	    StringBuffer buf = new StringBuffer();
-	    Set<String> keys = attributes.keySet();
-	    for(String key: keys) {
-	    	buf.append(key+": ");
-	    	Set<String> values = attributes.get(key);
-	    	int i = 0;
-    		for(String value:values) {
-    			i++;
-    			if(i!=values.size())
-    				buf.append(value+", ");
-    			else
-    				buf.append(value);
-    		}
-    		buf.append("\n");
-	    }
-	    return buf.toString();
-	}
 	
 	public void showToast(String msg){
 		Context context = getApplicationContext();
