@@ -1,5 +1,6 @@
 package edu.upenn.cis350.Trace2Learn;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -259,7 +260,7 @@ public class CreateCharacterActivity extends Activity {
 			Intent i = new Intent(this, TagActivity.class);
 
 			i.putExtra("ID", idToPassOn);
-			i.putExtra("TYPE", character.getClass().getSimpleName().toUpperCase());
+			i.putExtra("TYPE", character.getClass().getSimpleName().toUpperCase(Locale.US));
 			i.putExtra("FROM", false);
 			startActivity(i);
 		} else {
