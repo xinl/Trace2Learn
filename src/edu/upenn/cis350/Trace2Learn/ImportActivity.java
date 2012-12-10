@@ -91,7 +91,7 @@ public class ImportActivity extends Activity {
 				}
 			}
 		});
-		setTitle(getTitle() + " È Import");
+		setTitle(getTitle() + " Â» Import");
 	}
 
 	protected Dialog createDialog(final List<Character> characters, final List<Word> words, final List<Collection> collections) {

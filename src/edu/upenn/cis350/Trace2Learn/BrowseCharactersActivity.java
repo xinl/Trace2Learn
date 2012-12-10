@@ -39,7 +39,7 @@ public class BrowseCharactersActivity extends ListActivity implements Filterable
         setCharList(dba.getAllCharacters());
         registerForContextMenu(getListView());
         
-        setTitle(getTitle() + " È All Characters");
+        setTitle(getTitle() + " Â» All Characters");
         
         Button b = new FilterButton(this);
         LinearLayout layout = (LinearLayout) findViewById(R.id.button_panel);

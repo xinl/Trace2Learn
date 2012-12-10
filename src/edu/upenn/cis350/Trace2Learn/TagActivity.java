@@ -118,7 +118,7 @@ public class TagActivity extends FragmentActivity implements NewTagDialogFragmen
         List<String> attrKeys = mDbHelper.getAllAttributeKeys();
         attrKeyAutoCompleteAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, attrKeys);
         
-        setTitle(getTitle() + " È " + getResources().getString(R.string.tag_header));
+        setTitle(getTitle() + " Â» " + getResources().getString(R.string.tag_header));
 	}
 	
 	protected Dialog onDeleteDialog(final String str) {

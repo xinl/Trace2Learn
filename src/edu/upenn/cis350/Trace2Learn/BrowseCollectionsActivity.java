@@ -24,8 +24,8 @@ public class BrowseCollectionsActivity extends ListActivity {
 
 	private DbAdapter dba; 
 	private ArrayList<Collection> items;
-	ArrayAdapter<String> arrAdapter;
-
+	private ArrayAdapter<String> arrAdapter;
+	
 	final Context c = this;
 
 	@Override
@@ -41,7 +41,7 @@ public class BrowseCollectionsActivity extends ListActivity {
         CollectionListAdapter la = new CollectionListAdapter(this,items,vi);
         setListAdapter(la);
         registerForContextMenu(getListView());
-        setTitle(getTitle() + " È All Collections");
+        setTitle(getTitle() + " Â» All Collections");
     }
 
 	@Override  
@@ -66,7 +66,7 @@ public class BrowseCollectionsActivity extends ListActivity {
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 	    menu.setHeaderTitle("Options");
-	    String[] menuItems = {"Delete", "Export this collection"};
+	    String[] menuItems = {"Delete", "Export"};
 	    for (int i = 0; i<menuItems.length; i++) {
 	      menu.add(Menu.NONE, i, i, menuItems[i]);
 	    }
@@ -77,8 +77,8 @@ public class BrowseCollectionsActivity extends ListActivity {
 	  AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 	  int menuItemIndex = item.getItemId();
 	  Collection collection = (Collection)items.get(info.position);
-	  Log.e("MenuIndex",Integer.toString(menuItemIndex));
-	  Log.e("ListIndex",Integer.toString(info.position));
+	  // Log.e("MenuIndex",Integer.toString(menuItemIndex));
+	  // Log.e("ListIndex",Integer.toString(info.position));
 
 	  //delete lesson
 	  if(menuItemIndex == 0){

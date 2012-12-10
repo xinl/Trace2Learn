@@ -61,7 +61,7 @@ public class BrowseWordsActivity extends ListActivity implements Filterable {
         	for (Word w : words) {
         		items.add(w);
         	}
-        	setTitle(getTitle() + " � All Words");
+        	setTitle(getTitle() + " » All Words");
         	Button b = new FilterButton(this);
             LinearLayout layout = (LinearLayout) findViewById(R.id.button_panel);
             layout.addView(b);
@@ -74,7 +74,7 @@ public class BrowseWordsActivity extends ListActivity implements Filterable {
 				items.add(w);
 			}
 
-    		setTitle(getTitle() + " � " + collectionName + " (" + les.size() + " words)");
+    		setTitle(getTitle() + " » " + collectionName + " (" + les.size() + " words)");
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         setListAdapter(new TraceableListAdapter(this, items, vi));

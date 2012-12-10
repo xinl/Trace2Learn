@@ -87,7 +87,7 @@ public class CreateWordActivity extends Activity implements Filterable {
         LinearLayout layout = (LinearLayout) findViewById(R.id.button_panel);
         layout.addView(b);
         
-        setTitle(getTitle() + " È Create Word");
+        setTitle(getTitle() + " Â» Create Word");
         
     }
 
