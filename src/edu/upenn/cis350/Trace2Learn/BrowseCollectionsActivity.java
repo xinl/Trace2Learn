@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -24,7 +23,6 @@ public class BrowseCollectionsActivity extends ListActivity {
 
 	private DbAdapter dba; 
 	private ArrayList<Collection> items;
-	private ArrayAdapter<String> arrAdapter;
 	
 	final Context c = this;
 
@@ -60,6 +58,7 @@ public class BrowseCollectionsActivity extends ListActivity {
 //		i.putExtra("lessonTotal", items.size());
 		i.putExtra("fromCollection", true);
 		startActivity(i);
+		finish();
 	}
 
 	@Override
