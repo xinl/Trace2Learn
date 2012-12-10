@@ -20,16 +20,16 @@
             </intent-filter>
         </activity>
         <activity android:name="edu.upenn.cis350.Trace2Learn.CreateCharacterActivity"></activity>
-        <activity android:name="CreateWordActivity"></activity>
-        <activity android:name="CreateLessonActivity"></activity>
+        <activity android:name="edu.upenn.cis350.Trace2Learn.CreateWordActivity"></activity>
+        <activity android:name="edu.upenn.cis350.Trace2Learn.CreateLessonActivity"></activity>
         <activity android:name="edu.upenn.cis350.Trace2Learn.EditTagsActivity"></activity>
-        <activity android:name="BrowseCharactersActivity"></activity>
-        <activity android:name="BrowseWordsActivity"></activity>
-        <activity android:name="BrowseCollectionsActivity"></activity>
+        <activity android:name="edu.upenn.cis350.Trace2Learn.BrowseCharactersActivity"></activity>
+        <activity android:name="edu.upenn.cis350.Trace2Learn.BrowseWordsActivity"></activity>
+        <activity android:name="edu.upenn.cis350.Trace2Learn.BrowseCollectionsActivity"></activity>
         <activity android:name="edu.upenn.cis350.Trace2Learn.ViewWordActivity"></activity>
         <activity android:name="edu.upenn.cis350.Trace2Learn.ViewCharacterActivity"></activity>
-        <activity android:name="ExportActivity"></activity>
-        <activity android:name="ImportActivity"></activity>
+        <activity android:name="edu.upenn.cis350.Trace2Learn.ExportActivity"></activity>
+        <activity android:name="edu.upenn.cis350.Trace2Learn.ImportActivity"></activity>
     </application>
     
 </manifest>

@@ -39,11 +39,11 @@ public class BitmapFactory {
 	 * Builds a bitmap of the given image which is width x height in size
 	 * 
 	 * @param item
-	 *            - The item to be drawn
+	 *            The item to be drawn
 	 * @param width
-	 *            - The width of the bitmap to be created
+	 *            The width of the bitmap to be created
 	 * @param height
-	 *            - The height of the bitmap to be created
+	 *            The height of the bitmap to be created
 	 * @return
 	 */
 	public static Bitmap buildBitmap(TraceableItem item, int width, int height) {
