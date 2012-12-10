@@ -16,18 +16,6 @@
     </edu.upenn.cis350.Trace2Learn.SquareLayout>
 
     <TextView
-        android:id="@+id/attribute_list"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="0.5"
-        android:ellipsize="marquee"
-        android:gravity="center"
-        android:maxLines="10"
-        android:scrollbars="vertical"
-        android:textSize="24sp" />
-
-    <TextView
         android:id="@+id/tag_list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

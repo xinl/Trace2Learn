@@ -53,10 +53,10 @@ public class CreateCharacterActivity extends Activity {
 
 		if (isCreate) {
 			setContentView(R.layout.create_char);
-			setTitle(getTitle() + " Â» Create Character");
+			setTitle(getTitle() + " È Create Character");
 		} else {
 			setContentView(R.layout.browse_single_char);
-			setTitle(getTitle() + " Â» View Character");
+			setTitle(getTitle() + " È View Character");
 		}
 
 		characterViewSlot = (LinearLayout) findViewById(id.character_view_slot);
@@ -138,9 +138,6 @@ public class CreateCharacterActivity extends Activity {
 		}
 	}
 
-	/*
-	 * public void setContentView(View view) { super.setContentView(view); }
-	 */
 	private void setCharacter(Character character) {
 		creationPane.setCharacter(character);
 		playbackPane.setCharacter(character);
@@ -156,9 +153,7 @@ public class CreateCharacterActivity extends Activity {
 			Set<String> tags = character.getTags();
 			Map<String, Set<String>> attributes = character.getAttributes();
 			this.tagText.setMovementMethod(new ScrollingMovementMethod());
-			this.tagText.setText(tagsToString(tags));
-			this.attributeText.setMovementMethod(new ScrollingMovementMethod());
-			this.attributeText.setText(attributesToString(attributes));
+			this.tagText.setText(tagsToString(attributes, tags));
 			setCharacter(character);
 		}
 	}
@@ -178,29 +173,10 @@ public class CreateCharacterActivity extends Activity {
 	}
 
 	/**
-	 * Convert the tags to string that can be displayed under the character
+	 * Convert the attributes and tags to string that can be displayed under the character
 	 */
-	private String tagsToString(Set<String> tags) {
-		if (tags.size() == 0) {
-			return "";
-		}
-		StringBuffer buf = new StringBuffer();
-		buf.append("Tags: ");
-		for (String tag : tags) {
-			buf.append(tag + ", ");
-		}
-		if (buf.length() >= 2) {
-			return buf.substring(0, buf.length() - 2);
-		} else {
-			return buf.toString();
-		}
-	}
-
-	/**
-	 * Convert the attributes to string that can be displayed above the character
-	 */
-	private String attributesToString(Map<String, Set<String>> attributes) {
-		StringBuffer buf = new StringBuffer();
+	private String tagsToString(Map<String, Set<String>> attributes, Set<String> tags) {
+	    	StringBuffer buf = new StringBuffer();
 		Set<String> keys = attributes.keySet();
 		for (String key : keys) {
 			buf.append(key + ": ");
@@ -215,8 +191,20 @@ public class CreateCharacterActivity extends Activity {
 			}
 			buf.append("\n");
 		}
+		if (tags.size() != 0) {   
+		    buf.append("Tags: ");
+		    int i = 0;
+		    for (String tag : tags) {
+			i++;
+			if(i!=tags.size())
+			    buf.append(tag + ", ");
+			else
+			    buf.append(tag);
+		    }
+		}
 		return buf.toString();
 	}
+	
 
 	/**
 	 * Used for create character. Press the save button to save the character.

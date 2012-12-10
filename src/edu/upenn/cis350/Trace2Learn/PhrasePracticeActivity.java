@@ -16,6 +16,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -147,9 +148,9 @@ public class PhrasePracticeActivity extends Activity {
 			setDisplayPane();
 		}
 		if (currentCollectionID != -1) {
-			setTitle(getResources().getString(R.string.app_name) + " Â» " + currentCollectionName + " - " + (position + 1) + " of " + wordIDs.size());
+			setTitle(getResources().getString(R.string.app_name) + " È " + currentCollectionName + " - " + (position + 1) + " of " + wordIDs.size());
 		} else {
-			setTitle(getResources().getString(R.string.app_name) + " Â» View Word");
+			setTitle(getResources().getString(R.string.app_name) + " È View Word");
 		}
 		updateTags();
 	}
@@ -256,8 +257,8 @@ public class PhrasePracticeActivity extends Activity {
 	private void updateTags() {
 		Set<String> tags = currentWord.getTags();
 		Map<String, Set<String>> attrs = currentWord.getAttributes();
-		this.tagTextView.setText(tagsToString(tags));
-		this.attrTextView.setText(attributesToString(attrs));
+		this.tagTextView.setMovementMethod(new ScrollingMovementMethod());
+		this.tagTextView.setText(tagsToString(attrs, tags));
 	}
 	
 	public void onTraceButtonClick(View view)
@@ -271,23 +272,34 @@ public class PhrasePracticeActivity extends Activity {
 		setDisplayPane();
 	}
 
-	private String tagsToString(Set<String> tags)
-	{
-		if (tags.size() == 0) {
-			return "";
+	private String tagsToString(Map<String, Set<String>> attributes, Set<String> tags) {
+	    	StringBuffer buf = new StringBuffer();
+		Set<String> keys = attributes.keySet();
+		for (String key : keys) {
+			buf.append(key + ": ");
+			Set<String> values = attributes.get(key);
+			int i = 0;
+			for (String value : values) {
+				i++;
+				if (i != values.size())
+					buf.append(value + ", ");
+				else
+					buf.append(value);
+			}
+			buf.append("\n");
 		}
-		StringBuffer buf = new StringBuffer();
-		buf.append("Tags: ");
-		for (String tag : tags)
-		{
-			buf.append(tag + ", ");
+		if (tags.size() != 0) {   
+		    buf.append("Tags: ");
+		    int i = 0;
+		    for (String tag : tags) {
+			i++;
+			if(i!=tags.size())
+			    buf.append(tag + ", ");
+			else
+			    buf.append(tag);
+		    }
 		}
-		if (buf.length() >= 2){
-		    return buf.substring(0, buf.length() - 2);
-		}
-		else {
-		    return buf.toString();
-		}
+		return buf.toString();
 	}
 	
 	private String attributesToString(Map<String, Set<String>> attributes) {

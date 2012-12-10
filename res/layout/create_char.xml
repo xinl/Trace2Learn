@@ -6,6 +6,17 @@
     android:gravity="center"
     android:orientation="vertical"
     tools:ignore="HardcodedText" >
+
+    <TextView
+        android:id="@+id/blank"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.47"
+        android:ellipsize="marquee"
+        android:gravity="center"
+        android:maxLines="10"
+        android:scrollbars="vertical"
+        android:textSize="24sp" />
 
     <edu.upenn.cis350.Trace2Learn.SquareLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -13,17 +24,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical" />
-
-    <TextView
-        android:id="@+id/attribute_list"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.5"
-        android:ellipsize="marquee"
-        android:gravity="center"
-        android:maxLines="10"
-        android:scrollbars="vertical"
-        android:textSize="24sp" />
 
     <TextView
         android:id="@+id/tag_list"
@@ -53,9 +53,11 @@
             android:id="@+id/save_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/create_button"
             android:onClick="onSaveButtonClick"
             android:text="@string/save" />
+
     </RelativeLayout>
 
 </LinearLayout>
