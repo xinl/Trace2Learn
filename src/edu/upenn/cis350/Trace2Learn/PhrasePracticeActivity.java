@@ -146,9 +146,9 @@ public class PhrasePracticeActivity extends Activity {
 			setDisplayPane();
 		}
 		if (currentCollectionID != -1) {
-			setTitle(getResources().getString(R.string.app_name) + " È " + currentCollectionName + " - " + (position + 1) + " of " + wordIDs.size());
+			setTitle(getResources().getString(R.string.app_name) + " Â» " + currentCollectionName + " - " + (position + 1) + " of " + wordIDs.size());
 		} else {
-			setTitle(getResources().getString(R.string.app_name) + " È View Word");
+			setTitle(getResources().getString(R.string.app_name) + " Â» View Word");
 		}
 		updateTags();
 	}

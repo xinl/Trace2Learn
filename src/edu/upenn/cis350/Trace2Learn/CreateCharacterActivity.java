@@ -52,10 +52,10 @@ public class CreateCharacterActivity extends Activity {
 
 		if (isCreate) {
 			setContentView(R.layout.create_char);
-			setTitle(getTitle() + " È Create Character");
+			setTitle(getTitle() + " Â» Create Character");
 		} else {
 			setContentView(R.layout.browse_single_char);
-			setTitle(getTitle() + " È View Character");
+			setTitle(getTitle() + " Â» View Character");
 		}
 
 		characterViewSlot = (LinearLayout) findViewById(id.character_view_slot);
