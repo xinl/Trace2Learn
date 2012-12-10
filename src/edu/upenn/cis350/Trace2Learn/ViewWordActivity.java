@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import edu.upenn.cis350.Trace2Learn.CharacterTracePane.OnTraceCompleteListener;
+import edu.upenn.cis350.Trace2Learn.CharacterPracticePane.OnTraceCompleteListener;
 import edu.upenn.cis350.Trace2Learn.Database.Collection;
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
 import edu.upenn.cis350.Trace2Learn.Database.Character;
@@ -52,7 +52,7 @@ public class ViewWordActivity extends Activity {
 	private ArrayList<SquareLayout> traceLayouts;
 	
 	private ArrayList<CharacterPlaybackPane> displayPanes;
-	private ArrayList<CharacterTracePane> tracePanes;
+	private ArrayList<CharacterPracticePane> tracePanes;
 	
 	private ThumbnailAdapter imgAdapter;
 	
@@ -87,7 +87,7 @@ public class ViewWordActivity extends Activity {
 		traceLayouts = new ArrayList<SquareLayout>();
 		
 		displayPanes = new ArrayList<CharacterPlaybackPane>();
-		tracePanes = new ArrayList<CharacterTracePane>();
+		tracePanes = new ArrayList<CharacterPracticePane>();
 		
 		
 		imgAdapter = new ThumbnailAdapter(this,bitmaps);
@@ -187,7 +187,7 @@ public class ViewWordActivity extends Activity {
 			this.displayPanes.add(dispPane);
 			
 			SquareLayout trace = new SquareLayout(animator.getContext());
-			CharacterTracePane tracePane = new CharacterTracePane(disp.getContext());
+			CharacterPracticePane tracePane = new CharacterPracticePane(disp.getContext());
 			tracePane.setOnTraceCompleteListener(onTraceCompleteListener);
 			tracePane.setTemplate(ch);
 			trace.addView(tracePane);

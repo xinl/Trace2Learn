@@ -21,7 +21,7 @@ public class ViewCharacterActivity extends Activity {
 
 	private LinearLayout characterViewSlot;
 	private CharacterPlaybackPane playbackPane;
-	private CharacterTracePane tracePane;
+	private CharacterPracticePane tracePane;
 	
 	private TextView tagText;
 	
@@ -48,7 +48,7 @@ public class ViewCharacterActivity extends Activity {
 
 		characterViewSlot = (LinearLayout) findViewById(id.character_view_slot);
 		playbackPane = new CharacterPlaybackPane(this, false, 2);
-		tracePane = new CharacterTracePane(this);
+		tracePane = new CharacterPracticePane(this);
 		
 		traceButton = (Button) this.findViewById(id.trace_button);
 		displayButton = (Button) this.findViewById(id.display_button);

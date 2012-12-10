@@ -7,14 +7,14 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.view.MotionEvent;
 
-public class CharacterCreationPane extends CharacterPane {
+public class CharacterDrawingPane extends CharacterPane {
 
 	protected Character character;
 	private Stroke currentStroke;
 	private float prevX, prevY;
 	private static final float TOUCH_TOLERANCE = 4;
 
-	public CharacterCreationPane(Context c) {
+	public CharacterDrawingPane(Context c) {
 		super(c);
 		character = new Character();
 	}

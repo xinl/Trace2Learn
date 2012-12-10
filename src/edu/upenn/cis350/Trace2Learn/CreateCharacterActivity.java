@@ -17,7 +17,7 @@ import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
 public class CreateCharacterActivity extends Activity {
 
 	private LinearLayout characterViewSlot;
-	private CharacterCreationPane creationPane;
+	private CharacterDrawingPane creationPane;
 		
 	private DbAdapter dbHelper;
 	private Mode currentMode = Mode.INVALID;
@@ -38,7 +38,7 @@ public class CreateCharacterActivity extends Activity {
 			setTitle(getTitle() + " » Create Character");
 
 		characterViewSlot = (LinearLayout) findViewById(id.character_view_slot);
-		creationPane = new CharacterCreationPane(this);
+		creationPane = new CharacterDrawingPane(this);
 
 		creationPane.setCharacter(new Character());
 		dbHelper = new DbAdapter(this);

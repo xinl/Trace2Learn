@@ -15,7 +15,7 @@ import android.view.View;
  * @author Ryan
  * 
  */
-public class CharacterTracePane extends CharacterCreationPane {
+public class CharacterPracticePane extends CharacterDrawingPane {
 
 	protected Character template;
 
@@ -36,7 +36,7 @@ public class CharacterTracePane extends CharacterCreationPane {
 
 	protected Handler handler;
 
-	public CharacterTracePane(Context context) {
+	public CharacterPracticePane(Context context) {
 		super(context);
 		paint = new Paint();
 		paint.setColor(Color.GRAY);
