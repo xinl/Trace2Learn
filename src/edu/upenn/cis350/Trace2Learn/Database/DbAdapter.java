@@ -1416,8 +1416,6 @@ public class DbAdapter {
     		Log.e(COLL_TABLE, "Unable to delete collection, " + c);
     		return false;
     	}
-    	rowsDeleted = mDb.delete(
-				COLL_WORD_TABLE, COLL_WORD_COLLID + "=" + c.getId(), null);
     	mDb.setTransactionSuccessful();
     	mDb.endTransaction();
     	return true;
