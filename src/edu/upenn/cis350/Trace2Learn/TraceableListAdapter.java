@@ -39,7 +39,7 @@ public class TraceableListAdapter extends ArrayAdapter<TraceableItem> {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View v = convertView;
 		if (v == null) {
-			v = vi.inflate(R.layout.lesson_item_desc, null);
+			v = vi.inflate(R.layout.traceable_list_item, null);
 		}
 		TraceableItem item = items.get(position);
 		ImageView image = (ImageView)v.findViewById(R.id.li_image);

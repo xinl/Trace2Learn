@@ -15,33 +15,35 @@ import android.widget.TextView;
 public class CollectionListAdapter extends ArrayAdapter<Collection> {
 
 	private ArrayList<Collection> _items;
-	
+
 	private LayoutInflater _vi;
-	
-	public CollectionListAdapter( Context context, List<Collection> objects, LayoutInflater vi) 
-	{
+
+	public CollectionListAdapter(Context context, List<Collection> objects, LayoutInflater vi) {
 		super(context, 0, objects);
 		_items = new ArrayList<Collection>(objects);
 		_vi = vi;
 	}
-	
+
 	/**
 	 * Configures the view for the given item in the list
-	 * @param position - the index of the item in the list
-	 * @param convertView - the constructed view that should be modified
-	 * @param parent - The contained of the list
+	 * 
+	 * @param position
+	 *            The index of the item in the list
+	 * @param convertView
+	 *            The constructed view that should be modified
+	 * @param parent
+	 *            The contained of the list
 	 */
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {	
-		View v = convertView;
-		if (v == null) {
-			v = _vi.inflate(R.layout.main_menu, null);
+	public View getView(int position, View convertView, ViewGroup parent) {
+		if (convertView == null) {
+			convertView = _vi.inflate(android.R.layout.simple_list_item_1, null);
 		}
 		Collection item = _items.get(position);
-		TextView text = (TextView)v.findViewById(R.id.main_text);
+		TextView text = (TextView) convertView.findViewById(android.R.id.text1);
 		text.setText(item.getName() + " (" + item.size() + " words)");
-		
-		return v;
+
+		return convertView;
 	}
-	
+
 }

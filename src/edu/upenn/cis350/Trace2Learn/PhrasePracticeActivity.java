@@ -54,7 +54,7 @@ public class PhrasePracticeActivity extends Activity {
 	private ArrayList<CharacterDisplayPane> displayPanes;
 	private ArrayList<CharacterTracePane> tracePanes;
 	
-	private ImageAdapter imgAdapter;
+	private ThumbnailAdapter imgAdapter;
 	
 	private Gallery gallery;
 	
@@ -90,7 +90,7 @@ public class PhrasePracticeActivity extends Activity {
 		tracePanes = new ArrayList<CharacterTracePane>();
 		
 		
-		imgAdapter = new ImageAdapter(this,bitmaps);
+		imgAdapter = new ThumbnailAdapter(this,bitmaps);
         gallery = (Gallery)findViewById(R.id.gallery);
         gallery.setSpacing(0);
         

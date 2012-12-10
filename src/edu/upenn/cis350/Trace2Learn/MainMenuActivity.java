@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 public class MainMenuActivity extends ListActivity {
 	
-	static final String[] APPS = new String[]
+	static final String[] MAIN_MENU_ITEMS = new String[]
 		{ 
 			"Create Character", 
 			"Create Word",
@@ -28,7 +28,7 @@ public class MainMenuActivity extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setListAdapter(new ArrayAdapter<String>(this, R.layout.main_menu,APPS));
+		setListAdapter(new ArrayAdapter<String>(this, R.layout.main_menu_item, MAIN_MENU_ITEMS));
 
 		ListView listView = getListView();
 		listView.setTextFilterEnabled(true);
@@ -44,12 +44,12 @@ public class MainMenuActivity extends ListActivity {
 						long id) 
 				{
 					CharSequence clicked = ((TextView) view).getText();
-					if(clicked.equals(APPS[0]))
+					if(clicked.equals(MAIN_MENU_ITEMS[0]))
 					{
 						Intent i = new Intent().setClass(c, CreateCharacterActivity.class);
 						startActivity(i);
 					}
-					else if(clicked.equals(APPS[1]))
+					else if(clicked.equals(MAIN_MENU_ITEMS[1]))
 					{
 	
 						Intent i = new Intent(c, CreateWordActivity.class);
@@ -57,29 +57,29 @@ public class MainMenuActivity extends ListActivity {
 						startActivity(i);
 					
 					}
-					else if(clicked.equals(APPS[2])){
+					else if(clicked.equals(MAIN_MENU_ITEMS[2])){
 						Intent i = new Intent(c, BrowseCharactersActivity.class);
 						startActivity(i);
 					}
-					else if(clicked.equals(APPS[3])){
+					else if(clicked.equals(MAIN_MENU_ITEMS[3])){
 						Intent i = new Intent(c, BrowseWordsActivity.class);
 						startActivity(i);
 					}
-					else if(clicked.equals(APPS[4])){
+					else if(clicked.equals(MAIN_MENU_ITEMS[4])){
 						Intent i = new Intent(c, BrowseCollectionsActivity.class);
 						startActivity(i);
 					}
-					else if(clicked.equals(APPS[5])){
+					else if(clicked.equals(MAIN_MENU_ITEMS[5])){
 						Intent i = new Intent(c, ExportActivity.class);
 						i.putExtra("ID", -1L);
 						startActivity(i);
 					}
-					else if(clicked.equals(APPS[6])){
+					else if(clicked.equals(MAIN_MENU_ITEMS[6])){
 						Intent i = new Intent(c, ImportActivity.class);
 						startActivity(i);
 					}
 					else {
-						//XXX
+						// should never reach here
 					}
 				}
 			}

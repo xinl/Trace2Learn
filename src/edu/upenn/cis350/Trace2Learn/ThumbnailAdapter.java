@@ -12,12 +12,13 @@ import android.widget.Gallery;
 import android.widget.ImageView;
 
 //Adapter class for a list of bitmap images
-public class ImageAdapter extends BaseAdapter {
+public class ThumbnailAdapter extends BaseAdapter {
     private Context mContext;
 
     private ArrayList<Bitmap> images;
 
-    public ImageAdapter(Context c, ArrayList<Bitmap> images) {
+    public ThumbnailAdapter(Context c, ArrayList<Bitmap> images) {
+    	mContext = c;
         this.images = images;
     }
 

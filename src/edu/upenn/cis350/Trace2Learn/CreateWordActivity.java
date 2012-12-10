@@ -36,7 +36,7 @@ public class CreateWordActivity extends Activity implements Filterable {
 	private ListView list, collectionList;
 	private ArrayList<Bitmap> currentChars;
 	private Gallery gallery;
-	private ImageAdapter imgAdapter;
+	private ThumbnailAdapter imgAdapter;
 	private int numChars;
 	private PopupWindow window;
 	private View layout;
@@ -54,7 +54,7 @@ public class CreateWordActivity extends Activity implements Filterable {
         dba = new DbAdapter(this);
         dba.open();
         
-        imgAdapter = new ImageAdapter(this,currentChars);
+        imgAdapter = new ThumbnailAdapter(this,currentChars);
         gallery = (Gallery)findViewById(R.id.gallery);
         gallery.setSpacing(0);
         
@@ -201,13 +201,12 @@ public class CreateWordActivity extends Activity implements Filterable {
 	}
 	
 	public void onClearWordButtonClick(View view){
-
 	        saved = false;
 	        numChars = 0;
 	        newWord = new Word();
 	        currentChars = new ArrayList<Bitmap>();
 	        
-	        imgAdapter = new ImageAdapter(this,currentChars);
+	        imgAdapter = new ThumbnailAdapter(this,currentChars);
 	        gallery = (Gallery)findViewById(R.id.gallery);
 	        gallery.setSpacing(0);	        
 	        gallery.setAdapter(imgAdapter);
