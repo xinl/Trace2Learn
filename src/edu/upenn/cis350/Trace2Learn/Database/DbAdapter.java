@@ -1408,7 +1408,9 @@ public class DbAdapter {
      */
     public boolean deleteCollection(Collection c) {
     	mDb.beginTransaction();
-    	int rowsDeleted = mDb.delete(COLL_TABLE, COLL_ID + "=" + c.getId(), null);
+    	int rowsDeleted = mDb.delete(
+				COLL_WORD_TABLE, COLL_WORD_COLLID + "=" + c.getId(), null);
+    	rowsDeleted = mDb.delete(COLL_TABLE, COLL_ID + "=" + c.getId(), null);
     	if (rowsDeleted != 1) {
     		mDb.endTransaction();
     		Log.e(COLL_TABLE, "Unable to delete collection, " + c);
