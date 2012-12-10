@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -216,6 +217,7 @@ public class DbAdapter {
 
     // object fields
     private final Context mCtx;
+    private final Locale locale = Locale.US;
     private DatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
     private boolean isTest = false;
@@ -300,7 +302,7 @@ public class DbAdapter {
      */
     private long addAttributeType(String type) {
     	Cursor c = mDb.query(ATTR_TYPE_TABLE, null,
-    			"upper(" + ATTR_TYPE_NAME + ") = '" + type.toUpperCase() + "'",
+    			"upper(" + ATTR_TYPE_NAME + ") = '" + type.toUpperCase(locale) + "'",
     			null, null, null, null);
     	long typeId = -1;
     	if (c != null) c.moveToFirst();
@@ -323,7 +325,7 @@ public class DbAdapter {
     
     private long getAttributeTypeId(String name) {
     	Cursor c = mDb.query(ATTR_TYPE_TABLE, null,
-    			"upper(" + ATTR_TYPE_NAME + ") = '" + name.toUpperCase() + "'",
+    			"upper(" + ATTR_TYPE_NAME + ") = '" + name.toUpperCase(locale) + "'",
     			null, null, null, null);
     	if (c == null) return -1;
     	long result = -1;
@@ -420,7 +422,7 @@ public class DbAdapter {
     	for (String attribute: attributes) {
     		Cursor c = mDb.query(ATTR_TABLE, null,
     				ATTR_TYPE + "=" + typeId + " AND " +
-        			"upper(" + ATTR_NAME + ") = '" + attribute.toUpperCase() + "'",
+        			"upper(" + ATTR_NAME + ") = '" + attribute.toUpperCase(locale) + "'",
         			null, null, null, null);
     		if (c == null || c.getCount() == 0) {
     			if (c != null) c.close();
@@ -723,7 +725,7 @@ public class DbAdapter {
      * @return characters matching that attribute.
      */
     public List<Character> getCharactersByAttribute(String attr) {
-        attr = attr.trim().toUpperCase();
+        attr = attr.trim().toUpperCase(locale);
         if (attr.length() == 0) return getAllCharacters();
         //return only exact matches if the tag is two or less characters
         String query = "SELECT C." + CHAR_ID + " AS " + CHAR_ID + " " +
