@@ -193,7 +193,7 @@ public class CreateWordActivity extends Activity implements Filterable {
 			showToast("Please save the word before adding tags");
 			return;
 		}
-		Intent i = new Intent(this, TagActivity.class);
+		Intent i = new Intent(this, EditTagsActivity.class);
 		i.putExtra("ID", newWord.getId());
 		i.putExtra("TYPE", TraceableItem.ItemType.WORD.toString());
 		i.putExtra("FROM", false);

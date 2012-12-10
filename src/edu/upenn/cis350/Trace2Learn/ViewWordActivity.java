@@ -27,7 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewAnimator;
 
-public class PhrasePracticeActivity extends Activity {
+public class ViewWordActivity extends Activity {
 		
 	private TextView tagTextView;
 	private Button traceButton;
@@ -75,7 +75,7 @@ public class PhrasePracticeActivity extends Activity {
 	{
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.practice_phrase);
+		setContentView(R.layout.view_word);
 
 		animator = (ViewAnimator)this.findViewById(R.id.view_slot);
 		

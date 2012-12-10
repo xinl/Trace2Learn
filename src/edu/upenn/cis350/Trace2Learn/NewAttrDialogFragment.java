@@ -19,7 +19,7 @@ public class NewAttrDialogFragment extends DialogFragment {
 	    View view = inflater.inflate(R.layout.new_attr_dialog, null);
 	    
 	    AutoCompleteTextView attrKeyTextEdit = (AutoCompleteTextView)(view.findViewById(R.id.attr_key));
-	    attrKeyTextEdit.setAdapter(((TagActivity)getActivity()).getAttrKeyAutoCompleteAdapter());
+	    attrKeyTextEdit.setAdapter(((EditTagsActivity)getActivity()).getAttrKeyAutoCompleteAdapter());
 	    
 	    // Inflate and set the layout for the dialog
 	    // Pass null as the parent view because its going in the dialog layout

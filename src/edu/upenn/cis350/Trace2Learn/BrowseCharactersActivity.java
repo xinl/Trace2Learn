@@ -79,7 +79,7 @@ public class BrowseCharactersActivity extends ListActivity implements Filterable
 		bun.putString("mode", "display");
 		bun.putLong("charId", li.getId());
 
-		intent.setClass(this, CreateCharacterActivity.class);
+		intent.setClass(this, ViewCharacterActivity.class);
 		intent.putExtras(bun);
 		intent.putExtra("ISCREATE", false);
 		startActivity(intent);
@@ -105,7 +105,7 @@ public class BrowseCharactersActivity extends ListActivity implements Filterable
 
 		//add tags
 		if(menuItemIndex==0){
-			Intent i = new Intent(this, TagActivity.class);
+			Intent i = new Intent(this, EditTagsActivity.class);
 			i.putExtra("ID", lc.getId());
 			i.putExtra("TYPE", "CHARACTER");
 			i.putExtra("FROM", true);//Qin

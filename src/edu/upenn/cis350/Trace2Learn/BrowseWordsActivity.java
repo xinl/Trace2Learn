@@ -124,7 +124,7 @@ public class BrowseWordsActivity extends ListActivity implements Filterable {
 			bun.putString("collectionName", collectionName);
 		}
 
-		intent.setClass(this, PhrasePracticeActivity.class);
+		intent.setClass(this, ViewWordActivity.class);
 		intent.putExtras(bun);
 		startActivity(intent);
 	}
@@ -180,7 +180,7 @@ public class BrowseWordsActivity extends ListActivity implements Filterable {
 			}
 
 			else if (menuItemIndex == 1) {
-				Intent i = new Intent(this, TagActivity.class);
+				Intent i = new Intent(this, EditTagsActivity.class);
 				i.putExtra("ID", lw.getId());
 				i.putExtra("TYPE", "WORD");
 				startActivity(i);

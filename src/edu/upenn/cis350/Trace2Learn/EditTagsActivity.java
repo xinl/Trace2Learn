@@ -27,7 +27,7 @@ import android.widget.Toast;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 
-public class TagActivity extends FragmentActivity implements NewTagDialogFragment.NewTagDialogListener, NewAttrDialogFragment.NewAttrDialogListener {
+public class EditTagsActivity extends FragmentActivity implements NewTagDialogFragment.NewTagDialogListener, NewAttrDialogFragment.NewAttrDialogListener {
 	
 	//Should be able to take BOTH character and word
 	
@@ -53,10 +53,9 @@ public class TagActivity extends FragmentActivity implements NewTagDialogFragmen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        setContentView(R.layout.tag); //tag.xml
+        setContentView(R.layout.edit_tags);
 
         lv = (ListView) findViewById(R.id.list);
-//        addTagButton = (Button) findViewById(R.id.add_tag_button);
         
         mDbHelper = new DbAdapter(this);
         mDbHelper.open();
@@ -66,8 +65,8 @@ public class TagActivity extends FragmentActivity implements NewTagDialogFragmen
         type = ItemType.valueOf(getIntent().getStringExtra("TYPE"));
         isFromBrowse = this.getIntent().getBooleanExtra("FROM", true);
         
-        Log.e("ID",Long.toString(id));
-        Log.e("TYPE",type.toString());
+        // Log.e("ID",Long.toString(id));
+        // Log.e("TYPE",type.toString());
         
         switch(type)
         {
@@ -222,7 +221,7 @@ public class TagActivity extends FragmentActivity implements NewTagDialogFragmen
 				break;
 			}
 		} else {
-			Intent intent = new Intent(TagActivity.this, MainMenuActivity.class);
+			Intent intent = new Intent(EditTagsActivity.this, MainMenuActivity.class);
 		    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		    startActivity(intent);
 		}
