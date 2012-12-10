@@ -41,7 +41,6 @@ public class FilterButton extends Button {
 				} else {
 					filtered = true;
 					initiateFilterPopup();
-					setText(act.getString(R.string.filter_clear));
 				}
 			}
         	
@@ -68,6 +67,9 @@ public class FilterButton extends Button {
 				String filter = ((TextView) filter_layout.findViewById(R.id.filter_text)).getText().toString().trim();
 				if (filter.length() > 0) {
 				    filterAct.filterView(filter);
+				    setText(act.getString(R.string.filter_clear) + ": " + filter);
+				} else {
+					filtered = false;
 				}
 				filterWindow.dismiss();
 			}	
