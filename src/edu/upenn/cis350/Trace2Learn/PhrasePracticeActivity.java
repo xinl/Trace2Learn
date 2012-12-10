@@ -30,7 +30,6 @@ import android.widget.ViewAnimator;
 public class PhrasePracticeActivity extends Activity {
 		
 	private TextView tagTextView;
-	private TextView attrTextView;
 	private Button traceButton;
 	private Button displayButton;
 
@@ -105,7 +104,6 @@ public class PhrasePracticeActivity extends Activity {
 		});
 
 		tagTextView = (TextView) this.findViewById(id.tag_list);
-		attrTextView = (TextView) this.findViewById(id.attribute_list);
 		
 		traceButton = (Button) this.findViewById(id.trace_button);
 		displayButton = (Button) this.findViewById(id.display_button);

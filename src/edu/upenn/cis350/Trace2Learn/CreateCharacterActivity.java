@@ -28,7 +28,6 @@ public class CreateCharacterActivity extends Activity {
 	private CharacterTracePane tracePane;
 	
 	private TextView tagText;
-	private TextView attributeText;
 	
 	private Button traceButton;
 	private Button displayButton;
@@ -69,7 +68,6 @@ public class CreateCharacterActivity extends Activity {
 
 		setCharacter(new Character());
 		tagText = (TextView) this.findViewById(id.tag_list);
-		attributeText = (TextView) this.findViewById(id.attribute_list);
 		dbHelper = new DbAdapter(this);
 		dbHelper.open();
 		initializeMode();
