@@ -28,7 +28,7 @@ public class MainMenuActivity extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setListAdapter(new ArrayAdapter<String>(this, R.layout.main_menu_item, MAIN_MENU_ITEMS));
+		setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, MAIN_MENU_ITEMS));
 
 		ListView listView = getListView();
 		listView.setTextFilterEnabled(true);
@@ -51,11 +51,8 @@ public class MainMenuActivity extends ListActivity {
 					}
 					else if(clicked.equals(MAIN_MENU_ITEMS[1]))
 					{
-	
 						Intent i = new Intent(c, CreateWordActivity.class);
-						i.putExtra("ISCREATE", true);
 						startActivity(i);
-					
 					}
 					else if(clicked.equals(MAIN_MENU_ITEMS[2])){
 						Intent i = new Intent(c, BrowseCharactersActivity.class);
