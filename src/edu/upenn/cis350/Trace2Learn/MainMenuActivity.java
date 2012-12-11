@@ -51,11 +51,8 @@ public class MainMenuActivity extends ListActivity {
 					}
 					else if(clicked.equals(MAIN_MENU_ITEMS[1]))
 					{
-	
 						Intent i = new Intent(c, CreateWordActivity.class);
-						i.putExtra("ISCREATE", true);
 						startActivity(i);
-					
 					}
 					else if(clicked.equals(MAIN_MENU_ITEMS[2])){
 						Intent i = new Intent(c, BrowseCharactersActivity.class);
