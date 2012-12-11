@@ -55,10 +55,8 @@ public class ExportActivity extends Activity {
 	String subFolder, extStorageDirectory;
 	File folderPath;
 	Context thisContext;
-	List<edu.upenn.cis350.Trace2Learn.Database.Character> listOfCharacters;
 	boolean collectionMode;
 	long collectionId;
-	List<Word> listOfWords;
 	
 	//Controls
 	private EditText editExportText;
@@ -179,7 +177,7 @@ public class ExportActivity extends Activity {
 			return;
 		}
 		
-		exportToXML(file);
+		exportToXML(file, collectionMode, collectionId, dba);
 		try {
 			file.createNewFile();
 		} catch (IOException e) {
@@ -211,9 +209,11 @@ public class ExportActivity extends Activity {
 	 * Export all characters in the database to the file
 	 * @param file the file to be written
 	 */
-	private void exportToXML(File file) {
+	public static void exportToXML(File file, boolean collectionMode,
+			long collectionId, DbAdapter dba) {
 		Collection collection = null;
-		
+		List<Character> listOfCharacters = null;
+		List<Word> listOfWords = null;
 		//Populate necessary data structure
 		if(collectionMode) {
 			listOfCharacters = new ArrayList<Character>();
@@ -272,8 +272,8 @@ public class ExportActivity extends Activity {
 			data.appendChild(collections);
 			
 			//collection id attribute
-			Long collectionId = collection.getId();
-			collectionEle.setAttribute("id", collectionId.toString());
+			Long collId = collection.getId();
+			collectionEle.setAttribute("id", collId.toString());
 			
 			//collection name
 			Element name = doc.createElement("name");
@@ -326,7 +326,7 @@ public class ExportActivity extends Activity {
 	 * @param thisChar A character to be XML converted
 	 * @param characters a container of thisChar 
 	 */
-	private void convertCharacterToXML(Document doc, Character thisChar,
+	private static void convertCharacterToXML(Document doc, Character thisChar,
 			Element characters) {
 		Element character = doc.createElement("character");
 		
@@ -383,7 +383,7 @@ public class ExportActivity extends Activity {
 	 * @param thisWord word to be converted
 	 * @param words a container of thisWord
 	 */
-	private void convertWordToXML(Document doc, Word thisWord,
+	private static void convertWordToXML(Document doc, Word thisWord,
 			Element words) {
 		Element word = doc.createElement("word");
 

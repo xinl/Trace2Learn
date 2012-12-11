@@ -84,7 +84,15 @@ public class ImportActivity extends Activity {
 			public void onItemClick(AdapterView<?> adapter, View view, int position, long this_id) {
 				File importFile = fileList.get(position);
 				try {
-					importXML(importFile);
+					List<Character> characters = new ArrayList<Character>();
+					List<Word> words = new ArrayList<Word>();
+					List<Collection> collections = new ArrayList<Collection>();
+					if (importXML(importFile, characters, words, collections)) {
+						AlertDialog dialog = (AlertDialog) createDialog(characters, words, collections);
+						dialog.show();
+					} else {
+						Toast.makeText(thisContext, "Invalid data file format.", Toast.LENGTH_LONG).show();
+					}
 				} catch (Exception e) {
 					Log.e("IMPORTING", e.getMessage());
 					Toast.makeText(thisContext, "Import failed.", Toast.LENGTH_LONG).show();
@@ -102,7 +110,7 @@ public class ImportActivity extends Activity {
 		builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				saveData(characters, words, collections);
+				saveData(dba, characters, words, collections);
 				Toast.makeText(thisContext, "Import successful.", Toast.LENGTH_LONG).show();
 			}
 		});
@@ -114,8 +122,9 @@ public class ImportActivity extends Activity {
 		});
 		return builder.create();
 	}
-
-	public void importXML(File xmlFile) throws Exception {
+	
+	public static boolean importXML(File xmlFile, List<Character> characters,
+			List<Word> words, List<Collection> collections) throws Exception {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		Document doc = dBuilder.parse(xmlFile);
@@ -125,35 +134,26 @@ public class ImportActivity extends Activity {
 		NodeList wordNodes = doc.getElementsByTagName("word");
 		NodeList collectionNodes = doc.getElementsByTagName("collection");
 
-		List<Character> characters = new ArrayList<Character>();
 		for (int i = 0; i < characterNodes.getLength(); i++) {
 			Element element = (Element) characterNodes.item(i);
 			characters.add(createCharacter(element));
 		}
 
-		List<Word> words = new ArrayList<Word>();
 		for (int i = 0; i < wordNodes.getLength(); i++) {
 			Element element = (Element) wordNodes.item(i);
 			words.add(createWord(element));
 		}
 
-		List<Collection> collections = new ArrayList<Collection>();
 		for (int i = 0; i < collectionNodes.getLength(); i++) {
 			Element element = (Element) collectionNodes.item(i);
 			collections.add(createCollection(element));
-		}
-
-		// verify data integrity here
-		if (checkDataIntegrity(characters, words, collections) == false) {
-			Toast.makeText(thisContext, "Invalid data file format.", Toast.LENGTH_LONG).show();
-			return;
-		}
-				
-		AlertDialog dialog = (AlertDialog) createDialog(characters, words, collections);
-		dialog.show();
+		}		
+		
+		return checkDataIntegrity(characters, words, collections);
 	}
 	
-	private void saveData(List<Character> characters, List<Word> words, List<Collection> collections) {
+	public static void saveData(DbAdapter dba, List<Character> characters,
+			List<Word> words, List<Collection> collections) {
 		for (Character c : characters) {
 			dba.updateCharacter(c);
 		}
@@ -167,7 +167,8 @@ public class ImportActivity extends Activity {
 		}
 	}
 
-	private boolean checkDataIntegrity(List<Character> characters, List<Word> words, List<Collection> collections) {
+	private static boolean checkDataIntegrity(List<Character> characters, List<Word> words,
+			List<Collection> collections) {
 		Set<Long> charIDs = new HashSet<Long>();
 		for (Character ch : characters) {
 			charIDs.add(ch.getId());
@@ -281,6 +282,7 @@ public class ImportActivity extends Activity {
 		// get attributes
 		long id = Long.valueOf(ele.getAttribute("id"));
 		collection.setId(id);
+		collection.setOrder(id);
 
 		NodeList nameNodes = ele.getElementsByTagName("name");
 		collection.setName(getValue(nameNodes.item(0)));
