@@ -28,7 +28,7 @@ public class MainMenuActivity extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setListAdapter(new ArrayAdapter<String>(this, R.layout.main_menu_item, MAIN_MENU_ITEMS));
+		setListAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, MAIN_MENU_ITEMS));
 
 		ListView listView = getListView();
 		listView.setTextFilterEnabled(true);
